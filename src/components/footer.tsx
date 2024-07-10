@@ -62,7 +62,7 @@ const navigation = [
   },
 ];
 
-export default function Example() {
+export default function Footer() {
   return (
     <footer className="bg-white">
       <div className="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8">
@@ -80,7 +80,7 @@ export default function Example() {
         </div>
         <div className="mt-8 md:mt-0 md:order-1">
         <p className="text-center text-sm leading-5 text-gray-400">
-            Built and designed by YiddishVort.com
+            Built and designed by Shloimy Elbaum Be&quot;h.
           </p>
         </div>
         <div className="mt-8 md:order-1 md:mt-0">

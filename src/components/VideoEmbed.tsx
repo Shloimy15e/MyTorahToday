@@ -17,7 +17,7 @@ interface VideoEmbedProps {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
           referrerPolicy= "strict-origin-when-cross-origin"
           allowFullScreen
-          className="rounded-2xl shadow-lg border-0"
+          className={className}
         />
       </div>
     );
