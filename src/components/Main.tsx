@@ -30,14 +30,14 @@ export default function Main() {
             alt="banner"
             width={30000}
             height={1080}
+            className=" object-cover"
           />{" "}
         </div>
-        <h1 className="text-4xl font-bold my-6 ml-6">Parshas Shelach</h1>
         {/* list of all videos devided by category */}
         {categoryData.map((category) =>
           getVideosByCategory(videoData, category.name).length === 0 ? null : (
             <div key={category.id}>
-              <h1 className="text-2xl font-bold my-6 ml-6">{category.name}</h1>
+              <h1 className="text-4xl font-bold my-6 ml-6">{category.name}</h1>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-6 justify-items-center place-items-center align-middle w-full auto-rows-max p-6">
                 {getVideosByCategory(videoData, category.name).map((video) => (
                   <VideoCard
