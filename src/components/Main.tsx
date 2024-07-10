@@ -53,7 +53,7 @@ export default function Main() {
         <VideoDialog
           isOpen={isDialogOpen}
           video={selectedVideo}
-          onClose={close}
+          onClose={closeDialog}
         />
       </main>
     </>
