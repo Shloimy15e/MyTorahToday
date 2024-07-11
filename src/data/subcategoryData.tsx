@@ -1,9 +1,9 @@
-export interface Parshah {
+export interface Subcategory {
     id: number;
     name: string;
 }
 
-export const parshahData: Parshah[] = [
+export const subcategoryData: Subcategory[] = [
     {
         id: 1,
         name: "Shelach",
@@ -20,4 +20,8 @@ export const parshahData: Parshah[] = [
         id: 4,
         name: "Balak",
     },
+    {
+        id: 5,
+        name: "Shmuel",
+    }
 ];

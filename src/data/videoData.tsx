@@ -2,7 +2,9 @@ export const getVideosByCategory = (videos: Video[], categoryName: string): Vide
   return videos.filter(video => video.category === categoryName);
 };
 
-  
+export const getVideosBySubcategory = (videos: Video[], subcategory: string): Video[] => {
+  return videos.filter(video => video.subcategory === subcategory);
+};
 
 export interface Video {
   id: number;
@@ -10,7 +12,7 @@ export interface Video {
   embedUrl: string;
   category: string;
   tags: string[];
-  parsha?: string;
+  subcategory?: string;
 }
 
 export const videoData: Video[] = [
@@ -20,7 +22,7 @@ export const videoData: Video[] = [
     embedUrl: "https://www.youtube.com/embed/ImDkC1ozpP0",
     category: "Parshah",
     tags: [],
-    parsha: "Shelach",
+    subcategory: "Shelach",
   },
   {
     id: 2,
@@ -28,7 +30,7 @@ export const videoData: Video[] = [
     embedUrl: "https://www.youtube.com/embed/OSMk1LcTIII",
     category: "Parshah",
     tags: [],
-    parsha: "Shelach",
+    subcategory: "Shelach",
   },
   {
     id: 3,
@@ -37,7 +39,7 @@ export const videoData: Video[] = [
     embedUrl: "https://youtube.com/embed/qYYhOCJgkRk",
     category: "Parshah",
     tags: [],
-    parsha: "Chukas",
+    subcategory: "Chukas",
   },
   {
     id: 4,
@@ -45,7 +47,7 @@ export const videoData: Video[] = [
     embedUrl: "https://www.youtube.com/embed/-Cu5HHzmT-A",
     category: "Parshah",
     tags: [],
-    parsha: "Chukas",
+    subcategory: "Chukas",
   },
   {
     id: 5,
@@ -53,7 +55,7 @@ export const videoData: Video[] = [
     embedUrl: "https://www.youtube.com/embed/AQLc4zVIMYw",
     category: "Parshah",
     tags: [],
-    parsha: "Chukas",
+    subcategory: "Chukas",
   },
   {
     id: 6,
@@ -61,7 +63,7 @@ export const videoData: Video[] = [
     embedUrl: "https://www.youtube.com/embed/a3UREmwcgJg",
     category: "Parshah",
     tags: [],
-    parsha: "Chukas",
+    subcategory: "Chukas",
   },
   {
     id: 7,
@@ -69,7 +71,7 @@ export const videoData: Video[] = [
     embedUrl: "https://www.youtube.com/embed/cVtnWLcZ3c0",
     category: "Parshah",
     tags: [],
-    parsha: "Chukas",
+    subcategory: "Chukas",
   },
   {
     id: 8,
@@ -77,7 +79,7 @@ export const videoData: Video[] = [
     embedUrl: "https://www.youtube.com/embed/sNEam3ENgJw",
     category: "Parshah",
     tags: [],
-    parsha: "Chukas",
+    subcategory: "Chukas",
   },
   {
     id: 9,
@@ -85,6 +87,7 @@ export const videoData: Video[] = [
     embedUrl: "https://www.youtube.com/embed/9JguNiqUP5g",
     category: "Neviim",
     tags: [],
+    subcategory: "Shmuel",
   },
   {
     id: 10,
@@ -92,6 +95,7 @@ export const videoData: Video[] = [
     embedUrl: "https://www.youtube.com/embed/KksHtHI-B9A",
     category: "Neviim",
     tags: [],
+    subcategory: "Shmuel",
   },
   {
     id: 11,
@@ -99,5 +103,6 @@ export const videoData: Video[] = [
     embedUrl: "https://www.youtube.com/embed/iBTqo-zOoME",
     category: "Neviim",
     tags: [],
+    subcategory: "Shmuel",
   }
 ];
