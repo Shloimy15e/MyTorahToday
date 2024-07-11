@@ -40,6 +40,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        how do i put this in :{" "}
+        <meta
+          name="google-site-verification"
+          content="AafcWLwSlqXAUwCFlyKLSnMg7WLhA2Ngc5kr6GuE68A"
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
