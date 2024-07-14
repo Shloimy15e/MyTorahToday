@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "generate-sitemap": "node src/scripts/generate-sitemap.cjs",
     "start": "next start",
     "lint": "next lint"
   },

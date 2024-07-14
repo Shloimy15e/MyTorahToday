@@ -1,8 +1,5 @@
-import type { Metadata } from "next";
-//import { Inter } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import "../styles/globals.css";
-
-//const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "My Torah Today",
@@ -31,6 +28,61 @@ export const metadata: Metadata = {
       { rel: "manifest", url: "/favicon/site.webmanifest" },
     ],
   },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://mytorahtoday.com",
+    title: "My Torah Today",
+    description:
+      "R' Shimon Semp's Torah videos from over the years, posted on YouTube, brought to you in an organized and accessible manner.",
+    images: [
+      {
+        url: "https://mytorahtoday.com/images/og-image.jpg",
+        width: 1200,
+        height: 612,
+        alt: "My Torah Today",
+      },
+    ],
+    siteName: "My Torah Today",
+  },
+  robots: "index, follow",
+  generator: "Next.js",
+  twitter: {
+    card: "summary_large_image",
+    site: "@mytorahtoday",
+    title: "My Torah Today",
+    description:
+      "R' Shimon Semp's Torah videos from over the years, posted on YouTube, brought to you in an organized and accessible manner.",
+    images: [
+      {
+        url: "https://mytorahtoday.com/images/og-image.jpg",
+        width: 1200,
+        height: 612,
+        alt: "My Torah Today",
+      },
+    ],
+  },
+  verification: {
+    google: "AafcWLwSlqXAUwCFlyKLSnMg7WLhA2Ngc5kr6GuE68A",
+  },
+  creator: "Shloimy Elbaum",
+  authors: [
+    {
+      name: "Shloimy Elbaum",
+    },
+  ],
+  appleWebApp: {
+    title: "My Torah Today",
+    statusBarStyle: "default",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  minimumScale: 1,
+  maximumScale: 1,
+  userScalable: true,
 };
 
 export default function RootLayout({
@@ -41,11 +93,26 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        how do i put this in :{" "}
-        <meta
-          name="google-site-verification"
-          content="AafcWLwSlqXAUwCFlyKLSnMg7WLhA2Ngc5kr6GuE68A"
-        />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: "https://www.mytorahtoday.com",
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Categories",
+                item: "https://www.mytorahtoday.com/categories",
+              },
+            ],
+          })}
+        </script>
       </head>
       <body>{children}</body>
     </html>
