@@ -1,0 +1,13 @@
+# *
+User-agent: *
+Allow: /
+
+# *
+User-agent: *
+Disallow: /admin/
+
+# Host
+Host: https://www.mytorahtoday.com
+
+# Sitemaps
+Sitemap: https://www.mytorahtoday.com/sitemap.xml

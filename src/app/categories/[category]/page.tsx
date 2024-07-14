@@ -1,5 +1,4 @@
 "use client";
-import { notFound } from "next/navigation";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -49,9 +48,9 @@ export default function CategoryPage({ params }: Props) {
           height={1080}
           className={"object-cover opacity-60"}
         />
-        <div className="absolute text-white text-3xl md:text-5xl lg:text-6xl font-bold">
+        <h1 className="absolute text-white text-3xl md:text-5xl lg:text-6xl font-bold">
           {displayCategory}
-        </div>
+        </h1>
       </div>
       <div className="bg-neutral-100 grid grid-cols-1 justify-items-center">
         {videosInCategory.length > 0 ? (
@@ -80,7 +79,9 @@ export default function CategoryPage({ params }: Props) {
           )
         ) : (
           <div className="p-6 w-3/5 text-center">
-            <h1 className="text-3xl font-semibold text-gray-800">No videos are in category &quot;{ displayCategory }&quot; </h1>
+            <h1 className="text-3xl font-semibold text-gray-800">
+              No videos are in category &quot;{displayCategory}&quot;{" "}
+            </h1>
             <p className="text-2xl text-gray-600">
               I&apos;m sorry but I didn&apos;t get yet to this category you can
               check in a different time to see where I&apos;m up to.
