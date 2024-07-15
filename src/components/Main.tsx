@@ -79,7 +79,7 @@ export default function Main() {
               )}{" "}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-6 justify-items-center place-items-center align-middle w-full auto-rows-max p-6">
                 {getVideosByTopic(videoData, topic.name)
-                  .slice(0, 15)
+                  .slice(0, 11)
                   .map((video) => (
                     <VideoCard
                       video={video}
