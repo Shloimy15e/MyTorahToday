@@ -14,6 +14,9 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "constructionStripes": "repeating-linear-gradient(55deg, #000000, #000000 15px,#fac800 15px,#fac800 30px)"
       },
+      colors: {
+        "primary-blue": "#224395",
+      }
     },
   },
   plugins: [
