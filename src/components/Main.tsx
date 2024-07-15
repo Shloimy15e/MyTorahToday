@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { topicData } from "@/data/topicData";
+import { ChevronRightIcon } from "@heroicons/react/16/solid";
 
 export const parshahThisWeek: string = "Balak";
 
@@ -44,13 +45,13 @@ export default function Main() {
         {topicData.map((topic) =>
           getVideosByTopic(videoData, topic.name).length === 0 ? null : (
             <div key={topic.id}>
-              <h1 className="text-4xl font-bold my-6 ml-10 text-gray-900">
+              <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
                 {topic.name}
               </h1>
               {topic.name === "Parshah" && (
                 <>
-                  <h2 className="text-3xl font-bold mt-2 ml-16 text-gray-800">
-                    Balak{" "}
+                  <h2 className="flex relative items-center text-3xl font-semibold mt-2 ml-16 pr-1 text-gray-700 w-max before:content-[''] before:absolute before:left-0 before:bottom-1.5 before:h-2 before:w-full before:bg-gray-900 before:opacity-35">
+                    {parshahThisWeek}
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-6 justify-items-center place-items-center align-middle w-full auto-rows-max p-6">
                     {getVideosBySubtopic(videoData, parshahThisWeek)
@@ -71,19 +72,21 @@ export default function Main() {
                       See all for {parshahThisWeek}
                     </Link>
                   </div>
-                  <h2 className="text-2xl font-bold my-6 ml-6">
+                  <h2 className="flex relative items-center text-3xl font-semibold mt-2 ml-16 pr-1 text-gray-700 w-max before:content-[''] before:absolute before:left-0 before:bottom-1.5 before:h-2 before:w-full before:bg-gray-900 before:opacity-35">
                     Other {topic.name}s
                   </h2>
                 </>
               )}{" "}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-6 justify-items-center place-items-center align-middle w-full auto-rows-max p-6">
-                {getVideosByTopic(videoData, topic.name).slice(0, 15).map((video) => (
-                  <VideoCard
-                    video={video}
-                    key={video.id}
-                    onClick={() => openDialog(video)}
-                  />
-                ))}
+                {getVideosByTopic(videoData, topic.name)
+                  .slice(0, 15)
+                  .map((video) => (
+                    <VideoCard
+                      video={video}
+                      key={video.id}
+                      onClick={() => openDialog(video)}
+                    />
+                  ))}
               </div>
               <div className="flex justify-center items-center">
                 <Link
