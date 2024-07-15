@@ -335,5 +335,113 @@ export const videoData: Video[] = [
     tags: [],
     subtopic: "Balak",
     description: signature
+  },
+  {
+    id: 34,
+    embedUrl: "https://www.youtube.com/embed/VXX99Zuog3I",
+    title: "[1292] Yeshayahu 3 Youth standing up for themselves can be a good thing",
+    topic: "Neviim",
+    tags: ["achris hayamim", "youth", "chutzpah yasge", "recent", "shiur"],
+    subtopic: "Yeshayahu",
+    description: signature
+  },
+  {
+    id: 35,
+    embedUrl: "https://www.youtube.com/embed/AxNgy2rQfaU",
+    title: "[1293] Yeshayahu 4 Can you see the sky through your roof?",
+    topic: "Neviim",
+    tags: ["cleansing", "recent", "shiur"],
+    subtopic: "Yeshayahu",
+    description: signature
+  },
+  {
+    id: 36,
+    embedUrl: "https://www.youtube.com/embed/wgldqLrKbzg",
+    title: "[1294] Yeshayahu 5 - Exile is all in the mind!",
+    topic: "Neviim",
+    tags: ["exile", "redemption", "geulah", "recent", "shiur"],
+    subtopic: "Yeshayahu",
+    description: signature
+  },
+  {
+    id: 37,
+    embedUrl: "https://www.youtube.com/embed/B7EJw0eHajQ",
+    title: "[1295] Yeshayahu 6 - Kedusha and why Yeshayahu got burnt on his mouth",
+    topic: "Neviim",
+    tags: ["recent", "shiur"],
+    subtopic: "Yeshayahu",
+    description: signature
+  },
+  {
+    id: 38,
+    embedUrl: "https://www.youtube.com/embed/y2kRpvsLCfo",
+    title: "[1296] Yeshayahu 7 - What the Thinker Thinks, the Prover Proves",
+    topic: "Neviim",
+    tags: ["recent", "shiur", "bias"],
+    subtopic: "Yeshayahu",
+    description: signature
+  },
+  {
+    id: 39,
+    embedUrl: "https://www.youtube.com/embed/iCm0nqbq0IU",
+    title: "[1297] Yeshayahu 8 - The historical background necessary to understand 7-9!",
+    topic: "Neviim",
+    tags: ["recent", "shiur", "clarification", "history"],
+    subtopic: "Yeshayahu",
+    description: signature
+  },
+  {
+    id: 40,
+    embedUrl: "https://www.youtube.com/embed/2bKXVWoqSYU",
+    title: "[1298] Yeshayahu 9 - \"His hand remains outstretched\" - to always accept you back!",
+    topic: "Neviim",
+    tags: ["recent", "shiur", "tshuvah"],
+    subtopic: "Yeshayahu",
+    description: signature
+  },
+  {
+    id: 41,
+    embedUrl: "https://www.youtube.com/embed/JJNBkWeSDDQ",
+    title: "[1299] Yeshayahu 10 - Sticks don't hit on their own",
+    topic: "Neviim",
+    tags: ["recent", "shiur", "emunah"],
+    subtopic: "Yeshayahu",
+    description: signature
+  },
+  {
+    id: 42,
+    embedUrl: "https://www.youtube.com/embed/wdIbAsGAt0E",
+    title: "[1300] Yeshayahu 11 - Satmer and Lubavitch getting along is old news",
+    topic: "Neviim",
+    tags: ["recent", "shiur", "satmer", "lubavitch"],
+    subtopic: "Yeshayahu",
+    description: signature
+  },
+  {
+    id: 43,
+    embedUrl: "https://www.youtube.com/embed/SNjhe0YdW4w",
+    title: "[1301] Yeshayahu 12 - One day you will say \"Thank you Hashem for my Pain!\"",
+    topic: "Neviim",
+    tags: ["recent", "shiur", "emunah", "revelation"],
+    subtopic: "Yeshayahu",
+    description: signature
+  },
+  {
+    id: 44,
+    embedUrl: "https://www.youtube.com/embed/NIBgskQPvAE",
+    title: "[1302] Yeshayahu 13 - The end of Bavel and those that forget they are just a messenger",
+    topic: "Neviim",
+    tags: ["recent", "shiur", "emunah", "revelation"],
+    subtopic: "Yeshayahu",
+    description: signature
+  },
+  {
+    id: 45,
+    embedUrl: "https://www.youtube.com/embed/FibK9yDoHBg",
+    title: "[1303] Yeshayahu 14 - Jews will be brought as a gift to Mashiach",
+    topic: "Neviim",
+    tags: ["recent", "shiur", "emunah", "mashiach", "geulah"],
+    subtopic: "Yeshayahu",
+    description: signature
   }
 ];
