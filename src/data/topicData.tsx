@@ -1,10 +1,10 @@
-export interface Category {
+export interface Topic {
     id: number;
     name: string;
     //image: string;
 }
 
-export const categoryData: Category[] = [
+export const topicData: Topic[] = [
     {
         id: 1,
         name: "Parshah",
@@ -23,4 +23,4 @@ export const categoryData: Category[] = [
     },
 ];
 
-export const categoryNames = categoryData.map(category => category.name);
+export const topicNames = topicData.map(topic => topic.name);
