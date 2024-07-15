@@ -93,8 +93,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script type="application/ld+json">
-          {JSON.stringify({
+        <script type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html:JSON.stringify({
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
@@ -107,13 +108,13 @@ export default function RootLayout({
               {
                 "@type": "ListItem",
                 position: 2,
-                name: "Categories",
-                item: "https://www.mytorahtoday.com/categories",
+                name: "Topics",
+                item: "https://www.mytorahtoday.com/topics",
               },
             ],
-          })}
-        </script>
-      </head>
+          })
+        }} />
+        </head>
       <body>{children}</body>
     </html>
   );

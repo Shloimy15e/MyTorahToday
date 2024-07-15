@@ -7,10 +7,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 const navigation = [
-  { name: "Parshah", href: "/categories/parshah" },
-  { name: "Neviim", href: "/categories/neviim" },
-  { name: "Chassidus", href: "/categories/chassidus" },
-  { name: "Lifes ways", href: "/categories/lifes-ways" },
+  { name: "Parshah", href: "/topics/parshah" },
+  { name: "Neviim", href: "/topics/neviim" },
+  { name: "Chassidus", href: "/topics/chassidus" },
+  { name: "Lifes ways", href: "/topics/lifes-ways" },
 ];
 
 export default function Header() {

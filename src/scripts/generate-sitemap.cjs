@@ -4,7 +4,7 @@ const path = require('path');
 
 const siteUrl = 'https://www.mytorahtoday.com';
 
-const categories = [
+const topics = [
   'parshah',
   'neviim',
   'chassidus',
@@ -13,13 +13,13 @@ const categories = [
 
 const urls = [
   { loc: siteUrl, lastmod: new Date().toISOString(), changefreq: 'weekly', priority: 1.0 },
-  ...categories.map(category => ({
-    loc: `${siteUrl}/categories/${category}`,
+  ...topics.map(topic => ({
+    loc: `${siteUrl}/topics/${topic}`,
     lastmod: new Date().toISOString(),
     changefreq: 'weekly',
     priority: 0.8,
   })),
-  // Add more URLs for subcategories and video pages
+  // Add more URLs for subtopics and video pages
 ];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

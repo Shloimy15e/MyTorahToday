@@ -6,7 +6,7 @@ export interface Video {
   id: number;
   title: string;
   embedUrl: string;
-  category: string;
+  topic: string;
   tags: string[];
 }
 

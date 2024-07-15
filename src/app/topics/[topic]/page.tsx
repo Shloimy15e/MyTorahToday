@@ -4,25 +4,25 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import {
   videoData,
-  getVideosByCategory,
-  getVideosBySubcategory,
+  getVideosByTopic,
+  getVideosBySubtopic,
 } from "@/data/videoData";
 import VideoCard from "@/components/VideoCard";
 import VideoDialog from "@/components/VideoDialog";
-import { subcategoryData } from "@/data/subcategoryData";
+import { subtopicData } from "@/data/subtopicData";
 import { useState } from "react";
 
 type Props = {
   params: {
-    category: string;
+    topic: string;
   };
 };
 
-//Get the category name from the params and pass it to the getVideosByCategory function
-export default function CategoryPage({ params }: Props) {
-  const { category } = params;
-  const Category = category.charAt(0).toUpperCase() + category.slice(1);
-  const displayCategory = Category.replace("-", " ");
+//Get the topic name from the params and pass it to the getVideosByTopic function
+export default function TopicPage({ params }: Props) {
+  const { topic } = params;
+  const Topic = topic.charAt(0).toUpperCase() + topic.slice(1);
+  const displayTopic = Topic.replace("-", " ");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const openDialog = (video: any) => {
@@ -34,7 +34,7 @@ export default function CategoryPage({ params }: Props) {
     setSelectedVideo(null);
   };
 
-  const videosInCategory = getVideosByCategory(videoData, Category);
+  const videosInTopic = getVideosByTopic(videoData, Topic);
 
   return (
     <>
@@ -49,23 +49,23 @@ export default function CategoryPage({ params }: Props) {
           className={"object-cover opacity-60"}
         />
         <h1 className="absolute text-white text-3xl md:text-5xl lg:text-6xl font-bold">
-          {displayCategory}
+          {displayTopic}
         </h1>
       </div>
       <div className="bg-neutral-100 grid grid-cols-1 justify-items-center">
-        {videosInCategory.length > 0 ? (
-          // Get all videos in category divided in subcategories
-          subcategoryData.map((subcategory) =>
-            getVideosBySubcategory(videosInCategory, subcategory.name)
+        {videosInTopic.length > 0 ? (
+          // Get all videos in topic divided in subtopics
+          subtopicData.map((subtopic) =>
+            getVideosBySubtopic(videosInTopic, subtopic.name)
               .length === 0 ? null : (
-              <div key={subcategory.id}>
+              <div key={subtopic.id}>
                 <h1 className="text-4xl font-bold my-6 ml-6">
-                  {subcategory.name}
+                  {subtopic.name}
                 </h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-6 justify-items-center place-items-center align-middle w-full auto-rows-max p-6">
-                  {getVideosBySubcategory(
-                    videosInCategory,
-                    subcategory.name
+                  {getVideosBySubtopic(
+                    videosInTopic,
+                    subtopic.name
                   ).map((video) => (
                     <VideoCard
                       video={video}
@@ -80,10 +80,10 @@ export default function CategoryPage({ params }: Props) {
         ) : (
           <div className="p-6 w-3/5 text-center">
             <h1 className="text-3xl font-semibold text-gray-800">
-              No videos are in category &quot;{displayCategory}&quot;{" "}
+              No videos are in topic &quot;{displayTopic}&quot;{" "}
             </h1>
             <p className="text-2xl text-gray-600">
-              I&apos;m sorry but I didn&apos;t get yet to this category you can
+              I&apos;m sorry but I didn&apos;t get yet to this topic you can
               check in a different time to see where I&apos;m up to.
             </p>
           </div>
