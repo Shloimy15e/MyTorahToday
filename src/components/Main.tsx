@@ -2,9 +2,9 @@
 import { useState } from "react";
 import VideoCard from "./VideoCard";
 import VideoDialog from "./VideoDialog";
-import { getVideosByCategory, videoData } from "@/data/videoData";
+import { getVideosByTopic, videoData } from "@/data/videoData";
 import Image from "next/image";
-import { categoryData } from "@/data/categoryData";
+import { topicData } from "@/data/topicData";
 
 export default function Main() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -33,13 +33,13 @@ export default function Main() {
             className=" object-cover"
           />{" "}
         </div>
-        {/* list of all videos devided by category */}
-        {categoryData.map((category) =>
-          getVideosByCategory(videoData, category.name).length === 0 ? null : (
-            <div key={category.id}>
-              <h1 className="text-4xl font-bold my-6 ml-6">{category.name}</h1>
+        {/* list of all videos devided by topic */}
+        {topicData.map((topic) =>
+          getVideosByTopic(videoData, topic.name).length === 0 ? null : (
+            <div key={topic.id}>
+              <h1 className="text-4xl font-bold my-6 ml-6">{topic.name}</h1>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-6 justify-items-center place-items-center align-middle w-full auto-rows-max p-6">
-                {getVideosByCategory(videoData, category.name).map((video) => (
+                {getVideosByTopic(videoData, topic.name).map((video) => (
                   <VideoCard
                     video={video}
                     key={video.id}
