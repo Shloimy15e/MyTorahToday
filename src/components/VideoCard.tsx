@@ -6,6 +6,7 @@ export interface Video {
     embedUrl: string;
     topic: string;
     tags: string[];
+    description: string;
 }
 
 // A card that has the videoEmbed in it and takes a video from a video list by a parent
@@ -22,6 +23,13 @@ function VideoCard(props: { video: Video, onClick: () => void }) {
         {props.video.title}
       </h1>
       {/* loop through tags */}
+      <div className="flex flex-wrap justify-center items-center p-2 w-full">
+        {props.video.description && (
+          <p className="text-sm text-gray-700 p-2 rounded-lg m-1">
+            {props.video.description.slice(0, 200)}...
+          </p>
+        )}
+      </div>
       <div className="flex flex-wrap justify-start items-center pl-5 w-full">
         {props.video.tags.map((tag: string) => (
           <p
