@@ -1,11 +1,12 @@
 "use client";
 import Header from "@/components/Header";
-import MainTopics from "@/components/MainTopics";
+import MainSubtopics from "@/components/MainSubtopics";
 import Footer from "@/components/Footer";
 
 type Props = {
   params: {
     topic: string;
+    subtopic: string;
   };
 };
 
@@ -14,7 +15,7 @@ export default function TopicPage({ params }: Props) {
   return (
     <>
       <Header />
-      <MainTopics params={params} />
+      <MainSubtopics params={params} />
       <Footer />
     </>
   );
