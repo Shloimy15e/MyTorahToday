@@ -13,6 +13,7 @@ async function login(username: string, password: string) {
   // Make sure user is not logged in yet
   if (localStorage.getItem("loggedIn") === "true") {
     alert("You are already logged in!");
+    window.location.href = "/";
     return;
   }
   try {
@@ -25,33 +26,33 @@ async function login(username: string, password: string) {
 
     // API call to login url
     const response = await fetch(
-      "https://mttbackend-production.up.railway.app/api/auth/token/login/",
+      "/api/auth/login",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
         },
         body: JSON.stringify({
           username: username,
           password: password,
         }),
-        credentials: "include",
       }
     );
+    const data = await response.json();
     // If response is not ok, throw error
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(JSON.stringify(errorData));
     }
     // Get the access token from the response
-    const data = await response.json();
+    
     // Set the access token in local storage
     localStorage.setItem("accessToken", data.access);
     // Set logged in to true
     localStorage.setItem("loggedIn", "true");
+    alert("Login successful!");
+    // load home page
+    window.location.href = "/";
   } catch (error: any) {
     console.error("Full error object:", error);
     console.error("Error type:", Object.prototype.toString.call(error));
@@ -187,3 +188,5 @@ export default function LoginDialog(props: {
     </>
   );
 }
+
+
