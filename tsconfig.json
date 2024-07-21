@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/scripts/generate-sitemap.cjs", "src/scripts/generate-sitemap.cjs"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/scripts/generate-sitemap.cjs", "src/scripts/generate-sitemap.cjs", "src/app/api/auth/token/logout/route.ts"],
   "exclude": ["node_modules"]
 }

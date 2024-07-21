@@ -18,6 +18,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import LoginDialog from "./LoginDialog";
+import SignupDialog from "./SignupDialog";
+import LogoutDialog from "./LogoutDialog";
 
 const navigation = [
   { name: "Parshah", href: "/topics/parshah" },
@@ -28,16 +30,15 @@ const navigation = [
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState(null);
-
-  const openDialog = (video: any) => {
-    setSelectedVideo(video);
-    setIsDialogOpen(true);
-  };
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+  const [isSignupDialogOpen, setIsSignupDialogOpen] = useState(false);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+  const [, setSelectedVideo] = useState(null);
 
   const closeDialog = () => {
-    setIsDialogOpen(false);
+    setIsLoginDialogOpen(false);
+    setIsSignupDialogOpen(false);
+    setIsLogoutDialogOpen(false);
     setSelectedVideo(null);
   };
 
@@ -95,38 +96,22 @@ export default function Header() {
               <MenuItems className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="px-1 py-1">
                   <MenuItem>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? "bg-gray-100 text-gray-900" : "text-gray-700"
-                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                        onClick={() => setIsDialogOpen(true)}
-                      >
+                      <button onClick={() => setIsLoginDialogOpen(true)}
+                        className='active:bg-gray-100 active:text-gray-900 text-gray-700 group flex w-full items-center rounded-md px-2 py-2 text-sm'>
                         Log in
                       </button>
-                    )}
                   </MenuItem>
                   <MenuItem>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? "bg-gray-100 text-gray-900" : "text-gray-700"
-                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                      >
-                        Option 2
+                      <button onClick={() => setIsSignupDialogOpen(true)}
+                      className='active:bg-gray-100 active:text-gray-900 text-gray-700 group flex w-full items-center rounded-md px-2 py-2 text-sm'>
+                        Sign up
                       </button>
-                    )}
                   </MenuItem>
                   <MenuItem>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? "bg-gray-100 text-gray-900" : "text-gray-700"
-                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                      >
-                        Option 3
-                      </button>
-                    )}
+                    <button onClick={() => setIsLogoutDialogOpen(true)}
+                      className='active:bg-gray-100 active:text-gray-900 text-gray-700 group flex w-full items-center rounded-md px-2 py-2 text-sm'>
+                      Log out
+                    </button>
                   </MenuItem>
                 </div>
               </MenuItems>
@@ -194,7 +179,9 @@ export default function Header() {
           </div>
         </DialogPanel>
       </Dialog>
-      <LoginDialog isOpen={isDialogOpen} onClose={closeDialog} />
+      <SignupDialog isOpen={isSignupDialogOpen} onClose={closeDialog} />
+      <LoginDialog isOpen={isLoginDialogOpen} onClose={closeDialog} />
+      <LogoutDialog isOpen={isLogoutDialogOpen} onClose={closeDialog} />
     </header>
   );
 }
