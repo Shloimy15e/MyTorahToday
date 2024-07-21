@@ -1,3 +1,6 @@
+import { LazyLoadComponent } from "react-lazy-load-image-component";
+import 'react-lazy-load-image-component/src/effects/opacity.css';
+
 interface VideoEmbedProps {
     src: string;
     title: string;
@@ -6,20 +9,17 @@ interface VideoEmbedProps {
   
   const VideoEmbed: React.FC<VideoEmbedProps> = ({
     src,
-    title,
     className,
   }) => {
     return (
-      <div className={className}>
+      <LazyLoadComponent>
         <iframe
-          src={src}
-          title={title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-          referrerPolicy= "strict-origin-when-cross-origin"
+          src={`https://www.youtube.com/embed/${src}?rel=0`}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
           allowFullScreen
           className={className}
         />
-      </div>
+      </LazyLoadComponent>
     );
   };
   

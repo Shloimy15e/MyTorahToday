@@ -1,4 +1,4 @@
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, Transition, DialogPanel, DialogTitle, TransitionChild } from "@headlessui/react";
 import { Fragment } from "react";
 import VideoEmbed from "./VideoEmbed";
 
@@ -20,7 +20,7 @@ export default function VideoDialog(props: {
     <>
       <Transition show={props.isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -30,11 +30,11 @@ export default function VideoDialog(props: {
             leaveTo="opacity-0"
           >
             <div className="fixed inset-0 bg-black/45" />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -43,13 +43,13 @@ export default function VideoDialog(props: {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-4xl md:max-w-2xl lg:max-w-4xl 2xl:max-w-5xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
+                <DialogPanel className="w-full max-w-4xl md:max-w-2xl lg:max-w-4xl 2xl:max-w-5xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <DialogTitle
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
                     {props.video ? props.video.title : "Loading"}
-                  </Dialog.Title>
+                  </DialogTitle>
                   <div className="mt-2">
                     <VideoEmbed
                       src={props.video ? props.video.embedUrl : ""}
@@ -57,7 +57,6 @@ export default function VideoDialog(props: {
                       className="w-full rounded-md aspect-video"
                     />
                   </div>
-
                   <div className="mt-4">
                     <button
                       type="button"
@@ -67,8 +66,8 @@ export default function VideoDialog(props: {
                       Beautiful! I want to see more!
                     </button>
                   </div>
-                </Dialog.Panel>
-              </Transition.Child>
+                </DialogPanel>
+              </TransitionChild>
             </div>
           </div>
         </Dialog>

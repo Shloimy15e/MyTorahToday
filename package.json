@@ -13,13 +13,17 @@
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.4",
     "next": "14.2.4",
+    "node-fetch": "^2.7.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-lazy-load-image-component": "^1.6.2"
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/node-fetch": "^2.6.11",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-lazy-load-image-component": "^1.6.4",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "postcss": "^8",
