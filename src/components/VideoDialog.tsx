@@ -5,7 +5,7 @@ import VideoEmbed from "./VideoEmbed";
 export interface Video {
   id: number;
   title: string;
-  embedUrl: string;
+  video_id: string;
   topic: string;
   tags: string[];
 }
@@ -52,7 +52,7 @@ export default function VideoDialog(props: {
                   </DialogTitle>
                   <div className="mt-2">
                     <VideoEmbed
-                      src={props.video ? props.video.embedUrl : ""}
+                      src={props.video ? props.video.video_id : ""}
                       title={props.video ? props.video.title : ""}
                       className="w-full rounded-md aspect-video"
                     />
