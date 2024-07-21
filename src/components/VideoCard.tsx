@@ -9,11 +9,11 @@ import {
 
 export interface Video {
   id: number;
-  title: string;
+  title?: string;
   video_id: string;
   topic: string;
   tags: string[];
-  description: string;
+  description?: string;
 }
 
 // A card that has the videoEmbed in it and takes a video from a video list by a parent
