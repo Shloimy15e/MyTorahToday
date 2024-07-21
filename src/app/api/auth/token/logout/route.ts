@@ -26,12 +26,19 @@ export async function POST(request: Request): Promise<Response>{
     }
   );
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    console.error("Error logging out:", data);
-    return NextResponse.json({ error: data }, { status: response.status });
+  if (response.ok) {
+    console.log(response);
+    // Handle successful logout
+    return NextResponse.json({ message: "Logged out successfully" }, { status: 200 });
+  } else {
+    // Handle error responses
+    try {
+      const errorData = await response.json();
+      console.error("Error logging out:", errorData);
+      return NextResponse.json({ error: errorData.detail || "Logout failed" }, { status: response.status });
+    } catch (error) {
+      console.error("Error parsing error response:", error);
+      return NextResponse.json({ error: "Unexpected server response" }, { status: response.status });
+    }
   }
-
-  return NextResponse.json(data);
 }
