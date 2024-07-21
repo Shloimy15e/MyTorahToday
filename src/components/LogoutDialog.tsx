@@ -9,11 +9,13 @@ import {
 import { Fragment } from "react";
 import { useState } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { useToast } from "./ToastProvider";
 
 export default function LogoutDialog(props: {
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const closeModal = () => props.onClose();
 
@@ -22,8 +24,8 @@ export default function LogoutDialog(props: {
     const accessToken = localStorage.getItem("accessToken");
     // Make sure user is not logged in yet
     if (!accessToken || accessToken === "undefined") {
-      alert("You are not logged in!");
-      window.location.href = "/";
+      showToast("You are not logged in", "error");
+      closeModal();
       return;
     }
     try {
@@ -43,9 +45,10 @@ export default function LogoutDialog(props: {
 
       setTimeout(() => {
         setIsLoading(false);
-        alert("you logged out successfully!");
+        showToast("Logged out successfully");
         localStorage.removeItem("accessToken");
         localStorage.setItem("loggedIn", "false");
+        closeModal();
         window.location.href = "/";
       }, 2000);
     } catch (error: any) {
@@ -54,7 +57,7 @@ export default function LogoutDialog(props: {
       console.error("Error properties:", Object.getOwnPropertyNames(error));
 
       let errorMessage = "logout failed. Error: " + error;
-      alert(errorMessage);
+      showToast(errorMessage);
       return;
     }
   }

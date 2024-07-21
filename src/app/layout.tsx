@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "../styles/globals.css";
+import { ToastProvider } from "@/components/ToastProvider";
 
 export const metadata: Metadata = {
   title: "My Torah Today",
@@ -93,29 +94,33 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script type="application/ld+json"
+        <script
+          type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html:JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              {
-                "@type": "ListItem",
-                position: 1,
-                name: "Home",
-                item: "https://www.mytorahtoday.com",
-              },
-              {
-                "@type": "ListItem",
-                position: 2,
-                name: "Topics",
-                item: "https://www.mytorahtoday.com/topics",
-              },
-            ],
-          })
-        }} />
-        </head>
-      <body>{children}</body>
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Home",
+                  item: "https://www.mytorahtoday.com",
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  name: "Topics",
+                  item: "https://www.mytorahtoday.com/topics",
+                },
+              ],
+            }),
+          }}
+        />
+      </head>
+      <body>
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   );
 }

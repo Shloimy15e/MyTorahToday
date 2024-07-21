@@ -1,3 +1,4 @@
+"use client";
 import {
   Dialog,
   Transition,
@@ -7,11 +8,13 @@ import {
 } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { useToast } from "./ToastProvider";
 
 export default function LoginDialog(props: {
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const closeModal = () => props.onClose();
 
@@ -22,8 +25,8 @@ export default function LoginDialog(props: {
       localStorage.getItem("accessToken") &&
       localStorage.getItem("accessToken") !== "undefined"
     ) {
-      alert("You are already logged in!");
-      window.location.href = "/";
+      showToast("You are already logged in!");
+      closeModal(); 
       return;
     }
     setIsLoading(true);
@@ -68,8 +71,10 @@ export default function LoginDialog(props: {
       console.log(localStorage.getItem("accessToken"));
       // Set logged in to true
       localStorage.setItem("loggedIn", "true");
-      alert("Login successful!");
-      // load home page
+      showToast("Login successful", "info");
+      // close modal
+      closeModal();   
+      // Redirect to home page
       window.location.href = "/";
       }, 2000);
     } catch (error: any) {
@@ -78,7 +83,7 @@ export default function LoginDialog(props: {
       console.error("Error properties:", Object.getOwnPropertyNames(error));
 
       let errorMessage = "Login failed. Error: " + error;
-      alert(errorMessage);
+      showToast(errorMessage, "error");
       return;
     }
   }
