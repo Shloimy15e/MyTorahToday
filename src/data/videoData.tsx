@@ -441,6 +441,7 @@ export const videoData: Video[] = [
     title: "[1303] Yeshayahu 14 - Jews will be brought as a gift to Mashiach",
     topic: "Neviim",
     tags: ["recent", "shiur", "emunah", "mashiach", "geulah"],
-    subtopic: "Yeshayahu"
+    subtopic: "Yeshayahu",
+    description: signature
   }
 ];
