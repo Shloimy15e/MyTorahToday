@@ -19,7 +19,7 @@ export interface Video {
   topic: string;
   tags: string[];
   subtopic?: string;
-  description?: string;
+  description: string;
 }
 
 export const signature: string = "Rabbi Shimon Semp, Rosh Yeshiva Talpios inspires through bringing Jewish spiritual concepts, with Chassidic Torah teachings down to earth. Collecting anecdotes, sayings, and Divrei Torah from Chabad, Breslav, and other Hasidic masters and Rebbes. Listen and get inspired.";
