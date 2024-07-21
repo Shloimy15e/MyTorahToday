@@ -14,12 +14,12 @@ export const getVideosBySubtopic = (
 
 export interface Video {
   id: number;
-  title: string;
-  embedUrl: string;
+  title?: string;
+  video_id: string;
   topic: string;
   tags: string[];
   subtopic?: string;
-  description: string;
+  description?: string;
 }
 
 export const signature: string = "Rabbi Shimon Semp, Rosh Yeshiva Talpios inspires through bringing Jewish spiritual concepts, with Chassidic Torah teachings down to earth. Collecting anecdotes, sayings, and Divrei Torah from Chabad, Breslav, and other Hasidic masters and Rebbes. Listen and get inspired.";
@@ -28,7 +28,7 @@ export const videoData: Video[] = [
   {
     id: 1,
     title: "Shelach: When it's time to make Lechaim 🍻",
-    embedUrl: "ImDkC1ozpP0",
+    video_id: "ImDkC1ozpP0",
     topic: "Parshah",
     tags: [],
     subtopic: "Shelach",
@@ -37,7 +37,7 @@ export const videoData: Video[] = [
   {
     id: 2,
     title: "Shelach: Who's the Boss",
-    embedUrl: "OSMk1LcTIII",
+    video_id: "OSMk1LcTIII",
     topic: "Parshah",
     tags: [],
     subtopic: "Shelach",
@@ -47,7 +47,7 @@ export const videoData: Video[] = [
     id: 3,
     title:
       "Chukas: Remember where you come from - but make sure the next generation connects to it too",
-    embedUrl: "qYYhOCJgkRk",
+    video_id: "qYYhOCJgkRk",
     topic: "Parshah",
     tags: [],
     subtopic: "Chukas",
@@ -56,7 +56,7 @@ export const videoData: Video[] = [
   {
     id: 4,
     title: "[#1088] Chukas: Make the cheshbon how you conquered Cheshbon",
-    embedUrl: "-Cu5HHzmT-A",
+    video_id: "-Cu5HHzmT-A",
     topic: "Parshah",
     tags: [],
     subtopic: "Chukas",
@@ -65,7 +65,7 @@ export const videoData: Video[] = [
   {
     id: 5,
     title: "[#839] Chukas: Whenever you fall for whatever reason",
-    embedUrl: "AQLc4zVIMYw",
+    video_id: "AQLc4zVIMYw",
     topic: "Parshah",
     tags: [],
     subtopic: "Chukas",
@@ -74,7 +74,7 @@ export const videoData: Video[] = [
   {
     id: 6,
     title: "[#1089] Chukas: When you have red hot energy",
-    embedUrl: "a3UREmwcgJg",
+    video_id: "a3UREmwcgJg",
     topic: "Parshah",
     tags: [],
     subtopic: "Chukas",
@@ -83,7 +83,7 @@ export const videoData: Video[] = [
   {
     id: 7,
     title: "[#837] Chukas: When stuffy noses are healthy",
-    embedUrl: "cVtnWLcZ3c0",
+    video_id: "cVtnWLcZ3c0",
     topic: "Parshah",
     tags: [],
     subtopic: "Chukas",
@@ -92,7 +92,7 @@ export const videoData: Video[] = [
   {
     id: 8,
     title: "[#840] Chukas: How Red Cows fix up Oiber-chachamim",
-    embedUrl: "sNEam3ENgJw",
+    video_id: "sNEam3ENgJw",
     topic: "Parshah",
     tags: [],
     subtopic: "Chukas",
@@ -101,7 +101,7 @@ export const videoData: Video[] = [
   {
     id: 9,
     title: "[1203] Shmuel 1: How being stuck creates prayer",
-    embedUrl: "9JguNiqUP5g",
+    video_id: "9JguNiqUP5g",
     topic: "Neviim",
     tags: [],
     subtopic: "Shmuel",
@@ -110,7 +110,7 @@ export const videoData: Video[] = [
   {
     id: 10,
     title: "[1204] Shmuel 2: Channah's observations about life",
-    embedUrl: "KksHtHI-B9A",
+    video_id: "KksHtHI-B9A",
     topic: "Neviim",
     tags: [],
     subtopic: "Shmuel",
@@ -119,7 +119,7 @@ export const videoData: Video[] = [
   {
     id: 11,
     title: "[1205] Shmuel 3: The story of the 3 cows",
-    embedUrl: "iBTqo-zOoME",
+    video_id: "iBTqo-zOoME",
     topic: "Neviim",
     tags: [],
     subtopic: "Shmuel",
@@ -127,7 +127,7 @@ export const videoData: Video[] = [
   },
   {
     id: 12,
-    embedUrl: "YwqyAFop74M",
+    video_id: "YwqyAFop74M",
     title: 'Balak: A sin called "I didn\'t know"',
     topic: "Parshah",
     tags: ["sin", "peshische", "present", "tune-in"],
@@ -136,7 +136,7 @@ export const videoData: Video[] = [
   },
   {
     id: 13,
-    embedUrl: "i80aN_B-6r0",
+    video_id: "i80aN_B-6r0",
     title: "Balak: ב-אהבת ל-רעך ק- מוך",
     topic: "Parshah",
     tags: ["love", "ahavas yisroel", "oihev yisroel"],
@@ -145,7 +145,7 @@ export const videoData: Video[] = [
   },
   {
     id: 14,
-    embedUrl: "Gn5vAyv3cuk",
+    video_id: "Gn5vAyv3cuk",
     title: "Balak: Why curse when you can choose to be blessed instead?!?",
     topic: "Parshah",
     tags: ["blessing", "life of blessing"],
@@ -154,7 +154,7 @@ export const videoData: Video[] = [
   },
   {
     id: 15,
-    embedUrl: "IlIymt0ZZ6E",
+    video_id: "IlIymt0ZZ6E",
     title: "[1291] Yeshayahu 2 Visions of world peace in today world",
     topic: "Neviim",
     tags: ["world peace", "beis hamikdash", "mashiach"],
@@ -163,7 +163,7 @@ export const videoData: Video[] = [
   },
   {
     id: 16,
-    embedUrl: "xBgKAbR85qk",
+    video_id: "xBgKAbR85qk",
     title:
       '[1290] Yeshayahu 1 "I don\'t care about your frumkeit. What are you doing for the disadvantaged?!"',
     topic: "Neviim",
@@ -173,7 +173,7 @@ export const videoData: Video[] = [
   },
   {
     id: 17,
-    embedUrl: "Tr2NPYvQ6A4",
+    video_id: "Tr2NPYvQ6A4",
     title: "[#844] Balak: What makes a Mistake into a Sin?",
     topic: "Parshah",
     tags: ["sin", "mistake", "connect"],
@@ -182,7 +182,7 @@ export const videoData: Video[] = [
   },
   {
     id: 18,
-    embedUrl: "RiWzeV1_pqU",
+    video_id: "RiWzeV1_pqU",
     title: "Balak: So what's the secret, how do you make donkeys talk?",
     topic: "Parshah",
     tags: ["stuck", "phonecall", "talk to God"],
@@ -191,8 +191,7 @@ export const videoData: Video[] = [
   },
   {
     id: 19,
-    embedUrl: "gZLYtEzVmZw",
-    title: "[#847] Balak: Conquering the Land of Words",
+    video_id: "gZLYtEzVmZw",
     topic: "Parshah",
     tags: ["words", "power of a word"],
     subtopic: "Balak",
@@ -200,7 +199,7 @@ export const videoData: Video[] = [
   },
   {
     id: 20,
-    embedUrl: "VRNR-60aiow",
+    video_id: "VRNR-60aiow",
     title: "[#848] Balak: The sin of being too busy to notice",
     topic: "Parshah",
     tags: ["sin", "midfull"],
@@ -209,7 +208,7 @@ export const videoData: Video[] = [
   },
   {
     id: 21,
-    embedUrl: "g60QQtMWBjI",
+    video_id: "g60QQtMWBjI",
     title: "BALAK: HOW TO SPELL V'AHAVTA L'REACHA KAMOCHA",
     topic: "Parshah",
     tags: ["love", "ahavas yisroel"],
@@ -218,7 +217,7 @@ export const videoData: Video[] = [
   },
   {
     id: 22,
-    embedUrl: "XiilAYVfoRg",
+    video_id: "XiilAYVfoRg",
     title: "When that donkey rams you against the wall",
     topic: "Parshah",
     tags: ["stuck", "communicate", "listen"],
@@ -227,7 +226,7 @@ export const videoData: Video[] = [
   },
   {
     id: 23,
-    embedUrl: "kX5YzgQAuRs",
+    video_id: "kX5YzgQAuRs",
     title: "[#848] Balak: The system of stink",
     topic: "Parshah",
     tags: ["system"],
@@ -236,7 +235,7 @@ export const videoData: Video[] = [
   },
   {
     id: 24,
-    embedUrl: "tTpYcONzMmg",
+    video_id: "tTpYcONzMmg",
     title: "BALAK: SEE NO EVIL",
     topic: "Parshah",
     tags: ["ahavas yisroel"],
@@ -246,7 +245,7 @@ export const videoData: Video[] = [
   },
   {
     id: 25,
-    embedUrl: "RKqEnGGWQBQ",
+    video_id: "RKqEnGGWQBQ",
     title: "Balak: The bright side of antisemitism",
     topic: "Parshah",
     tags: ["antisemitism", "light", "besht", "mikveh"],
@@ -257,7 +256,7 @@ export const videoData: Video[] = [
   },
   {
     id: 26,
-    embedUrl: "GLDxr4jjxXw",
+    video_id: "GLDxr4jjxXw",
     title: "BALAK: BILAAM\'S WORDS IN KRIAS SHEMA...?",
     topic: "Parshah",
     tags: ["curse", "blessing", "shema"],
@@ -268,7 +267,7 @@ export const videoData: Video[] = [
   },
   {
     id: 27,
-    embedUrl: "l4UCRYdZn8c",
+    video_id: "l4UCRYdZn8c",
     title: "Balak: What to do when your coals are smoldering",
     topic: "Parshah",
     tags: ["fire", "hisbodedus"],
@@ -281,7 +280,7 @@ export const videoData: Video[] = [
   },
   {
     id: 28,
-    embedUrl: "bOAA77o7SPI",
+    video_id: "bOAA77o7SPI",
     title: "[#843] Balak: When nothing shocks you any longer",
     topic: "Parshah",
     tags: ["talking donkey", "listen"],
@@ -293,7 +292,7 @@ export const videoData: Video[] = [
   },
   {
     id: 29,
-    embedUrl: "tK2s4qIQ1Qg",
+    video_id: "tK2s4qIQ1Qg",
     title: "[#1092] Balak: What? Brisker Rav was lenient?!",
     topic: "Parshah",
     tags: ["living judaism", "brisker rav", "chinuch"],
@@ -302,7 +301,7 @@ export const videoData: Video[] = [
   },
   {
     id: 30,
-    embedUrl: "E4OgiZcVkfY",
+    video_id: "E4OgiZcVkfY",
     title: "[#1093] Balak: Is \"I didn\'t know\" a good excuse?",
     topic: "Parshah",
     tags: [],
@@ -311,7 +310,7 @@ export const videoData: Video[] = [
   },
   {
     id: 31,
-    embedUrl: "mCLjiUIdynI",
+    video_id: "mCLjiUIdynI",
     title: '[#1094] Balak: "If I\'m ready to believe... Bring me to Kozhnitzer Magid first!"',
     topic: "Parshah",
     tags: ["living judaism", "brisker rav", "chinuch"],
@@ -320,7 +319,7 @@ export const videoData: Video[] = [
   },
   {
     id: 32,
-    embedUrl: "s2unLKXzz4E",
+    video_id: "s2unLKXzz4E",
     title: "[1196] Balak: What would you do if your dishwasher began talking??",
     topic: "Parshah",
     tags: ["shiur", "recent", "theory"],
@@ -329,7 +328,7 @@ export const videoData: Video[] = [
   },
   {
     id: 33,
-    embedUrl: "yWEQDhD8bcA",
+    video_id: "yWEQDhD8bcA",
     title: "[#1095] Balak: Good advice from Bilaam - Aint nothing smarter than admitting you messed up",
     topic: "Parshah",
     tags: [],
@@ -338,7 +337,7 @@ export const videoData: Video[] = [
   },
   {
     id: 34,
-    embedUrl: "VXX99Zuog3I",
+    video_id: "VXX99Zuog3I",
     title: "[1292] Yeshayahu 3 Youth standing up for themselves can be a good thing",
     topic: "Neviim",
     tags: ["achris hayamim", "youth", "chutzpah yasge", "recent", "shiur"],
@@ -347,7 +346,7 @@ export const videoData: Video[] = [
   },
   {
     id: 35,
-    embedUrl: "AxNgy2rQfaU",
+    video_id: "AxNgy2rQfaU",
     title: "[1293] Yeshayahu 4 Can you see the sky through your roof?",
     topic: "Neviim",
     tags: ["cleansing", "recent", "shiur"],
@@ -356,7 +355,7 @@ export const videoData: Video[] = [
   },
   {
     id: 36,
-    embedUrl: "wgldqLrKbzg",
+    video_id: "wgldqLrKbzg",
     title: "[1294] Yeshayahu 5 - Exile is all in the mind!",
     topic: "Neviim",
     tags: ["exile", "redemption", "geulah", "recent", "shiur"],
@@ -365,7 +364,7 @@ export const videoData: Video[] = [
   },
   {
     id: 37,
-    embedUrl: "B7EJw0eHajQ",
+    video_id: "B7EJw0eHajQ",
     title: "[1295] Yeshayahu 6 - Kedusha and why Yeshayahu got burnt on his mouth",
     topic: "Neviim",
     tags: ["recent", "shiur"],
@@ -374,7 +373,7 @@ export const videoData: Video[] = [
   },
   {
     id: 38,
-    embedUrl: "y2kRpvsLCfo",
+    video_id: "y2kRpvsLCfo",
     title: "[1296] Yeshayahu 7 - What the Thinker Thinks, the Prover Proves",
     topic: "Neviim",
     tags: ["recent", "shiur", "bias"],
@@ -383,7 +382,7 @@ export const videoData: Video[] = [
   },
   {
     id: 39,
-    embedUrl: "iCm0nqbq0IU",
+    video_id: "iCm0nqbq0IU",
     title: "[1297] Yeshayahu 8 - The historical background necessary to understand 7-9!",
     topic: "Neviim",
     tags: ["recent", "shiur", "clarification", "history"],
@@ -392,7 +391,7 @@ export const videoData: Video[] = [
   },
   {
     id: 40,
-    embedUrl: "2bKXVWoqSYU",
+    video_id: "2bKXVWoqSYU",
     title: "[1298] Yeshayahu 9 - \"His hand remains outstretched\" - to always accept you back!",
     topic: "Neviim",
     tags: ["recent", "shiur", "tshuvah"],
@@ -401,7 +400,7 @@ export const videoData: Video[] = [
   },
   {
     id: 41,
-    embedUrl: "JJNBkWeSDDQ",
+    video_id: "JJNBkWeSDDQ",
     title: "[1299] Yeshayahu 10 - Sticks don't hit on their own",
     topic: "Neviim",
     tags: ["recent", "shiur", "emunah"],
@@ -410,7 +409,7 @@ export const videoData: Video[] = [
   },
   {
     id: 42,
-    embedUrl: "wdIbAsGAt0E",
+    video_id: "wdIbAsGAt0E",
     title: "[1300] Yeshayahu 11 - Satmer and Lubavitch getting along is old news",
     topic: "Neviim",
     tags: ["recent", "shiur", "satmer", "lubavitch"],
@@ -419,7 +418,7 @@ export const videoData: Video[] = [
   },
   {
     id: 43,
-    embedUrl: "SNjhe0YdW4w",
+    video_id: "SNjhe0YdW4w",
     title: "[1301] Yeshayahu 12 - One day you will say \"Thank you Hashem for my Pain!\"",
     topic: "Neviim",
     tags: ["recent", "shiur", "emunah", "revelation"],
@@ -428,7 +427,7 @@ export const videoData: Video[] = [
   },
   {
     id: 44,
-    embedUrl: "NIBgskQPvAE",
+    video_id: "NIBgskQPvAE",
     title: "[1302] Yeshayahu 13 - The end of Bavel and those that forget they are just a messenger",
     topic: "Neviim",
     tags: ["recent", "shiur", "emunah", "revelation"],
@@ -437,11 +436,10 @@ export const videoData: Video[] = [
   },
   {
     id: 45,
-    embedUrl: "FibK9yDoHBg",
+    video_id: "FibK9yDoHBg",
     title: "[1303] Yeshayahu 14 - Jews will be brought as a gift to Mashiach",
     topic: "Neviim",
     tags: ["recent", "shiur", "emunah", "mashiach", "geulah"],
-    subtopic: "Yeshayahu",
-    description: signature
+    subtopic: "Yeshayahu"
   }
 ];
