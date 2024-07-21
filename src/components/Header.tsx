@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import {
   Dialog,
   DialogPanel,
@@ -34,6 +34,7 @@ export default function Header() {
   const [isSignupDialogOpen, setIsSignupDialogOpen] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [, setSelectedVideo] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const closeDialog = () => {
     setIsLoginDialogOpen(false);
@@ -41,6 +42,11 @@ export default function Header() {
     setIsLogoutDialogOpen(false);
     setSelectedVideo(null);
   };
+
+  useEffect(() => {
+    const accessToken = typeof window !== 'undefined' ? localStorage.getItem("accessToken") : null;
+    setIsLoggedIn(accessToken !== null && accessToken !== undefined);
+  }, []);
 
   return (
     <header className="bg-white shadow-md grid grid-cols-1 grid-rows-7">
@@ -95,25 +101,35 @@ export default function Header() {
             >
               <MenuItems className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="px-1 py-1">
-                  <MenuItem>
-                      <button onClick={() => setIsLoginDialogOpen(true)}
-                        className='active:bg-gray-100 active:text-gray-900 text-gray-700 group flex w-full items-center rounded-md px-2 py-2 text-sm'>
-                        Log in
+                  {isLoggedIn ? (
+                    <MenuItem>
+                      <button
+                        onClick={() => setIsLogoutDialogOpen(true)}
+                        className="active:bg-gray-100 active:text-red-900 text-red-500 font-semibold group flex w-full items-center rounded-md px-2 py-2 text-sm"
+                      >
+                        Log out
                       </button>
-                  </MenuItem>
-                  <MenuItem>
-                      <button onClick={() => setIsSignupDialogOpen(true)}
-                      className='active:bg-gray-100 active:text-gray-900 text-gray-700 group flex w-full items-center rounded-md px-2 py-2 text-sm'>
-                        Sign up
-                      </button>
-                  </MenuItem>
-                  <MenuItem>
-                    <button onClick={() => setIsLogoutDialogOpen(true)}
-                      className='active:bg-gray-100 active:text-gray-900 text-gray-700 group flex w-full items-center rounded-md px-2 py-2 text-sm'>
-                      Log out
-                    </button>
-                  </MenuItem>
-                </div>
+                    </MenuItem>
+                  ) : (
+                    <>
+                      <MenuItem>
+                        <button
+                          onClick={() => setIsLoginDialogOpen(true)}
+                          className="active:bg-gray-100 active:text-gray-900 text-gray-700 group flex w-full items-center rounded-md px-2 py-2 text-sm"
+                        >
+                          Log in
+                        </button>
+                      </MenuItem>
+                      <MenuItem>
+                        <button
+                          onClick={() => setIsSignupDialogOpen(true)}
+                          className="active:bg-gray-100 active:text-gray-900 text-gray-700 group flex w-full items-center rounded-md px-2 py-2 text-sm"
+                        >
+                          Sign up
+                        </button>
+                      </MenuItem>
+                    </>
+                  )}                </div>
               </MenuItems>
             </Transition>
           </Menu>
