@@ -14,7 +14,7 @@ export const getVideosBySubtopic = (
 
 export interface Video {
   id: number;
-  title?: string;
+  title: string;
   video_id: string;
   topic: string;
   tags: string[];
@@ -192,6 +192,7 @@ export const videoData: Video[] = [
   {
     id: 19,
     video_id: "gZLYtEzVmZw",
+    title: "",
     topic: "Parshah",
     tags: ["words", "power of a word"],
     subtopic: "Balak",
