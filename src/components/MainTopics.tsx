@@ -56,30 +56,33 @@ export default function MainTopics({ params }: Props) {
         {videosInTopic.length > 0 ? (
           // Get all videos in topic divided in subtopics
           subtopicData.map((subtopic) =>
-            getVideosBySubtopic(videosInTopic, subtopic.name)
-              .length === 0 ? null : (
+            getVideosBySubtopic(videosInTopic, subtopic.name).length ===
+            0 ? null : (
               <div key={subtopic.id}>
                 <h1 className="text-4xl font-bold my-6 ml-6">
                   {subtopic.name}
                 </h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
-                  {getVideosBySubtopic(
-                    videosInTopic,
-                    subtopic.name
-                  ).slice(0, 10).map((video) => (
-                    <VideoCard
-                      video={video}
-                      key={video.id}
-                      onClick={() => openDialog(video)}
-                    />
-                  ))}
+                  {getVideosBySubtopic(videosInTopic, subtopic.name)
+                    .slice(0, 10)
+                    .map((video) => (
+                      <VideoCard
+                        video={video}
+                        key={video.id}
+                        onClick={() => openDialog(video)}
+                      />
+                    ))}
                 </div>
-                <div className="flex justify-center items-center">
-                  <Link href={`/topics/${topic}/${subtopic.name}`} 
-                    className="text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 my-6 w-4/5">
-                    See all for { subtopic.name }
-                  </Link>
-                </div>
+                {getVideosBySubtopic(videosInTopic, subtopic.name).length > 10 && (
+                  <div className="flex justify-center items-center">
+                    <Link
+                      href={`/topics/${topic}/${subtopic.name.toLowerCase()}`}
+                      className="text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 my-6 w-4/5"
+                    >
+                      See more from {subtopic.name}
+                    </Link>
+                  </div>
+                )}{" "}
               </div>
             )
           )
