@@ -10,7 +10,7 @@ const VideoEmbed: React.FC<VideoEmbedProps> = ({ src, className }) => {
   return (
     <LazyLoadComponent>
       <iframe
-        src={`https://www.youtube-nocookie.com/embed/${src}?rel=0&showinfo=0&modestbranding=1&color=white&jsapi=1&autoplay=1`}
+        src={`https://www.youtube-nocookie.com/embed/${src}?rel=0&showinfo=0&modestbranding=1&color=white&autoplay=1`}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
         className={className}
