@@ -29,8 +29,6 @@ function VideoCard(props: { video: Video; onClick: () => void }) {
     topic: props.video.topic,
     thumbnail: `https://img.youtube.com/vi/${props.video.video_id}/0.jpg`,
     uploadDate: "",
-    comments: 0,
-    commentsThread: "",
   });
 
   useEffect(() => {
@@ -49,8 +47,6 @@ function VideoCard(props: { video: Video; onClick: () => void }) {
           topic: data.items[0].snippet.tags[0],
           thumbnail: data.items[0].snippet.thumbnails.high.url,
           uploadDate: data.items[0].snippet.publishedAt,
-          comments: 0,
-          commentsThread: "",
         });
       }
     };
