@@ -4,30 +4,72 @@ import { ToastProvider } from "@/components/ToastProvider";
 
 export const metadata: Metadata = {
   title: "My Torah Today",
-  description:
-    "Rabbi Shimon Semp's - the Rosh Yeshiva - Torah videos from YouTube",
+  description: "Rabbi Shimon Semp's Torah videos from YouTube",
+  applicationName: "My Torah Today",
+  keywords: [
+    "Torah",
+    "Jewish",
+    "Judaism",
+    "Reb Shimon Semp",
+    "Rabbi Shimon Semp",
+    "Reb Shimon",
+    "Rabbi",
+    "Shimon",
+    "Semp",
+    "Rosh Yeshiva Talpios",
+    "Rosh Yeshiva",
+    "Yeshiva Talpios",
+    "Rosh",
+    "Yeshiva",
+    "Talpios",
+    "Jewish understanding",
+    "understanding",
+    "Meditation",
+    "Smart",
+    "Self-help",
+    "YouTube",
+    "Shteinwurtzel",
+    "Airmont",
+    "Parshah",
+    "Neviim",
+    "Chassidic",
+    "Chassidus",
+    "Hasidic",
+    "Hassidic",
+    "hasidus",
+    "Hassidus",
+    "Hassidut",
+    "Chassidut",
+    "Chassid",
+    "Besht",
+    "Baal Shem Tov",
+  ],
   icons: {
     icon: [
-      {
-        rel: "apple-touch-icon",
-        type: "image/png",
-        sizes: "180x180",
-        url: "/favicon/apple-touch-icon.png",
-      },
-      {
-        rel: "icon",
-        type: "image/png",
-        sizes: "32x32",
-        url: "/favicon/favicon-32x32.png",
-      },
-      {
-        rel: "icon",
-        type: "image/png",
-        sizes: "16x16",
-        url: "/favicon/favicon-16x16.png",
-      },
-      { rel: "manifest", url: "/favicon/site.webmanifest" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-194x194.png", sizes: "194x194", type: "image/png" },
     ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      {
+        url: "/android-chrome-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+    ],
+  },
+  manifest: "/site.webmanifest",
+  themeColor: "#ffffff",
+  appleWebApp: {
+    title: "My Torah Today",
+    statusBarStyle: "default",
+  },
+  other: {
+    "msapplication-TileColor": "#2b5797",
+    "msapplication-TileImage": "/mstile-144x144.png",
   },
   openGraph: {
     type: "website",
@@ -72,10 +114,6 @@ export const metadata: Metadata = {
       name: "Shloimy Elbaum",
     },
   ],
-  appleWebApp: {
-    title: "My Torah Today",
-    statusBarStyle: "default",
-  },
 };
 
 export const viewport: Viewport = {
