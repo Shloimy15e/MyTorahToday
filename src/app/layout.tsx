@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "../styles/globals.css";
 import { ToastProvider } from "@/components/ToastProvider";
 
@@ -158,6 +159,7 @@ export default function RootLayout({
       </head>
       <body>
         <ToastProvider>{children}</ToastProvider>
+        <Script src="https://www.youtube.com/iframe_api" />
       </body>
     </html>
   );

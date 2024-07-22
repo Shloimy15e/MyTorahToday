@@ -1,4 +1,10 @@
-import { Dialog, Transition, DialogPanel, DialogTitle, TransitionChild } from "@headlessui/react";
+import {
+  Dialog,
+  Transition,
+  DialogPanel,
+  DialogTitle,
+  TransitionChild,
+} from "@headlessui/react";
 import { Fragment } from "react";
 import VideoEmbed from "./VideoEmbed";
 
@@ -10,12 +16,20 @@ export interface Video {
   tags: string[];
 }
 
+export interface VideoDetails {
+  likes: number;
+  views: number;
+  description?: string;
+  publishedAt: string;
+}
+
 export default function VideoDialog(props: {
   isOpen: boolean;
   video: Video | null;
+  videoDetails: object;
   onClose: () => void;
 }) {
-    const closeModal = () => props.onClose();
+  const closeModal = () => props.onClose();
   return (
     <>
       <Transition show={props.isOpen} as={Fragment}>
@@ -53,18 +67,21 @@ export default function VideoDialog(props: {
                   <div className="mt-2">
                     <VideoEmbed
                       src={props.video ? props.video.video_id : ""}
-                      title={props.video ? props.video.title : ""}
-                      className="w-full rounded-md aspect-video"
+                      className="w-full aspect-video rounded-md"
                     />
                   </div>
                   <div className="mt-4">
                     <button
                       type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-primary-blue px-4 py-2 text-sm font-medium text-white hover:bg-blue-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       onClick={closeModal}
                     >
                       Beautiful! I want to see more!
                     </button>
+                  </div>
+                  {/* Likes and other info */}
+                  <div className="mt-4">
+                    <p>0 likes · 0 views · 0 comments · 0 shares</p>
                   </div>
                 </DialogPanel>
               </TransitionChild>
