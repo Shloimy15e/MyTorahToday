@@ -62,7 +62,7 @@ export default function MainTopics({ params }: Props) {
                 <h1 className="text-4xl font-bold my-6 ml-6">
                   {subtopic.name}
                 </h1>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-6 justify-items-center place-items-center align-middle w-full auto-rows-max p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
                   {getVideosBySubtopic(
                     videosInTopic,
                     subtopic.name

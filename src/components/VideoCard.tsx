@@ -4,8 +4,10 @@ import {
   HandThumbUpIcon,
   ClockIcon,
   CalendarIcon,
-  PlayIcon
+  PlayIcon,
 } from "@heroicons/react/24/outline";
+import Image from "next/image";
+import formatDuration from "@/utils/formatDuration";
 
 export interface Video {
   id: number;
@@ -30,26 +32,6 @@ function VideoCard(props: { video: Video; onClick: () => void }) {
     comments: 0,
     commentsThread: "",
   });
-
-  function formatDuration(duration: string): string {
-    const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-    if (!match) {
-      return duration;
-    }
-
-    const hours = parseInt(match[1] || "0") || 0;
-    const minutes = parseInt(match[2] || "0") || 0;
-    const seconds = parseInt(match[3] || "0") || 0;
-
-    const parts = [];
-    if (hours > 0) {
-      parts.push(hours.toString().padStart(2, "0"));
-    }
-    parts.push(minutes.toString().padStart(2, "0"));
-    parts.push(seconds.toString().padStart(2, "0"));
-
-    return parts.join(":");
-  }
 
   useEffect(() => {
     const fetchVideoDetails = async () => {
@@ -82,7 +64,9 @@ function VideoCard(props: { video: Video; onClick: () => void }) {
       className="group relative bg-white w-full h-full rounded-2xl shadow-md transition hover:scale-105 hover:cursor-pointer duration-300 grid grid-rows-[auto_auto_1fr_auto] overflow-hidden gap-3"
     >
       <div className="w-full aspect-video relative">
-        <img
+        <Image
+          width={400}
+          height={400}
           src={videoDetails.thumbnail}
           alt="Video Thumbnail"
           className="rounded-t-2xl w-full h-full object-cover"
@@ -115,7 +99,13 @@ function VideoCard(props: { video: Video; onClick: () => void }) {
       </div>
       {/* likes and views */}
       <div className="flex flex-wrap justify-center items-center mx-4 gap-2 mt-auto pt-2 border-t border-gray-200 mb-2">
-        <div className={`flex flex-wrap justify-start items-center gap-1 ${videoDetails.likes > 0 ? 'text-gray-600 font-semibold' : 'text-gray-400'}`}>
+        <div
+          className={`flex flex-wrap justify-start items-center gap-1 ${
+            videoDetails.likes > 0
+              ? "text-gray-600 font-semibold"
+              : "text-gray-400"
+          }`}
+        >
           <HandThumbUpIcon className="h-5 w-5" />
           <p className="text-sm pr-2 border-r border-gray-300 ">
             {videoDetails.likes}
