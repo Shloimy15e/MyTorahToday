@@ -64,14 +64,16 @@ export default function Main() {
                         />
                       ))}
                   </div>
+                  {getVideosBySubtopic(videoData, parshahThisWeek).length > 10 && (
                   <div className="flex justify-center items-center">
                     <Link
-                      href={`/topics/parshah/${parshahThisWeek}`}
+                      href={`/topics/parshah/${parshahThisWeek.toLowerCase()}`}
                       className="text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 my-6 w-4/5"
                     >
-                      See all for {parshahThisWeek}
+                      See more from {parshahThisWeek}
                     </Link>
                   </div>
+                  )}
                   <h2 className="flex relative items-center text-3xl font-semibold mt-2 ml-16 pr-1 text-gray-700 w-max before:content-[''] before:absolute before:left-0 before:bottom-1.5 before:h-2 before:w-full before:bg-gray-900 before:opacity-35">
                     Other {topic.name}s
                   </h2>
@@ -88,14 +90,16 @@ export default function Main() {
                     />
                   ))}
               </div>
+              {getVideosByTopic(videoData, topic.name).length > 11 && (
               <div className="flex justify-center items-center">
                 <Link
-                  href={`/topics/${topic.name}`}
+                  href={`/topics/${topic.name.toLowerCase()}`}
                   className="text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-24 my-6 w-4/5"
                 >
-                  See all for {topic.name}
+                  See more from {topic.name}
                 </Link>
               </div>
+              )}
             </div>
           )
         )}
