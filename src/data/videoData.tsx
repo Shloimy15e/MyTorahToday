@@ -14,12 +14,12 @@ export const getVideosBySubtopic = (
 
 export interface Video {
   id: number;
-  title?: string;
+  title: string;
   video_id: string;
   topic: string;
   tags: string[];
   subtopic?: string;
-  description?: string;
+  description: string;
 }
 
 export const signature: string = "Rabbi Shimon Semp, Rosh Yeshiva Talpios inspires through bringing Jewish spiritual concepts, with Chassidic Torah teachings down to earth. Collecting anecdotes, sayings, and Divrei Torah from Chabad, Breslav, and other Hasidic masters and Rebbes. Listen and get inspired.";
@@ -192,6 +192,7 @@ export const videoData: Video[] = [
   {
     id: 19,
     video_id: "gZLYtEzVmZw",
+    title: "",
     topic: "Parshah",
     tags: ["words", "power of a word"],
     subtopic: "Balak",
@@ -440,6 +441,7 @@ export const videoData: Video[] = [
     title: "[1303] Yeshayahu 14 - Jews will be brought as a gift to Mashiach",
     topic: "Neviim",
     tags: ["recent", "shiur", "emunah", "mashiach", "geulah"],
-    subtopic: "Yeshayahu"
+    subtopic: "Yeshayahu",
+    description: signature
   }
 ];
