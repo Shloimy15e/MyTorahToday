@@ -53,7 +53,7 @@ export default function MainSubtopics({ params }: Props) {
       </div>
       <div className="bg-neutral-100 grid grid-cols-1 justify-items-center py-16">
         {videosInSubtopic.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-6 justify-items-center place-items-center align-middle w-full auto-rows-max p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
             {videosInSubtopic.map((video) => (
               <VideoCard
                 video={video}
