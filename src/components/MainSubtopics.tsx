@@ -8,6 +8,7 @@ import VideoCard from "@/components/VideoCard";
 import VideoDialog from "@/components/VideoDialog";
 import { useState } from "react";
 import Link from "next/link";
+import Video from "@/types/Video";
 
 type Props = {
   params: {
@@ -24,14 +25,14 @@ export default function MainSubtopics({ params }: Props) {
   const displayTopic = Topic.replace("-", " ");
   const displaySubtopic = Subtopic.replace("-", " ");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState(null);
-  const openDialog = (video: any) => {
+  const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
+  const openDialog = (video: Video) => {
     setSelectedVideo(video);
     setIsDialogOpen(true);
   };
   const closeDialog = () => {
     setIsDialogOpen(false);
-    setSelectedVideo(null);
+    setSelectedVideo({} as Video);
   };
 
   const videosInSubtopic = getVideosBySubtopic(videoData, Subtopic);
@@ -59,6 +60,7 @@ export default function MainSubtopics({ params }: Props) {
                 video={video}
                 key={video.id}
                 onClick={() => openDialog(video)}
+                showDescription={true}
               />
             ))}
           </div>

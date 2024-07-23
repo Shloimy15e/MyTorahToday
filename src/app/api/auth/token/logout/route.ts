@@ -13,7 +13,6 @@ const agent = new https.Agent({
 export async function POST(request: Request): Promise<Response>{
   // Get the token from the request headers
   const token = request.headers.get("Authorization");
-  console.log("Token: ", token);
   const response = await fetch(
     "https://mttbackend-production.up.railway.app/api/auth/token/logout/",
     {
@@ -27,7 +26,6 @@ export async function POST(request: Request): Promise<Response>{
   );
 
   if (response.ok) {
-    console.log(response);
     // Handle successful logout
     return NextResponse.json({ message: "Logged out successfully" }, { status: 200 });
   } else {

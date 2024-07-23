@@ -26,12 +26,11 @@ export default function LoginDialog(props: {
       localStorage.getItem("accessToken") !== "undefined"
     ) {
       showToast("You are already logged in!");
-      closeModal(); 
+      closeModal();
       return;
     }
     setIsLoading(true);
     try {
-      console.log(username, password);
       // Check if they are both valid
       if (
         username.length < 1 ||
@@ -60,28 +59,22 @@ export default function LoginDialog(props: {
         const errorData = await response.json();
         throw new Error(JSON.stringify(errorData));
       }
-      
+
       setTimeout(() => {
         setIsLoading(false);
-      
-      // Set the access token in local storage
-      console.log(data.auth_token);
-      console.log(localStorage.getItem("accessToken"));
-      localStorage.setItem("accessToken", data.auth_token);
-      console.log(localStorage.getItem("accessToken"));
-      // Set logged in to true
-      localStorage.setItem("loggedIn", "true");
-      showToast("Login successful", "info");
-      // close modal
-      closeModal();   
-      // Redirect to home page
-      window.location.href = "/";
-      }, 2000);
+
+        // Set the access token in local storage
+        localStorage.setItem("accessToken", data.auth_token);
+        // Set logged in to true
+        localStorage.setItem("loggedIn", "true");
+        showToast("Login successful", "info");
+        // close modal
+        closeModal();
+        // Redirect to home page
+        window.location.href = "/";
+      }, 1000);
     } catch (error: any) {
       console.error("Full error object:", error);
-      console.error("Error type:", Object.prototype.toString.call(error));
-      console.error("Error properties:", Object.getOwnPropertyNames(error));
-
       let errorMessage = "Login failed. Error: " + error;
       showToast(errorMessage, "error");
       return;

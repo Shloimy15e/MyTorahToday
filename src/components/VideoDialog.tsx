@@ -7,29 +7,19 @@ import {
 } from "@headlessui/react";
 import { Fragment } from "react";
 import VideoEmbed from "./VideoEmbed";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-
-export interface Video {
-  id: number;
-  title: string;
-  video_id: string;
-  topic: string;
-  tags: string[];
-}
-
-export interface VideoDetails {
-  likes: number;
-  views: number;
-  description?: string;
-  publishedAt: string;
-}
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
+import Video from "@/types/Video";
 
 export default function VideoDialog(props: {
   isOpen: boolean;
-  video: Video | null;
+  video: Video;
   onClose: () => void;
 }) {
   const closeModal = () => props.onClose();
+  const lowercaseTopic = props.video?.topic?.toLowerCase() ?? '';
+  const lowercaseSubtopic = props.video?.subtopic?.toLowerCase() ?? '';
+  const lowercaseTitle = props.video?.title?.toLowerCase() ?? '';
   return (
     <>
       <Transition show={props.isOpen} as={Fragment}>
@@ -62,23 +52,35 @@ export default function VideoDialog(props: {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    {props.video ? props.video.title : "Loading"}
+                    {props.video.title}
                   </DialogTitle>
                   <div className="mt-2">
                     <VideoEmbed
-                      src={props.video ? props.video.video_id : ""}
+                      src={props.video.video_id}
                       className="w-full aspect-video rounded-md"
                     />
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-4 flex justify-between items-center">
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-primary-blue px-4 py-2 text-sm font-medium text-white hover:bg-blue-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       onClick={closeModal}
                     >
                       <ArrowLeftIcon className="h-5 w-6 mr-2" />
-                      Beautiful! I want to see more!
+                      Return to video list
                     </button>
+                    <Link
+                      href={`/topics/${lowercaseTopic}/${lowercaseSubtopic}/${props.video.video_id}`}
+                      className="inline-flex justify-center rounded-md border border-transparent bg-primary-blue px-4 py-2 text-sm font-medium text-white hover:bg-blue-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ml-4"
+                      onClick={closeModal}
+                      aria-label="Go to video page"
+                      title="Go to video page"
+                      role="button"
+                      aria-hidden="false"
+                      tabIndex={0}>
+                        See video page
+                        <ArrowRightIcon className="h-5 w-6 ml-2" />
+                      </Link>
                   </div>
                   {/* Likes and other info */}
                   <div className="mt-4">
