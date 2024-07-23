@@ -50,7 +50,7 @@ export default function LogoutDialog(props: {
         localStorage.setItem("loggedIn", "false");
         closeModal();
         window.location.href = "/";
-      }, 2000);
+      }, 1000);
     } catch (error: any) {
       console.error("Full error object:", error);
       console.error("Error type:", Object.prototype.toString.call(error));
