@@ -11,7 +11,7 @@ import formatDuration from "@/utils/formatDuration";
 import Video from "@/types/Video";
 
 // A card that has the videoEmbed in it and takes a video from a video list by a parent
-function VideoCard(props: { video: Video; onClick: () => void }) {
+function VideoCard(props: { video: Video; onClick: () => void; showDescription: boolean }) {
   return (
     <div
       onClick={props.onClick}
@@ -33,14 +33,15 @@ function VideoCard(props: { video: Video; onClick: () => void }) {
         {props.video.title}
       </h1>
       {/* description */}
-      <div className="flex flex-wrap justify-center items-center px-2 w-full">
-        <p className="text-sm text-gray-700 px-2 rounded-lg mx-1">
-          {props.video.description.toLowerCase().startsWith("subscribe")
-            ? props.video.description
-            : `${props.video.description.slice(0, 250)}...`}
-        </p>
-      </div>
-      {/* loop through tags */}
+      {props.showDescription && (
+        <div className="flex flex-wrap justify-center items-center px-2 w-full">
+          <p className="text-sm text-gray-700 px-2 rounded-lg mx-1">
+            {props.video.description.toLowerCase().startsWith("subscribe")
+              ? props.video.description
+              : `${props.video.description.slice(0, 250)}...`}
+          </p>
+        </div>
+      )}      {/* loop through tags */}
       <div className="flex flex-wrap justify-start items-center pl-5 w-full">
         {props.video.tags.map((tag: string) => (
           <p

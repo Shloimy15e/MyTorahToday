@@ -44,15 +44,18 @@ export default function Header() {
   };
 
   useEffect(() => {
-    const accessToken = typeof window !== 'undefined' ? localStorage.getItem("accessToken") : null;
+    const accessToken =
+      typeof window !== "undefined"
+        ? localStorage.getItem("accessToken")
+        : null;
     setIsLoggedIn(accessToken !== null && accessToken !== undefined);
   }, []);
 
   return (
-    <header className="bg-white shadow-md grid grid-cols-1 grid-rows-7">
+    <header className="bg-white shadow-md grid grid-cols-1 grid-rows-2">
       <nav
         aria-label="Global"
-        className="grid grid-rows-1 grid-cols-12 gap-8 w-full p-4 px-6 lg:px-10 row-span-6"
+        className="grid grid-rows-1 grid-cols-12 gap-8 w-full p-4 px-6 lg:px-10 row-span-6 place-items-center"
       >
         <div className="grid grid-rows-1 col-span-1 lg:flex-1 items-center">
           <Link
@@ -70,7 +73,7 @@ export default function Header() {
             MyTorahToday
           </Link>
         </div>
-        <div className="hidden lg:grid lg:grid-cols-subgrid col-span-9 items-center justify-items-end">
+        {/*<div className="hidden lg:grid lg:grid-cols-subgrid col-span-9 items-center justify-items-end">
           {navigation.map((item) => (
             <div key={item.name} className="col-span-2">
               <Link
@@ -81,8 +84,8 @@ export default function Header() {
               </Link>
             </div>
           ))}
-        </div>
-        <div className="flex items-center col-span-1 col-end-11 lg:col-end-12">
+        </div>*/}
+        <div className="flex items-center col-span-1 col-end-11">
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <MenuButton className="-m-2.5 inline-flex items-center justify-start rounded-md p-2.5 text-gray-600">
@@ -129,12 +132,13 @@ export default function Header() {
                         </button>
                       </MenuItem>
                     </>
-                  )}                </div>
+                  )}{" "}
+                </div>
               </MenuItems>
             </Transition>
           </Menu>
         </div>
-        <div className="grid lg:hidden col-span-1 col-end-12">
+        <div className="grid col-span-1 col-end-12">
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
@@ -151,11 +155,7 @@ export default function Header() {
           Site under construction
         </p>
       </div>
-      <Dialog
-        open={mobileMenuOpen}
-        onClose={setMobileMenuOpen}
-        className="lg:hidden"
-      >
+      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen}>
         <div className="fixed inset-0 z-10 bg-gray-800 bg-opacity-50" />
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-white/10 duration-200">
           <div className="flex items-center justify-between">
@@ -172,7 +172,7 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className="-m-2.5 rounded-md p-2.5 text-gray-800 font-bold"
+              className="-m-2.5 rounded-md p-2.5 text-gray-800 font-bold flex items-center justify-center"
             >
               <span className="sr-only">Close menu</span>
               <XMarkIcon aria-hidden="true" className="h-6 w-6" />

@@ -1,10 +1,13 @@
 import Video from "@/types/Video";
 
+export const getVideoByVideo_id = (id: string) => {
+  return videoData.find((video) => video.video_id === id);
+};
+
 export const getVideosByTopic = (
-  videos: Video[],
   topicName: string
-): Video[] => {
-  return videos.filter((video) => video.topic === topicName);
+) => {
+  return videoData.filter((video) => video.topic === topicName);
 };
 
 export const getVideosBySubtopic = (

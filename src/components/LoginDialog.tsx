@@ -75,9 +75,6 @@ export default function LoginDialog(props: {
       }, 1000);
     } catch (error: any) {
       console.error("Full error object:", error);
-      console.error("Error type:", Object.prototype.toString.call(error));
-      console.error("Error properties:", Object.getOwnPropertyNames(error));
-
       let errorMessage = "Login failed. Error: " + error;
       showToast(errorMessage, "error");
       return;

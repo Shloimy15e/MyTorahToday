@@ -4,28 +4,28 @@ import VideoCard from "./VideoCard";
 import VideoDialog from "./VideoDialog";
 import {
   getVideosByTopic,
-  videoData,
   getVideosBySubtopic,
+  videoData,
 } from "@/data/videoData";
 import Image from "next/image";
 import Link from "next/link";
 import { topicData } from "@/data/topicData";
-import { ChevronRightIcon } from "@heroicons/react/16/solid";
+import Video from "@/types/Video";
 
 export const parshahThisWeek: string = "Balak";
+export const videosThisParshah: Video[] = getVideosBySubtopic(videoData, parshahThisWeek);
 
 export default function Main() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState(null);
-
-  const openDialog = (video: any) => {
+  const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
+  const openDialog = (video: Video) => {
     setSelectedVideo(video);
     setIsDialogOpen(true);
   };
 
   const closeDialog = () => {
     setIsDialogOpen(false);
-    setSelectedVideo(null);
+    setSelectedVideo({} as Video);
   };
 
   return (
@@ -39,11 +39,12 @@ export default function Main() {
             width={30000}
             height={1080}
             className=" object-cover"
-          />{" "}
+          />
         </div>
         {/* list of all videos devided by topic */}
-        {topicData.map((topic) =>
-          getVideosByTopic(videoData, topic.name).length === 0 ? null : (
+        {topicData.map((topic) => {
+          const videosInTopic = getVideosByTopic(topic.name);
+          return videosInTopic.length === 0 ? null : (
             <div key={topic.id}>
               <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
                 {topic.name}
@@ -54,17 +55,17 @@ export default function Main() {
                     {parshahThisWeek}
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
-                    {getVideosBySubtopic(videoData, parshahThisWeek)
-                      .slice(0, 10)
+                    {videosThisParshah.slice(0, 10)
                       .map((video) => (
                         <VideoCard
                           video={video}
                           key={video.id}
                           onClick={() => openDialog(video)}
+                          showDescription={true}
                         />
                       ))}
                   </div>
-                  {getVideosBySubtopic(videoData, parshahThisWeek).length > 10 && (
+                  {videosThisParshah.length > 10 && (
                   <div className="flex justify-center items-center">
                     <Link
                       href={`/topics/parshah/${parshahThisWeek.toLowerCase()}`}
@@ -80,17 +81,18 @@ export default function Main() {
                 </>
               )}{" "}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
-                {getVideosByTopic(videoData, topic.name)
-                  .slice(0, 11)
+                {getVideosByTopic(topic.name)
+                  .slice(0, 8)
                   .map((video) => (
                     <VideoCard
                       video={video}
                       key={video.id}
                       onClick={() => openDialog(video)}
+                      showDescription={true}
                     />
                   ))}
               </div>
-              {getVideosByTopic(videoData, topic.name).length > 11 && (
+              {getVideosByTopic(topic.name).length > 11 && (
               <div className="flex justify-center items-center">
                 <Link
                   href={`/topics/${topic.name.toLowerCase()}`}
@@ -101,8 +103,8 @@ export default function Main() {
               </div>
               )}
             </div>
-          )
-        )}
+          );
+        })}
         <VideoDialog
           isOpen={isDialogOpen}
           video={selectedVideo}
