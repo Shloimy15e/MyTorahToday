@@ -148,7 +148,7 @@ export default function Header() {
       {/* Banner that says - Site in construction - with black and yellow striped construction bg */}
       <div className="flex bg-constructionStripes text-white font-bold justify-center row-span-1">
         <p className="bg-black/45 w-fit px-2 my-1 text-lg rounded">
-          Site in construction
+          Site under construction
         </p>
       </div>
       <Dialog

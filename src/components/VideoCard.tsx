@@ -8,56 +8,10 @@ import {
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import formatDuration from "@/utils/formatDuration";
-
-export interface Video {
-  id: number;
-  title: string;
-  video_id: string;
-  topic: string;
-  tags: string[];
-  description: string;
-}
+import Video from "@/types/Video";
 
 // A card that has the videoEmbed in it and takes a video from a video list by a parent
 function VideoCard(props: { video: Video; onClick: () => void }) {
-  const [videoDetails, setVideoDetails] = useState({
-    title: props.video.title,
-    description: props.video.description,
-    likes: 0,
-    views: 0,
-    duration: "00:00:00",
-    topic: props.video.topic,
-    thumbnail: `https://img.youtube.com/vi/${props.video.video_id}/0.jpg`,
-    uploadDate: "",
-    comments: 0,
-    commentsThread: "",
-  });
-
-  useEffect(() => {
-    const fetchVideoDetails = async () => {
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${props.video.video_id}&key=AIzaSyCI-IaqGYTpOAoYohCVPmpoK42SpXADbsA`
-      );
-      const data = await response.json();
-      if (data.items && data.items[0]) {
-        setVideoDetails({
-          title: data.items[0].snippet.title,
-          description: data.items[0].snippet.description,
-          likes: data.items[0].statistics.likeCount,
-          views: data.items[0].statistics.viewCount,
-          duration: data.items[0].contentDetails.duration,
-          topic: data.items[0].snippet.tags[0],
-          thumbnail: data.items[0].snippet.thumbnails.high.url,
-          uploadDate: data.items[0].snippet.publishedAt,
-          comments: 0,
-          commentsThread: "",
-        });
-      }
-    };
-
-    fetchVideoDetails();
-  }, [props.video.video_id]);
-
   return (
     <div
       onClick={props.onClick}
@@ -67,7 +21,7 @@ function VideoCard(props: { video: Video; onClick: () => void }) {
         <Image
           width={400}
           height={400}
-          src={videoDetails.thumbnail}
+          src={`https://i.ytimg.com/vi/${props.video.video_id}/hqdefault.jpg`}
           alt="Video Thumbnail"
           className="rounded-t-2xl w-full h-full object-cover"
         />
@@ -76,14 +30,14 @@ function VideoCard(props: { video: Video; onClick: () => void }) {
         </div>
       </div>
       <h1 className="text-xl font-bold text-left px-5 w-full">
-        {videoDetails.title}
+        {props.video.title}
       </h1>
       {/* description */}
       <div className="flex flex-wrap justify-center items-center px-2 w-full">
         <p className="text-sm text-gray-700 px-2 rounded-lg mx-1">
-          {videoDetails.description.toLowerCase().startsWith("subscribe")
+          {props.video.description.toLowerCase().startsWith("subscribe")
             ? props.video.description
-            : `${videoDetails.description.slice(0, 250)}...`}
+            : `${props.video.description.slice(0, 250)}...`}
         </p>
       </div>
       {/* loop through tags */}
@@ -101,32 +55,38 @@ function VideoCard(props: { video: Video; onClick: () => void }) {
       <div className="flex flex-wrap justify-center items-center mx-4 gap-2 mt-auto pt-2 border-t border-gray-200 mb-2">
         <div
           className={`flex flex-wrap justify-start items-center gap-1 ${
-            videoDetails.likes > 0
+            props.video.likes > 0
               ? "text-gray-600 font-semibold"
               : "text-gray-400"
           }`}
         >
           <HandThumbUpIcon className="h-5 w-5" />
           <p className="text-sm pr-2 border-r border-gray-300 ">
-            {videoDetails.likes}
+            {props.video.likes}
           </p>
         </div>
         <div className="flex flex-wrap justify-start items-center text-gray-600">
           <EyeIcon className="h-5 w-5 mr-1" />
           <p className="text-sm pr-2 border-r border-gray-300">
-            {videoDetails.views}
+            {props.video.views}
           </p>
         </div>
         <div className="flex flex-wrap gap-1 justify-start items-center text-gray-600">
           <ClockIcon className="h-5 w-5" />
           <p className="text-sm pr-2 border-r border-gray-300">
-            {formatDuration(videoDetails.duration)}
+            {formatDuration(props.video.duration)}
           </p>
         </div>
         <div className="flex flex-wrap justify-start items-center gap-1 text-gray-600">
           <CalendarIcon className="h-5 w-5" />
           <p className="text-sm">
-            {new Date(videoDetails.uploadDate).toLocaleDateString()}
+            {props.video.publishedAt
+              ? new Intl.DateTimeFormat("en-US", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                }).format(new Date(props.video.publishedAt))
+              : "N/A"}
           </p>
         </div>
       </div>

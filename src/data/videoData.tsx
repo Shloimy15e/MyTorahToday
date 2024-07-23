@@ -1,3 +1,5 @@
+import Video from "@/types/Video";
+
 export const getVideosByTopic = (
   videos: Video[],
   topicName: string
@@ -12,17 +14,8 @@ export const getVideosBySubtopic = (
   return videos.filter((video) => video.subtopic === subtopic);
 };
 
-export interface Video {
-  id: number;
-  title: string;
-  video_id: string;
-  topic: string;
-  tags: string[];
-  subtopic?: string;
-  description: string;
-}
-
-export const signature: string = "Rabbi Shimon Semp, Rosh Yeshiva Talpios inspires through bringing Jewish spiritual concepts, with Chassidic Torah teachings down to earth. Collecting anecdotes, sayings, and Divrei Torah from Chabad, Breslav, and other Hasidic masters and Rebbes. Listen and get inspired.";
+export const signature: string =
+  "Rabbi Shimon Semp, Rosh Yeshiva Talpios inspires through bringing Jewish spiritual concepts, with Chassidic Torah teachings down to earth. Collecting anecdotes, sayings, and Divrei Torah from Chabad, Breslav, and other Hasidic masters and Rebbes. Listen and get inspired.";
 
 export const videoData: Video[] = [
   {
@@ -32,7 +25,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: [],
     subtopic: "Shelach",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 2,
@@ -41,8 +38,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: [],
     subtopic: "Shelach",
-    description: signature
-  },
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",  },
   {
     id: 3,
     title:
@@ -51,7 +51,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: [],
     subtopic: "Chukas",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 4,
@@ -60,7 +64,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: [],
     subtopic: "Chukas",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 5,
@@ -69,7 +77,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: [],
     subtopic: "Chukas",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 6,
@@ -78,7 +90,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: [],
     subtopic: "Chukas",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 7,
@@ -87,7 +103,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: [],
     subtopic: "Chukas",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 8,
@@ -96,7 +116,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: [],
     subtopic: "Chukas",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 9,
@@ -105,7 +129,11 @@ export const videoData: Video[] = [
     topic: "Neviim",
     tags: [],
     subtopic: "Shmuel",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 10,
@@ -114,7 +142,11 @@ export const videoData: Video[] = [
     topic: "Neviim",
     tags: [],
     subtopic: "Shmuel",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 11,
@@ -123,7 +155,11 @@ export const videoData: Video[] = [
     topic: "Neviim",
     tags: [],
     subtopic: "Shmuel",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 12,
@@ -132,7 +168,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["sin", "peshische", "present", "tune-in"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 13,
@@ -141,7 +181,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["love", "ahavas yisroel", "oihev yisroel"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 14,
@@ -150,7 +194,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["blessing", "life of blessing"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 15,
@@ -159,7 +207,11 @@ export const videoData: Video[] = [
     topic: "Neviim",
     tags: ["world peace", "beis hamikdash", "mashiach"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 16,
@@ -169,7 +221,11 @@ export const videoData: Video[] = [
     topic: "Neviim",
     tags: ["world peace", "beis hamikdash", "oihev yisroel"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 17,
@@ -178,7 +234,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["sin", "mistake", "connect"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 18,
@@ -187,7 +247,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["stuck", "phonecall", "talk to God"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 19,
@@ -196,7 +260,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["words", "power of a word"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 20,
@@ -205,7 +273,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["sin", "midfull"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 21,
@@ -214,7 +286,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["love", "ahavas yisroel"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 22,
@@ -223,7 +299,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["stuck", "communicate", "listen"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 23,
@@ -232,7 +312,11 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["system"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 24,
@@ -242,7 +326,12 @@ export const videoData: Video[] = [
     tags: ["ahavas yisroel"],
     subtopic: "Balak",
     description:
-      "Lo Hibit Uven B'Yakov - he saw no sin in others, said the holy Rizhener about the Bardichever who was the closest Jew in the world, that whenever a person realizes that he only has to see the goodness in others, and all he has to do is find the “נקודה טובה” in every single Jew then השם אלוקיו עמו - that’s when Hashem joins with him. Let’s realize that we have that ability to see ourselves and others in a positive light… Today. " + signature,
+      "Lo Hibit Uven B'Yakov - he saw no sin in others, said the holy Rizhener about the Bardichever who was the closest Jew in the world, that whenever a person realizes that he only has to see the goodness in others, and all he has to do is find the “נקודה טובה” in every single Jew then השם אלוקיו עמו - that’s when Hashem joins with him. Let’s realize that we have that ability to see ourselves and others in a positive light… Today. " +
+      signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 25,
@@ -251,20 +340,32 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["antisemitism", "light", "besht", "mikveh"],
     subtopic: "Balak",
-    description: `The holy Baal Shem Tov was walking down the path away from the Mikveh where he just immersed himself, and a bunch of hooligans were coming against him. And he didn't want them to touch him so that he shouldn't have to immerse himself again, and then he heard them say "let's stay away from that dirty Jew" - and they moved aside.
+    description:
+      `The holy Baal Shem Tov was walking down the path away from the Mikveh where he just immersed himself, and a bunch of hooligans were coming against him. And he didn't want them to touch him so that he shouldn't have to immerse himself again, and then he heard them say "let's stay away from that dirty Jew" - and they moved aside.
                   Said the holy Baal Shem Tov: הֶן עָם לְבָדָד יִשְׁכֹּן – Sometimes in order for this עם to remain בודד - isolated so that they can experience their purity and their connection to Hashem – וּבַגּוֹיִם לֹא יִתְחַשָּׁב – we need גויים to say "I'm not מחשב you, dirty Jew".
-                  There's a bright side to anti-Semitism; they let us be, so that we could be that which we are – Hashem's nation… Today. ` + signature
+                  There's a bright side to anti-Semitism; they let us be, so that we could be that which we are – Hashem's nation… Today. ` +
+      signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 26,
     video_id: "GLDxr4jjxXw",
-    title: "BALAK: BILAAM\'S WORDS IN KRIAS SHEMA...?",
+    title: "BALAK: BILAAM'S WORDS IN KRIAS SHEMA...?",
     topic: "Parshah",
     tags: ["curse", "blessing", "shema"],
     subtopic: "Balak",
-    description: `So the Gemara says an amazing statement, they wanted to take everything Bilaam ever said and put it into Birchas Krias Shema. 
+    description:
+      `So the Gemara says an amazing statement, they wanted to take everything Bilaam ever said and put it into Birchas Krias Shema. 
                   And the Sfas Emes wonders why in the world would you want to take what Bilaam said and put it into Krias Shema? The secret is - says the Sfas Emes - no matter what happens, even if somebody wants to curse you, even if there’s obstacles in your life, even if you meet your “Bilaam” know that at the end of the day it’s all from Hashem, and anything that happens is only here in order to connect you to Hashem. 
-                  And when you realize that, you know what happens to all those curses in your life? Wow, it turns into the greatest blessing ever found… Today. ` + signature,
+                  And when you realize that, you know what happens to all those curses in your life? Wow, it turns into the greatest blessing ever found… Today. ` +
+      signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 27,
@@ -273,11 +374,16 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["fire", "hisbodedus"],
     subtopic: "Balak",
-    description: `הן עם... 
+    description:
+      `הן עם... 
                   When their fire is dimmed 
                   לבדד ישכן... 
                   They go make hisbodedus
-                  🔥` + signature
+                  🔥` + signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 28,
@@ -286,10 +392,15 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["talking donkey", "listen"],
     subtopic: "Balak",
-    description: `It's not every day that a donkey starts speaking. And when they do, you'd expect a shock; but instead Bilaam said  כִּי הִתְעַלַּלְתְּ בִּי – "You were mocking me." 
+    description:
+      `It's not every day that a donkey starts speaking. And when they do, you'd expect a shock; but instead Bilaam said  כִּי הִתְעַלַּלְתְּ בִּי – "You were mocking me." 
                   And Rabbeinu Bechayai wonders: Why didn't he just stop and say "Hey, what's going on here?" And the answer is that when you want something, your mind works overtime and it carries you away and doesn't allow you to notice what's going on.
                   The message of Bilaam is one thing: Everything that's going on around you is amazing, it's communications from above. But you have to shut up and listen… Today. 
                   ` + signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 29,
@@ -298,25 +409,38 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["living judaism", "brisker rav", "chinuch"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 30,
     video_id: "E4OgiZcVkfY",
-    title: "[#1093] Balak: Is \"I didn\'t know\" a good excuse?",
+    title: '[#1093] Balak: Is "I didn\'t know" a good excuse?',
     topic: "Parshah",
     tags: [],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 31,
     video_id: "mCLjiUIdynI",
-    title: '[#1094] Balak: "If I\'m ready to believe... Bring me to Kozhnitzer Magid first!"',
+    title:
+      '[#1094] Balak: "If I\'m ready to believe... Bring me to Kozhnitzer Magid first!"',
     topic: "Parshah",
     tags: ["living judaism", "brisker rav", "chinuch"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 32,
@@ -325,25 +449,39 @@ export const videoData: Video[] = [
     topic: "Parshah",
     tags: ["shiur", "recent", "theory"],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 33,
     video_id: "yWEQDhD8bcA",
-    title: "[#1095] Balak: Good advice from Bilaam - Aint nothing smarter than admitting you messed up",
+    title:
+      "[#1095] Balak: Good advice from Bilaam - Aint nothing smarter than admitting you messed up",
     topic: "Parshah",
     tags: [],
     subtopic: "Balak",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 34,
     video_id: "VXX99Zuog3I",
-    title: "[1292] Yeshayahu 3 Youth standing up for themselves can be a good thing",
+    title:
+      "[1292] Yeshayahu 3 Youth standing up for themselves can be a good thing",
     topic: "Neviim",
     tags: ["achris hayamim", "youth", "chutzpah yasge", "recent", "shiur"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 35,
@@ -352,7 +490,11 @@ export const videoData: Video[] = [
     topic: "Neviim",
     tags: ["cleansing", "recent", "shiur"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 36,
@@ -361,16 +503,25 @@ export const videoData: Video[] = [
     topic: "Neviim",
     tags: ["exile", "redemption", "geulah", "recent", "shiur"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 37,
     video_id: "B7EJw0eHajQ",
-    title: "[1295] Yeshayahu 6 - Kedusha and why Yeshayahu got burnt on his mouth",
+    title:
+      "[1295] Yeshayahu 6 - Kedusha and why Yeshayahu got burnt on his mouth",
     topic: "Neviim",
     tags: ["recent", "shiur"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 38,
@@ -379,25 +530,39 @@ export const videoData: Video[] = [
     topic: "Neviim",
     tags: ["recent", "shiur", "bias"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 39,
     video_id: "iCm0nqbq0IU",
-    title: "[1297] Yeshayahu 8 - The historical background necessary to understand 7-9!",
+    title:
+      "[1297] Yeshayahu 8 - The historical background necessary to understand 7-9!",
     topic: "Neviim",
     tags: ["recent", "shiur", "clarification", "history"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 40,
     video_id: "2bKXVWoqSYU",
-    title: "[1298] Yeshayahu 9 - \"His hand remains outstretched\" - to always accept you back!",
+    title:
+      '[1298] Yeshayahu 9 - "His hand remains outstretched" - to always accept you back!',
     topic: "Neviim",
     tags: ["recent", "shiur", "tshuvah"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 41,
@@ -406,34 +571,53 @@ export const videoData: Video[] = [
     topic: "Neviim",
     tags: ["recent", "shiur", "emunah"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 42,
     video_id: "wdIbAsGAt0E",
-    title: "[1300] Yeshayahu 11 - Satmer and Lubavitch getting along is old news",
+    title:
+      "[1300] Yeshayahu 11 - Satmer and Lubavitch getting along is old news",
     topic: "Neviim",
     tags: ["recent", "shiur", "satmer", "lubavitch"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 43,
     video_id: "SNjhe0YdW4w",
-    title: "[1301] Yeshayahu 12 - One day you will say \"Thank you Hashem for my Pain!\"",
+    title:
+      '[1301] Yeshayahu 12 - One day you will say "Thank you Hashem for my Pain!"',
     topic: "Neviim",
     tags: ["recent", "shiur", "emunah", "revelation"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 44,
     video_id: "NIBgskQPvAE",
-    title: "[1302] Yeshayahu 13 - The end of Bavel and those that forget they are just a messenger",
+    title:
+      "[1302] Yeshayahu 13 - The end of Bavel and those that forget they are just a messenger",
     topic: "Neviim",
     tags: ["recent", "shiur", "emunah", "revelation"],
     subtopic: "Yeshayahu",
-    description: signature
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
   },
   {
     id: 45,
@@ -442,6 +626,10 @@ export const videoData: Video[] = [
     topic: "Neviim",
     tags: ["recent", "shiur", "emunah", "mashiach", "geulah"],
     subtopic: "Yeshayahu",
-    description: signature
-  }
+    description: signature,
+    likes: 0,
+    views: 0,
+    duration: "PT0S",
+    publishedAt: "1970-01-01T00:00:00Z",
+  },
 ];
