@@ -1,3 +1,4 @@
+import Video from "@/types/Video";
 // get updated data from backend
 
 // Check for updated title, topic, subtopic, and likes data in the backend
@@ -19,6 +20,7 @@ export async function fetchUpdatedData() {
 
 export async function getVideoData() {
   const allData = await fetchUpdatedData();
+  console.log(allData);
   return allData.map(
     (video: {
       title: string;
@@ -37,37 +39,13 @@ export async function getVideoData() {
 }
 
 export async function updateVideoData(
-  currentVideoData: {
-    video_id: string;
-    title: string;
-    topic: string;
-    subtopic: string;
-    likes: number;
-  }[],
-  updateVideoData: {
-    video_id: string;
-    title: string;
-    topic: string;
-    subtopic: string;
-    likes: number;
-  }[]
-) {
-  const updatedVideoData = currentVideoData.map(
-    (video: {
-      video_id: string;
-      title: string;
-      topic: string;
-      subtopic: string;
-      likes: number;
-    }) => {
+  currentVideoData: Video[],
+  updateVideoData: Video[]
+): Promise<Video[]> {
+  return currentVideoData.map(
+    (video: Video) => {
       const updatedVideo = updateVideoData.find(
-        (updatedVideo: {
-          video_id: string;
-          title: string;
-          topic: string;
-          subtopic: string;
-          likes: number;
-        }) => updatedVideo.video_id === video.video_id
+        (updatedVideo: Video) => updatedVideo.video_id === video.video_id
       );
       if (updatedVideo) {
         return {
@@ -84,4 +62,8 @@ export async function updateVideoData(
   );
 }
 
-export const updateData = await getVideoData();
+export async function fetchAndUpdateData(currentVideoData: Video[]): Promise<Video[]> {
+  console.log("Fetching updated data...");
+  const updateData = await fetchUpdatedData();
+  return updateVideoData(currentVideoData, updateData);
+}
