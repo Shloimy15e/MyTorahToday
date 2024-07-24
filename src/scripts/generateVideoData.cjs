@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const { default: next } = require("next");
 const signature =
   "Rabbi Shimon Semp, Rosh Yeshiva Talpios inspires through bringing Jewish spiritual concepts, with Chassidic Torah teachings down to earth. Collecting anecdotes, sayings, and Divrei Torah from Chabad, Breslav, and other Hasidic masters and Rebbes. Listen and get inspired.";
 
@@ -13,48 +14,66 @@ async function fetchVideoData() {
   console.log("Fetching video data...");
   const channelId = process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID;
   const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
+
   if (!channelId || !apiKey) {
     console.error("Missing YouTube API credentials");
     return [];
   }
 
   try {
+    /*
+    // Step 1: Fetch channels uploads playlist ID:
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`
+    )
+
+    const channelData = await response.json();
+    console.log("Fetched channel data:", JSON.stringify(channelData));
+    //ID returned was - UUDo54orpThDBi9R7WobzDGg
+    */
+    // Channels uploads playlist ID
+    const uploadsPlaylistId = "UUDo54orpThDBi9R7WobzDGg";
+
     let allVideoIds = [];
     let nextPageToken = "";
     do {
-      const searchResponse = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet&order=date&type=video&pageToken=${nextPageToken}`
+      // Step 1: Fetch all video IDs from the uploads playlist
+      const playlistResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=50&key=${apiKey}&pageToken=${nextPageToken}`
       );
-      const searchData = await searchResponse.json();
-      if (searchData.items && Array.isArray(searchData.items)) {
+
+      const playlistData = await playlistResponse.json();
+      // Video IDs from the uploads playlist
+      if (playlistData.items && Array.isArray(playlistData.items)) {
         allVideoIds = allVideoIds.concat(
-          searchData.items.map((item) => item.id.videoId)
+          playlistData.items.map((item) => item.snippet.resourceId.videoId)
         );
       } else {
         console.error("No video data found");
-        console.log(JSON.stringify(searchData));
-        break;
+        console.log(JSON.stringify(playlistData));
+        return [];
       }
-      nextPageToken = searchData.nextPageToken;
+      nextPageToken = playlistData.nextPageToken;
     } while (nextPageToken);
 
+    // Step 2: Format videoIds for API call
     const videoIds = allVideoIds.join(",");
 
-    // Step 2: Fetch detailed video information
-    let allVideoData = [];
+    console.log("Fetched video IDs:", videoIds);
+
     let startIndex = 0;
     const batchSize = 50;
-
+    let allVideoData = [];
     do {
       const endIndex = Math.min(startIndex + batchSize, videoIds.length);
       const currentBatch = videoIds.slice(startIndex, endIndex);
-      
+      // Step 3: Fetch video data for first 50 videos as mentioned in the videoIds array
       const videoResponse = await fetch(
-        `https://www.googleapis.com/youtube/v3/videos?key=${apiKey}&id=${currentBatch.join(',')}&part=snippet,statistics,contentDetails`
+        `https://www.googleapis.com/youtube/v3/videos?id=${currentBatch}&key=${apiKey}&fields=items(id,snippet(title,description,publishedAt,tags),statistics(viewCount,likeCount),contentDetails(duration))&part=snippet,statistics,contentDetails`
       );
-      const batchVideoData = await videoResponse.json();
-      
-      allVideoData = allVideoData.concat(batchVideoData.items);
+      const videoResponseData = await videoResponse.json();
+
+      allVideoData = allVideoData.concat(videoResponseData.items);
       startIndex += batchSize;
     } while (startIndex < videoIds.length);
 
@@ -63,7 +82,8 @@ async function fetchVideoData() {
       id: index + 1,
       title: item.snippet.title,
       video_id: item.id,
-      topic: "none",
+      topic: "Parshah",
+      subtopic: "Balak",
       tags: [""],
       description: item.snippet.description
         .toLowerCase()
