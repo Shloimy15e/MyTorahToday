@@ -1,6 +1,5 @@
 const path = require("path");
 const fs = require("fs");
-const { default: next } = require("next");
 const signature =
   "Rabbi Shimon Semp, Rosh Yeshiva Talpios inspires through bringing Jewish spiritual concepts, with Chassidic Torah teachings down to earth. Collecting anecdotes, sayings, and Divrei Torah from Chabad, Breslav, and other Hasidic masters and Rebbes. Listen and get inspired.";
 
