@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "generate-sitemap": "node src/scripts/generate-sitemap.cjs",
-    "generateVideoData": "cross-env NEXT_PUBLIC_YOUTUBE_CHANNEL_ID=channelid NEXT_PUBLIC_YOUTUBE_API_KEY=youtubeapikey node src/scripts/generateVideoData.cjs",
+    "generateVideoData": "cross-env NEXT_PUBLIC_YOUTUBE_CHANNEL_ID=UCDo54orpThDBi9R7WobzDGg NEXT_PUBLIC_YOUTUBE_API_KEY=AIzaSyCI-IaqGYTpOAoYohCVPmpoK42SpXADbsA node src/scripts/generateVideoData.cjs",
+    "uploadVideosBackend": "node src/scripts/uploadVideosBackend.cjs",
     "start": "next start",
     "lint": "next lint"
   },

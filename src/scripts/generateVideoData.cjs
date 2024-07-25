@@ -77,8 +77,8 @@ async function fetchVideoData() {
     } while (startIndex < videoIds.length);
 
     const videoData = { items: allVideoData };
-    return videoData.items.map((item, index) => ({
-      id: index + 1,
+    return videoData.items.map((item) => ({
+      //id: index + 1; // - removed for now.
       title: item.snippet.title,
       video_id: item.id,
       topic: "Parshah",
@@ -101,8 +101,9 @@ async function fetchVideoData() {
 }
 
 const generateVideoData = async () => {
+  console.log("Generating video data...");
+  /*
   try {
-    console.log("Generating video data...");
     const videoData = await fetchVideoData();
     console.log("Video data fetched successfully");
     console.log("amount of videos: ", videoData.length);
@@ -113,24 +114,46 @@ const generateVideoData = async () => {
       return;
     }
 
-    const filePath = path.join(process.cwd(), "src", "data", "videoData.tsx");
+    const filePath = path.join(
+      process.cwd(),
+      "src",
+      "data",
+      "newVideoData.json"
+    );
 
     // Get videoData from file
     const existingVideoData = fs.readFileSync(filePath, "utf-8");
+    /* OLD CODE
     // Extract the exported videoData array
     const existingVideos = existingVideoData.match(
       /export const videoData: Video\[\] = (.*?);/
-    )?.[1];
+    )?.[1];*/
 
-    // Update the videoData file with new videoData
-    if (existingVideos) {
+  // Look in JSON if it has videoData if yes it should have an object: {"videos":[]}
+  //let existingVideos = false;
+  /*try {
+      const parsedData = JSON.parse(existingVideoData);
+      if (
+        parsedData &&
+        Array.isArray(parsedData.videos) &&
+        parsedData.videos.length > 0
+      ) {
+        existingVideos = parsedData.videos;
+      }
+    } catch (error) {
+      console.error("Error parsing existing video data:", error);
+    }*/
+
+  // Update the videoData file with new videoData
+  //if (existingVideos) {
+  /* Old code
       const newVideoData = videoData.map((video) => {
         const existingVideo = JSON.parse(existingVideos).find(
           (v) => v.id === video.id
         );
         return existingVideo
           ? { ...existingVideo, ...video }
-          : { ...video, likes: 0, views: 0 };
+          : { ...video};
       });
       const existingContent = fs.readFileSync(filePath, "utf8");
       const updatedContent = existingContent.replace(
@@ -139,19 +162,92 @@ const generateVideoData = async () => {
       );
       fs.writeFileSync(filePath, updatedContent);
       return newVideoData;
+      // New System - generate/update a JSON file wich is { "videos":[...videos]}
+      // Find videos in file with same video_id and update their likes and views
+      const newVideoData = videoData.map((video) => {
+        const existingVideo = existingVideos.find(
+          (v) => v.video_id === video.video_id
+        );
+        return existingVideo
+          ? { ...existingVideo, likes: video.likes, views: video.views }
+          : { ...video };
+      });
+
+      const newVideoDataJSON = JSON.stringify({ videos: newVideoData });
+      fs.writeFileSync(filePath, newVideoDataJSON);
+      try {
+        const response = await fetch("https://mttbackend-production.up.railway.app/api/videos/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: newVideoDataJSON,
+        });
+        const data = await response.json();
+        if (data.error) {
+          console.error("Error updating videos: ", data.error);
+          throw new Error("Error updating videos " + data.error);
+        }
+        console.log("Videos updated successfully: ", data);
+      } catch (error) {
+        console.error("Error updating videos: ", error);
+        throw new Error("Error updating videos " + error);
+      }
     } else {
+      /* Old code
       const existingData = fs.readFileSync(filePath, "utf8");
       const updatedData = existingData.replace(
         /export const videoData: Video\[\] = \[.*?\];/s,
         `export const videoData: Video[] = ${JSON.stringify(videoData)};`
       );
       fs.writeFileSync(filePath, updatedData);
-      return videoData;
+      // New System - generate a JSON file wich is { "videos":[...videos]}
+      const newVideoDataJSON = JSON.stringify({ videos: videoData });
+      fs.writeFileSync(filePath, newVideoDataJSON);
+      */
+  try {
+    const filepath = path.join(
+      process.cwd(),
+      "src",
+      "data",
+      "newVideoData.json"
+    );
+    const newVideoDataJSON = fs.readFileSync(filepath, "utf8");
+    console.log("newVideoDataJSON: ", newVideoDataJSON.slice(0, 1000));
+    const response = await fetch(
+      "https://mttbackend-production.up.railway.app/api/videos/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: newVideoDataJSON,
+      }
+    );
+    console.log("Response: ", response);
+    if (!response.ok) {
+      console.error("Error updating videos: ", response.error);
+      throw new Error(
+        "Error updating videos " + response.error + "Response: " + response
+      );
     }
+    let data;
+    try {
+      data = await response.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Error parsing JSON response " + error);
+    }
+    console.log("Videos updated successfully: ", data);
+  } catch (error) {
+    console.error("Error updating videos: ", error);
+    //throw new Error("Error updating videos " + error);
+  }
+  /*
   } catch (error) {
     console.error("Error generating video data:", error);
     throw new Error("Error generating video data " + error);
-  }
+  }*/
 };
 generateVideoData().then(() => console.log("Video data generation complete"));
 

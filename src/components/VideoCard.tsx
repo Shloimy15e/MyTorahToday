@@ -54,7 +54,8 @@ function VideoCard(props: { video: Video; onClick: () => void; showDescription: 
             </p>
           ))}
         </div>
-      )}      {/* likes and views */}
+      )}      
+      {/* likes and views */}
       <div className="flex flex-wrap justify-center items-center mx-4 gap-2 mt-auto pt-2 border-t border-gray-200 mb-2">
         <div
           className={`flex flex-wrap justify-start items-center gap-1 ${

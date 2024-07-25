@@ -1,11 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VideoCard from "./VideoCard";
 import VideoDialog from "./VideoDialog";
 import {
   getVideosByTopic,
   getVideosBySubtopic,
-  videoData,
+  //videoData,
 } from "@/data/videoData";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,11 +13,40 @@ import { topicData } from "@/data/topicData";
 import Video from "@/types/Video";
 
 export const parshahThisWeek: string = "Balak";
-export const videosThisParshah: Video[] = getVideosBySubtopic(videoData, parshahThisWeek);
 
 export default function Main() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
+  const [videos, setVideos] = useState<Video[]>([]);
+
+
+
+  useEffect(() => {
+    const apiVideos =  async () =>  {
+      console.log("Starting video fetch process");
+      try {
+        console.log("Sending request to API");
+        const response = await fetch("/api/videos/?limit=100");
+        console.log(`Received response with status: ${response.status}`);
+        const data = await response.json();
+        if (!response.ok) {
+          console.error(`HTTP error ${response.status}. Response data:`, JSON.stringify(data, null, 2));
+          throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
+        }
+        console.log("Successfully fetched videos. Total videos:", data.length);
+        // Extract videosfrom results
+        setVideos(data.results);
+      } catch (error) {
+        console.error("Error fetching videos:", error);
+        console.error("Error details:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        return error;
+      } finally {
+        console.log("Video fetch process completed");
+      }
+    }
+    apiVideos();
+  }, []);
+
   const openDialog = (video: Video) => {
     setSelectedVideo(video);
     setIsDialogOpen(true);
@@ -27,6 +56,8 @@ export default function Main() {
     setIsDialogOpen(false);
     setSelectedVideo({} as Video);
   };
+
+  const videosThisParshah: Video[] = getVideosBySubtopic(videos, parshahThisWeek);
 
   return (
     <>
@@ -43,7 +74,7 @@ export default function Main() {
         </div>
         {/* list of all videos devided by topic */}
         {topicData.map((topic) => {
-          const videosInTopic = getVideosByTopic(topic.name);
+          const videosInTopic = getVideosByTopic(videos, topic.name);
           return videosInTopic.length === 0 ? null : (
             <div key={topic.id}>
               <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
@@ -81,7 +112,7 @@ export default function Main() {
                 </>
               )}{" "}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
-                {getVideosByTopic(topic.name)
+                {videosInTopic
                   .slice(0, 8)
                   .map((video) => (
                     <VideoCard
@@ -92,7 +123,7 @@ export default function Main() {
                     />
                   ))}
               </div>
-              {getVideosByTopic(topic.name).length > 11 && (
+              {videosInTopic.length > 11 && (
               <div className="flex justify-center items-center">
                 <Link
                   href={`/topics/${topic.name.toLowerCase()}`}
