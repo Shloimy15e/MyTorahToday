@@ -1,5 +1,5 @@
 export default interface Video {
-  id: number;
+  id?: number;
   title: string;
   video_id: (string & { readonly [unique: symbol]: symbol }) | string;
   topic: string;

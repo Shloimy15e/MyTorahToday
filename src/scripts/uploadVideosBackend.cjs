@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const Video = require("../types/Video");
 
 /**
  * This module uploads all videos from videoData.tsx to the mttBackend backend app
@@ -17,12 +18,17 @@ async function uploadVideoData(videoData) {
 
   const backendUrl = "https://mttbackend-production.up.railway.app/api/videos/";
 
-  /** The API expects an object with "videos": array of objects with the following properties:
+  /** The API expects an object with "videos": array of objects of type Video with the following properties:
    *  title
    *  video_id
    *  topic
    *  subtopic
+   *  tags string[]
+   *  description
+   *  duration
+   *  publishedAt
    *  likes
+   *  views
    */
   // Create Json object with data from videoData
   const videos = videoData.map((video) => {

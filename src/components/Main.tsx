@@ -5,7 +5,6 @@ import VideoDialog from "./VideoDialog";
 import {
   getVideosByTopic,
   getVideosBySubtopic,
-  fetchVideoData,
   //videoData,
 } from "@/data/videoData";
 import Image from "next/image";
@@ -14,7 +13,6 @@ import { topicData } from "@/data/topicData";
 import Video from "@/types/Video";
 
 export const parshahThisWeek: string = "Balak";
-//export const videosThisParshah: Video[] = getVideosBySubtopic(videoData, parshahThisWeek);
 
 export default function Main() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -24,17 +22,11 @@ export default function Main() {
 
 
   useEffect(() => {
-    /*const loadData = async () => {
-      const videoData = await fetchVideoData();
-      setVideos(videoData);
-    };
-
-    loadData();*/
     const apiVideos =  async () =>  {
       console.log("Starting video fetch process");
       try {
         console.log("Sending request to API");
-        const response = await fetch("/api/videos");
+        const response = await fetch("/api/videos/?limit=100");
         console.log(`Received response with status: ${response.status}`);
         const data = await response.json();
         if (!response.ok) {
@@ -65,6 +57,8 @@ export default function Main() {
     setSelectedVideo({} as Video);
   };
 
+  const videosThisParshah: Video[] = getVideosBySubtopic(videos, parshahThisWeek);
+
   return (
     <>
       <main className="bg-neutral-100 grid grid-cols-1">
@@ -80,8 +74,8 @@ export default function Main() {
         </div>
         {/* list of all videos devided by topic */}
         {topicData.map((topic) => {
-          const videosInTopic = videos //getVideosByTopic(videos, topic.name);
-          return videos.length === 0 ? null : (
+          const videosInTopic = getVideosByTopic(videos, topic.name);
+          return videosInTopic.length === 0 ? null : (
             <div key={topic.id}>
               <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
                 {topic.name}
@@ -92,7 +86,7 @@ export default function Main() {
                     {parshahThisWeek}
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
-                    {/*videosThisParshah.slice(0, 10)
+                    {videosThisParshah.slice(0, 10)
                       .map((video) => (
                         <VideoCard
                           video={video}
@@ -100,9 +94,9 @@ export default function Main() {
                           onClick={() => openDialog(video)}
                           showDescription={true}
                         />
-                      ))*/}
+                      ))}
                   </div>
-                  {/*videosThisParshah.length > 10 && (
+                  {videosThisParshah.length > 10 && (
                   <div className="flex justify-center items-center">
                     <Link
                       href={`/topics/parshah/${parshahThisWeek.toLowerCase()}`}
@@ -111,7 +105,7 @@ export default function Main() {
                       See more from {parshahThisWeek}
                     </Link>
                   </div>
-                  )*/}
+                  )}
                   <h2 className="flex relative items-center text-3xl font-semibold mt-2 ml-16 pr-1 text-gray-700 w-max before:content-[''] before:absolute before:left-0 before:bottom-1.5 before:h-2 before:w-full before:bg-gray-900 before:opacity-35">
                     Other {topic.name}s
                   </h2>
