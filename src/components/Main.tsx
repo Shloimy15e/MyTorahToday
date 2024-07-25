@@ -21,13 +21,38 @@ export default function Main() {
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
   const [videos, setVideos] = useState<Video[]>([]);
 
+
+
   useEffect(() => {
-    const loadData = async () => {
+    /*const loadData = async () => {
       const videoData = await fetchVideoData();
       setVideos(videoData);
     };
 
-    loadData();
+    loadData();*/
+    const apiVideos =  async () =>  {
+      console.log("Starting video fetch process");
+      try {
+        console.log("Sending request to API");
+        const response = await fetch("/api/videos");
+        console.log(`Received response with status: ${response.status}`);
+        const data = await response.json();
+        if (!response.ok) {
+          console.error(`HTTP error ${response.status}. Response data:`, JSON.stringify(data, null, 2));
+          throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
+        }
+        console.log("Successfully fetched videos. Total videos:", data.length);
+        // Extract videosfrom results
+        setVideos(data.results);
+      } catch (error) {
+        console.error("Error fetching videos:", error);
+        console.error("Error details:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        return error;
+      } finally {
+        console.log("Video fetch process completed");
+      }
+    }
+    apiVideos();
   }, []);
 
   const openDialog = (video: Video) => {
@@ -55,7 +80,7 @@ export default function Main() {
         </div>
         {/* list of all videos devided by topic */}
         {topicData.map((topic) => {
-          const videosInTopic = getVideosByTopic(videos, topic.name);
+          const videosInTopic = videos //getVideosByTopic(videos, topic.name);
           return videos.length === 0 ? null : (
             <div key={topic.id}>
               <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">

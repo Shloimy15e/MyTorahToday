@@ -36,14 +36,14 @@ function VideoCard(props: { video: Video; onClick: () => void; showDescription: 
       {props.showDescription && (
         <div className="flex flex-wrap justify-center items-center px-2 w-full">
           <p className="text-sm text-gray-700 px-2 rounded-lg mx-1">
-            {props.video.description.toLowerCase().startsWith("subscribe")
+            {/*props.video.description.toLowerCase().startsWith("subscribe")
               ? props.video.description
-              : `${props.video.description.slice(0, 250)}...`}
+              : `${props.video.description.slice(0, 250)}...`*/}
           </p>
         </div>
       )}      
       {/* loop through tags */}
-      {props.video.tags && props.video.tags.length > 0 && props.video.tags[0].length > 0 && (
+      {/*props.video.tags && props.video.tags.length > 0 && props.video.tags[0].length > 0 && (
         <div className="flex flex-wrap justify-start items-center pl-5 w-full">
           {props.video.tags.map((tag: string) => (
             <p
@@ -54,7 +54,8 @@ function VideoCard(props: { video: Video; onClick: () => void; showDescription: 
             </p>
           ))}
         </div>
-      )}      {/* likes and views */}
+      )*/}      
+      {/* likes and views */}
       <div className="flex flex-wrap justify-center items-center mx-4 gap-2 mt-auto pt-2 border-t border-gray-200 mb-2">
         <div
           className={`flex flex-wrap justify-start items-center gap-1 ${
@@ -71,25 +72,25 @@ function VideoCard(props: { video: Video; onClick: () => void; showDescription: 
         <div className="flex flex-wrap justify-start items-center text-gray-600">
           <EyeIcon className="h-5 w-5 mr-1" />
           <p className="text-sm pr-2 border-r border-gray-300">
-            {props.video.views}
+            {/*props.video.views*/}
           </p>
         </div>
         <div className="flex flex-wrap gap-1 justify-start items-center text-gray-600">
           <ClockIcon className="h-5 w-5" />
           <p className="text-sm pr-2 border-r border-gray-300">
-            {formatDuration(props.video.duration)}
+            {/*formatDuration(props.video.duration)*/}
           </p>
         </div>
         <div className="flex flex-wrap justify-start items-center gap-1 text-gray-600">
           <CalendarIcon className="h-5 w-5" />
           <p className="text-sm">
-            {props.video.publishedAt
+            {/*props.video.publishedAt
               ? new Intl.DateTimeFormat("en-US", {
                   year: "numeric",
                   month: "2-digit",
                   day: "2-digit",
                 }).format(new Date(props.video.publishedAt))
-              : "N/A"}
+              : "N/A"*/}
           </p>
         </div>
       </div>
