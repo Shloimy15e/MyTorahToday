@@ -46,7 +46,7 @@ export const subtopicData: Subtopic[] = [
     },
     {
         id: 8,
-        name: "Matos Masei,
+        name: "Matos Masei",
         topic: "Parshah"
     },
     {
