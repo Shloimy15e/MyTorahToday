@@ -1,9 +1,13 @@
 import Video from "@/types/Video";
 
-/*
-export const getVideoByVideo_id = (id: string) => {
-  return videoData.find((video) => video.video_id === id);
-};*/
+
+export const getVideoByVideo_id = (id: string) : Promise<Video> => {
+  const getVideoByVideo_id = async function (): Promise<Video> {
+    const response = await fetch("/api/videos/" + id);
+    return await response.json();
+  }
+  return getVideoByVideo_id();
+};
 
 export const getVideosByTopic = (videos: Video[], topicName: string): Video[] => {
   return videos.filter((video) => video.topic === topicName);
