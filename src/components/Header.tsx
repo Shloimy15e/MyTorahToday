@@ -9,6 +9,7 @@ import {
   MenuItems,
   MenuItem,
   Transition,
+  TransitionChild,
 } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -85,12 +86,15 @@ export default function Header() {
             </div>
           ))}
         </div>*/}
-        <div className="flex items-center col-span-1 col-end-11">
+        <div className="flex items-center justify-center col-span-1 col-end-11">
           <Menu as="div" className="relative inline-block text-left">
-            <div>
-              <MenuButton className="-m-2.5 inline-flex items-center justify-start rounded-md p-2.5 text-gray-600">
+            <div className="flex items-center justify-center">
+              <MenuButton
+                title="Open profile menu"
+                className="-m-2.5 flex items-center justify-start rounded-md p-2.5 text-gray-600"
+              >
                 <span className="sr-only">Open profile menu</span>
-                <UserCircleIcon aria-hidden="true" className="h-6 w-6" />
+                <UserCircleIcon aria-hidden="true" className="h-7 w-7" />
               </MenuButton>
             </div>
             <Transition
@@ -103,7 +107,7 @@ export default function Header() {
               leaveTo="transform opacity-0 scale-95"
             >
               <MenuItems className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <div className="px-1 py-1">
+                <div className="px-1 py-1 flex items-center justify-center">
                   {isLoggedIn ? (
                     <MenuItem>
                       <button
@@ -138,14 +142,16 @@ export default function Header() {
             </Transition>
           </Menu>
         </div>
-        <div className="grid col-span-1 col-end-12">
+        <div className="flex items-center justify-center col-span-1 col-end-12">
           <button
+            aria-label="Open main menu"
+            title="Open main menu"
             type="button"
             onClick={() => setMobileMenuOpen(true)}
-            className="-m-2.5 inline-flex items-center justify-start rounded-md p-2.5 text-gray-400"
+            className="-m-2.5 inline-flex items-center justify-start rounded-md p-2.5 text-gray-600"
           >
             <span className="sr-only">Open main menu</span>
-            <Bars3Icon aria-hidden="true" className="h-6 w-6" />
+            <Bars3Icon aria-hidden="true" className="h-9 w-8" />
           </button>
         </div>
       </nav>
@@ -155,46 +161,58 @@ export default function Header() {
           Site under construction
         </p>
       </div>
-      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen}>
-        <div className="fixed inset-0 z-10 bg-gray-800 bg-opacity-50" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-white/10 duration-200">
-          <div className="flex items-center justify-between">
-            <Link href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
-              <Image
-                alt="Torah Today icon"
-                src="/images/icon.jpg"
-                className="h-10 w-auto rounded-xl"
-                width={180}
-                height={48}
-              />
-            </Link>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(false)}
-              className="-m-2.5 rounded-md p-2.5 text-gray-800 font-bold flex items-center justify-center"
-            >
-              <span className="sr-only">Close menu</span>
-              <XMarkIcon aria-hidden="true" className="h-6 w-6" />
-            </button>
-          </div>
-          <div className="mt-6 flow-root">
-            <div className="-my-6 divide-y divide-gray-500/25">
-              <div className="space-y-2 py-6">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+      <Transition show={mobileMenuOpen} as={Fragment}>
+        <Dialog onClose={setMobileMenuOpen}>
+          <div className="fixed inset-0 z-10 bg-gray-800 bg-opacity-50" />
+          <TransitionChild
+            as={Fragment}
+            enter="ease-out duration-200"
+            enterFrom="translate-x-full"
+            enterTo="translate-x-0"
+            leave="ease-in duration-150"
+            leaveFrom="translate-x-0"
+            leaveTo="translate-x-full"
+          >
+            <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-white/10 duration-200">
+              <div className="flex items-center justify-between">
+                <Link href="#" className="-m-1.5 p-1.5">
+                  <span className="sr-only">Your Company</span>
+                  <Image
+                    alt="Torah Today icon"
+                    src="/images/icon.jpg"
+                    className="h-10 w-auto rounded-xl"
+                    width={180}
+                    height={48}
+                  />
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="-m-2.5 rounded-md p-2.5 text-gray-800 font-bold flex items-center justify-center"
+                >
+                  <span className="sr-only">Close menu</span>
+                  <XMarkIcon aria-hidden="true" className="h-6 w-6" />
+                </button>
               </div>
-            </div>
-          </div>
-        </DialogPanel>
-      </Dialog>
+              <div className="mt-6 flow-root">
+                <div className="-my-6 divide-y divide-gray-500/25">
+                  <div className="space-y-2 py-6">
+                    {navigation.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </DialogPanel>
+          </TransitionChild>
+        </Dialog>
+      </Transition>
       <SignupDialog isOpen={isSignupDialogOpen} onClose={closeDialog} />
       <LoginDialog isOpen={isLoginDialogOpen} onClose={closeDialog} />
       <LogoutDialog isOpen={isLogoutDialogOpen} onClose={closeDialog} />
