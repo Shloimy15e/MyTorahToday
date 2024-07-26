@@ -7,7 +7,12 @@ import {
 } from "@headlessui/react";
 import { Fragment } from "react";
 import VideoEmbed from "./VideoEmbed";
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  HandThumbUpIcon,
+  EyeIcon,
+} from "@heroicons/react/24/solid";
 import Link from "next/link";
 import Video from "@/types/Video";
 
@@ -17,9 +22,9 @@ export default function VideoDialog(props: {
   onClose: () => void;
 }) {
   const closeModal = () => props.onClose();
-  const lowercaseTopic = props.video?.topic?.toLowerCase() ?? '';
-  const lowercaseSubtopic = props.video?.subtopic?.toLowerCase() ?? '';
-  const lowercaseTitle = props.video?.title?.toLowerCase() ?? '';
+  const lowercaseTopic = props.video?.topic?.toLowerCase() ?? "";
+  const lowercaseSubtopic = props.video?.subtopic?.toLowerCase() ?? "";
+  const lowercaseTitle = props.video?.title?.toLowerCase() ?? "";
   return (
     <>
       <Transition show={props.isOpen} as={Fragment}>
@@ -47,7 +52,8 @@ export default function VideoDialog(props: {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <DialogPanel className="w-full max-w-4xl md:max-w-2xl lg:max-w-4xl 2xl:max-w-5xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <DialogPanel 
+                  className="w-full max-w-4xl md:max-w-2xl lg:max-w-4xl 2xl:max-w-5xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                   <DialogTitle
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
@@ -77,14 +83,28 @@ export default function VideoDialog(props: {
                       title="Go to video page"
                       role="button"
                       aria-hidden="false"
-                      tabIndex={0}>
-                        See video page
-                        <ArrowRightIcon className="h-5 w-6 ml-2" />
-                      </Link>
+                      tabIndex={0}
+                    >
+                      See video page
+                      <ArrowRightIcon className="h-5 w-6 ml-2" />
+                    </Link>
                   </div>
                   {/* Likes and other info */}
-                  <div className="mt-4">
-                    <p>0 likes · 0 views · 0 comments · 0 shares</p>
+                  <div className="mx-4 mt-4 flex items-center justify-normal">
+                    <span className="text-gray-500 flex items-center justify-center gap-2">
+                      {props.video.likes}
+                      <HandThumbUpIcon
+                        className="inline h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    </span>
+                    <span className="text-gray-500 ml-4 flex items-center justify-center gap-2">
+                      {props.video.views}
+                      <EyeIcon
+                        className="inline h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    </span>
                   </div>
                 </DialogPanel>
               </TransitionChild>

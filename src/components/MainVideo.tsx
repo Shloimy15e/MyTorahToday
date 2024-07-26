@@ -1,13 +1,11 @@
 import VideoEmbed from "./VideoEmbed";
-import { getVideoByVideo_id } from "@/data/videoData";
 import Video from "@/types/Video";
-import { videoData } from "@/data/videoData";
 import VideoCard from "./VideoCard";
 import VideoDialog from "./VideoDialog";
-import { useState } from "react";
+import LoadingAnimation from "./LoadingAnimation";
+import { useEffect, useState } from "react";
 import { HandThumbUpIcon } from "@heroicons/react/24/solid";
 import { EyeIcon, CalendarIcon } from "@heroicons/react/24/outline";
-import formatDuration from "@/utils/formatDuration";
 
 type Props = {
   params: {
@@ -20,6 +18,10 @@ type Props = {
 export default function MainVideo({ params }: Props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
+  const [video, setVideo] = useState<Video>({} as Video);
+  const [isLoading, setIsLoading] = useState(true);
+  const [relatedVideos, setRelatedVideos] = useState<Video[]>([]);
+
   const openDialog = (video: Video) => {
     setSelectedVideo(video);
     setIsDialogOpen(true);
@@ -31,7 +33,99 @@ export default function MainVideo({ params }: Props) {
   };
 
   const { topic, subtopic, video_id } = params;
-  const video = getVideoByVideo_id(video_id) as Video;
+
+  useEffect(() => {
+    const apiVideo = async () => {
+      console.log("Starting video fetch process");
+      try {
+        const response = await fetch("/api/videos/" + video_id);
+        console.log(`Received response with status: ${response.status}`);
+        const data = await response.json();
+        if (!response.ok) {
+          console.error(
+            `HTTP error ${response.status}. Response data:`,
+            JSON.stringify(data, null, 2)
+          );
+          throw new Error(
+            `HTTP error ${response.status}` + JSON.stringify(data)
+          );
+        }
+        console.log("Successfully fetched video. ", data);
+        // Extract videosfrom results
+        setVideo(data);
+      } catch (error) {
+        console.error("Error fetching videos:", error);
+        console.error(
+          "Error details:",
+          JSON.stringify(error, Object.getOwnPropertyNames(error))
+        );
+        return error;
+      } finally {
+        console.log("Video fetch process completed");
+      }
+    };
+    apiVideo();
+    const apiRelatedVideos = async () => {
+      console.log("Starting related videos fetch process");
+      try {
+        const response = await fetch(
+          `/api/videos/?limit=22&topic=${topic}&subtopic=${subtopic}`
+        );
+        console.log(`Received response with status: ${response.status}`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(
+            `HTTP error ${response.status}` + JSON.stringify(data)
+          );
+        }
+        console.log("Successfully fetched videos. Total videos:", data.length);
+        
+        let receivedVideos = null
+        if (data.results){
+          const receivedVideos = data.results
+        } 
+        // Extract videosfrom results
+        if (!receivedVideos || receivedVideos < 22) {
+          console.log("Not enough videos to fetch related videos. Fetching more...");
+          try {
+            const response = await fetch(
+              `/api/videos/?limit=22&topic=${topic}`
+            );
+            console.log(`Received response with status: ${response.status}`);
+            const data = await response.json();
+            if (!response.ok) {
+              throw new Error(
+                `HTTP error ${response.status}` + JSON.stringify(data)
+              );
+            }
+            console.log(
+              "Successfully fetched videos. Total videos:",
+              data.length
+            );
+            // Extract videosfrom results and add to receivedVideos
+            if (!receivedVideos){
+              receivedVideos = data.results
+            } else {
+              receivedVideos = [...receivedVideos,...data.results]
+            }
+          } catch (error) {
+            console.error("Error fetching videos:", error);
+            return error;
+          } finally {
+            console.log("Video fetch process completed");
+          }
+        }
+        setRelatedVideos(receivedVideos);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching videos:", error);
+        return error;
+      } finally {
+        console.log("Video fetch process completed");
+      }
+    };
+    apiRelatedVideos();
+  }, [topic, subtopic, video_id]);
   return (
     <>
       <main className="grid grid-cols-12 auto-rows-fr gap-10 p-10 px-20 2xl:px-28">
@@ -82,7 +176,7 @@ export default function MainVideo({ params }: Props) {
           </div>
         </div>
         <div className="col-span-4 2xl:col-span-3 row-span-2 grid grid-cols-1 gap-10 justify-items-center place-items-center align-middle w-full">
-          {videoData.slice(0, 2).map((video) => {
+          {relatedVideos.slice(0, 2).map((video) => {
             return (
               <VideoCard
                 key={video.id}
@@ -95,7 +189,7 @@ export default function MainVideo({ params }: Props) {
         </div>
         <div className="col-span-12 row-span-7 grid gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10">
-            {videoData.slice(0, 20).map((video) => {
+            {relatedVideos.slice(2, 20).map((video) => {
               return (
                 <VideoCard
                   key={video.id}

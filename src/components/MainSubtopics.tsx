@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
-import { getVideosBySubtopic } from "@/data/videoData";
 import VideoCard from "@/components/VideoCard";
 import VideoDialog from "@/components/VideoDialog";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Video from "@/types/Video";
+import LoadingAnimation from "@/components/LoadingAnimation";
 
 type Props = {
   params: {
@@ -24,6 +24,7 @@ export default function MainSubtopics({ params }: Props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
   const [videos, setVideos] = useState<Video[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const openDialog = (video: Video) => {
     setSelectedVideo(video);
@@ -38,15 +39,12 @@ export default function MainSubtopics({ params }: Props) {
     const apiVideos = async () => {
       console.log("Starting video fetch process");
       try {
-        console.log("Sending request to API");
-        const response = await fetch("/api/videos?limit=100&topic=" + topic);
+        const response = await fetch(
+          `/api/videos?limit=100&topic=${topic}&subtopic=${subtopic}`
+        );
         console.log(`Received response with status: ${response.status}`);
         const data = await response.json();
         if (!response.ok) {
-          console.error(
-            `HTTP error ${response.status}. Response data:`,
-            JSON.stringify(data, null, 2)
-          );
           throw new Error(
             `HTTP error ${response.status}` + JSON.stringify(data)
           );
@@ -54,21 +52,16 @@ export default function MainSubtopics({ params }: Props) {
         console.log("Successfully fetched videos. Total videos:", data.length);
         // Extract videosfrom results
         setVideos(data.results);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching videos:", error);
-        console.error(
-          "Error details:",
-          JSON.stringify(error, Object.getOwnPropertyNames(error))
-        );
         return error;
       } finally {
         console.log("Video fetch process completed");
       }
     };
     apiVideos();
-  }, [topic]);
-
-  const videosInSubtopic = getVideosBySubtopic(videos, Subtopic);
+  }, [topic, subtopic]);
 
   return (
     <>
@@ -86,10 +79,12 @@ export default function MainSubtopics({ params }: Props) {
         </h1>
       </div>
       <div className="bg-neutral-100 grid grid-cols-1 justify-items-center py-16">
-        {videosInSubtopic.length > 0 ? (
+        {isLoading ? (
+          <LoadingAnimation />
+        ) : videos.length > 0 ? (
           <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
-              {videosInSubtopic.map((video) => (
+              {videos.map((video) => (
                 <VideoCard
                   video={video}
                   key={video.id}
