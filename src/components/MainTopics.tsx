@@ -84,7 +84,19 @@ export default function MainTopics({ params }: Props) {
         ) : videos.length > 0 ? (
           // Get all videos in topic divided in subtopics
           subtopicData.map((subtopic) =>
-            getVideosBySubtopic(videos, subtopic.name).length === 0 ? null : (
+            getVideosBySubtopic(videos, subtopic.name).length === 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
+                  {videos.map((video) => (
+                      <VideoCard
+                        video={video}
+                        key={video.id}
+                        onClick={() => openDialog(video)}
+                        showDescription={true}
+                      />
+                    ))}
+                </div>
+            )
+            : (
               <div key={subtopic.id}>
                 <h1 className="text-4xl font-bold my-6 ml-6">
                   {subtopic.name}
