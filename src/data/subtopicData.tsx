@@ -31,12 +31,32 @@ export const subtopicData: Subtopic[] = [
     },
     {
         id: 5,
-        name: "Shmuel",
+        name: "Shmuel b",
         topic: "Neviim"
     },
     {
         id: 6,
         name: "Yeshayahu",
         topic: "Neviim"
+    },
+    {
+        id: 7,
+        name: "Pinchas",
+        topic: "Parshah"
+    },
+    {
+        id: 8,
+        name: "Matos Masei",
+        topic: "Parshah"
+    },
+    {
+        id: 9,
+        name: "Toldos",
+        topic: "Parshah"
+    },
+    {
+        id: 10,
+        name: "Vayishlach",
+        topic: "Parshah"
     }
 ];
