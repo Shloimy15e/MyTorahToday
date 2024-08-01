@@ -321,7 +321,7 @@ export const subtopicData: Subtopic[] = [
     },
     {
         id: 64,
-        name: "Other",
+        name: "Smarts",
         topic: "Lifes ways"
     }
 ];
