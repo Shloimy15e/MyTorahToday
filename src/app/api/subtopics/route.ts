@@ -19,7 +19,7 @@ export async function GET(request: Request): Promise<Response> {
   const topic = searchParams.get("topic") || "";
 
   const response = await fetch(
-    `https://mttbackend-production.up.railway.app/api/subtopics/topics/?limit=${limit}&offset=${offset}&topic=${topic}`,
+    `https://mttbackend-production.up.railway.app/api/subtopics/?limit=${limit}&offset=${offset}&topic=${topic}`,
     {
       method: "GET",
       headers: {
