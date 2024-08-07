@@ -24,9 +24,6 @@ export default function MainSubtopics({ params }: Props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
   const [videos, setVideos] = useState<Video[]>([]);
-  const [subtopicObj, setSubtopicObj] = useState<object>({});
-  const [subtopicId, setSubtopicId] = useState<number>(0);
-  const [topicId, setTopicId] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
   const [errorFetchingVideos, setErrorFetchingVideos] = useState(false);
 
@@ -40,32 +37,11 @@ export default function MainSubtopics({ params }: Props) {
   };
 
   useEffect(() => {
-    const fetchSubtopic = async () => {
-      try {
-        const response = await fetch(`/api/subtopics?name=${subtopic}`);
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(
-            `HTTP error ${response.status}` + JSON.stringify(data)
-          );
-        }
-        setSubtopicObj(data);
-        setSubtopicId(data.id);
-        setTopicId(data.topic.id);
-      } catch (error) {
-        console.error(error);
-        return error;
-      }
-    }
-
     const fetchVideos = async () => {
       console.log("Starting video fetch process");
       try {
-        if (Object.keys(subtopicObj).length === 0) {
-          throw new Error("Subtopic object is empty");
-        }
         const response = await fetch(
-          `/api/videos?limit=100&topic=${topicId}&subtopic=${subtopicId}`
+          `/api/videos?limit=100&topic__name__iexact=${topic}&subtopic__name__iexact=${subtopic}`
         );
         console.log(`Received response with status: ${response.status}`);
         const data = await response.json();
@@ -77,19 +53,18 @@ export default function MainSubtopics({ params }: Props) {
         console.log("Successfully fetched videos. Total videos:", data.length);
         // Extract videosfrom results
         setVideos(data.results);
+        setErrorFetchingVideos(false);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching videos:", error);
         setErrorFetchingVideos(true);
         setIsLoading(false);
         return error;
-      } finally {
-        console.log("Video fetch process completed");
       }
     };
-    fetchSubtopic();
+
     fetchVideos();
-  }, [topicId, subtopicId, subtopic, subtopicObj]);
+  }, [topic, subtopic]);
 
   return (
     <>

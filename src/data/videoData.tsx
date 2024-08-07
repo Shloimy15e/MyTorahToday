@@ -10,14 +10,14 @@ export const getVideoByVideo_id = (id: string) : Promise<Video> => {
 };
 
 export const getVideosByTopic = (videos: Video[], topicName: string): Video[] => {
-  return videos.filter((video) => video.topic === topicName);
+  return videos.filter((video) => video.topic_name === topicName);
 };
 
 export const getVideosBySubtopic = (
   videos: Video[],
   subtopic: string
 ): Video[] => {
-  return videos.filter((video) => video.subtopic === subtopic);
+  return videos.filter((video) => video.subtopic_name === subtopic);
 };
 
 export const signature: string =

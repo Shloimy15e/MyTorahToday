@@ -22,8 +22,8 @@ export default function VideoDialog(props: {
   onClose: () => void;
 }) {
   const closeModal = () => props.onClose();
-  const topic_id = props.video.topic;
-  const subtopic_id = props.video.subtopic;
+  const lowerCaseTopicName = props.video?.topic_name?.toLowerCase() ?? "";
+  const lowerCaseSubtopicName = props.video?.subtopic_name?.toLowerCase() ?? "";
   const lowercaseTitle = props.video?.title?.toLowerCase() ?? "";
   return (
     <>
@@ -76,7 +76,7 @@ export default function VideoDialog(props: {
                       Return to video list
                     </button>
                     <Link
-                      href={`/topics/${topic_id}/${subtopic_id}/${props.video.video_id}`}
+                      href={`/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}/${props.video.video_id}`}
                       className="inline-flex justify-center rounded-md border border-transparent bg-primary-blue px-4 py-2 text-sm font-medium text-white hover:bg-blue-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ml-4"
                       onClick={closeModal}
                       aria-label="Go to video page"

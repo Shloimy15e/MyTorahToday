@@ -5,8 +5,8 @@ import Footer from "@/components/Footer";
 
 type Props = {
   params: {
-    topic: number;
-    subtopic: number;
+    topic: string;
+    subtopic: string;
     video_id: string;
   };
 };

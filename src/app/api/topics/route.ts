@@ -14,12 +14,10 @@ const agent = new https.Agent({
  */
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
-  const limit = searchParams.get("limit") || "";
-  const offset = searchParams.get("offset") || "";
-  const name = searchParams.get("name") || "";
-
+  const name = searchParams.get("name__iexact") || "";
+  console.log(`https://mttbackend-production.up.railway.app/api/topics/?name__iexact=${name}`)
   const response = await fetch(
-    `https://mttbackend-production.up.railway.app/api/topics/?limit=${limit}&offset=${offset}&name=${name}`,
+    `https://mttbackend-production.up.railway.app/api/topics/?name__iexact=${name}`,
     {
       method: "GET",
       headers: {

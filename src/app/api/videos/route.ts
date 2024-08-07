@@ -18,11 +18,11 @@ export async function GET(request: Request): Promise<Response> {
   const offset = searchParams.get("offset") || "0";
   const topic = searchParams.get("topic") || "";
   const subtopic = searchParams.get("subtopic") || "";
+  const topic__name = searchParams.get("topic__name__iexact") || "";
+  const subtopic__name = searchParams.get("subtopic__name__iexact") || "";
 
   const response = await fetch(
-    `https://mttbackend-production.up.railway.app/api/videos/?limit=${limit}&offset=${offset}${
-      topic ? "&topic=" + topic : ""
-    }${subtopic ? "&subtopic=" + subtopic : ""}`,
+    `https://mttbackend-production.up.railway.app/api/videos/?limit=${limit}&offset=${offset}&topic=${topic}&subtopic=${subtopic}&topic__name__iexact=${topic__name}&subtopic__name__iexact=${subtopic__name}`,
     {
       method: "GET",
       headers: {

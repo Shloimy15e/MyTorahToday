@@ -17,9 +17,10 @@ export async function GET(request: Request): Promise<Response> {
   const limit = searchParams.get("limit") || "";
   const offset = searchParams.get("offset") || "";
   const topic = searchParams.get("topic") || "";
+  const topic__name = searchParams.get("topic__name__iexact") || "";
 
   const response = await fetch(
-    `https://mttbackend-production.up.railway.app/api/subtopics/?limit=${limit}&offset=${offset}&topic=${topic}`,
+    `https://mttbackend-production.up.railway.app/api/subtopics/?limit=${limit}&offset=${offset}&topic=${topic}&topic__name__iexact=${topic__name}`,
     {
       method: "GET",
       headers: {
