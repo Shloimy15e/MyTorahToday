@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Video from "@/types/Video";
 import LoadingAnimation from "@/components/LoadingAnimation";
+import { delay } from "framer-motion";
 
 type Props = {
   params: {
@@ -23,7 +24,10 @@ export default function MainTopics({ params }: Props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
   const [videos, setVideos] = useState<Video[]>([]);
+  const [topicObj, setTopicObj] = useState<object>({});
+  const [topicId, setTopicId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
+  const [errorFetchingVideos, setErrorFetchingVideos] = useState(false);
 
   const openDialog = (video: Video) => {
     setSelectedVideo(video);
@@ -35,10 +39,10 @@ export default function MainTopics({ params }: Props) {
   };
 
   useEffect(() => {
-    const apiVideos = async () => {
+    const fetchVideos = async () => {
       console.log("Starting video fetch process");
       try {
-        const response = await fetch("/api/videos?limit=100&topic=" + topic);
+        const response = await fetch(`/api/videos?limit=100&topic__name__iexact=${topic}`);
         console.log(`Received response with status: ${response.status}`);
         const data = await response.json();
         if (!response.ok) {
@@ -52,16 +56,18 @@ export default function MainTopics({ params }: Props) {
         );
         // Extract videosfrom results
         setVideos(data.results);
+        setErrorFetchingVideos(false);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching videos:", error);
+        setIsLoading(false);
+        setErrorFetchingVideos(true);
         return error;
-      } finally {
-        console.log("Video fetch process completed");
       }
     };
-    apiVideos();
-  }, [topic]);
+
+    fetchVideos();
+  }, [topic, topicId]);
 
   return (
     <>
@@ -81,6 +87,15 @@ export default function MainTopics({ params }: Props) {
       <div className="bg-neutral-100 grid grid-cols-1 justify-items-center">
         {isLoading ? (
           <LoadingAnimation />
+        ) : 
+        errorFetchingVideos ? (
+          <div className="flex flex-col items-center justify-center h-64">
+            <h1 className="text-4xl font-bold mb-4">Error fetching videos</h1>
+            <p className="text-gray-600 text-xl">
+              Sorry, there was an error fetching the videos. Please try again
+              later.
+            </p>
+          </div>
         ) : videos.length > 0 ? (
           // Get all videos in topic divided in subtopics
           subtopicData.map((subtopic) =>

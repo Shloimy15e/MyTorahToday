@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
 import fetch from "node-fetch";
 import https from "https";
 
@@ -17,19 +16,19 @@ export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
   const limit = searchParams.get("limit") || "10";
   const offset = searchParams.get("offset") || "0";
-  const topic = searchParams.get("topic") || null;
-  const subtopic = searchParams.get("subtopic") || null;
+  const topic = searchParams.get("topic") || "";
+  const subtopic = searchParams.get("subtopic") || "";
+  const topic__name = searchParams.get("topic__name__iexact") || "";
+  const subtopic__name = searchParams.get("subtopic__name__iexact") || "";
 
   const response = await fetch(
-    `https://mttbackend-production.up.railway.app/api/videos/?limit=${limit}&offset=${offset}${
-      topic ? "&topic=" + topic : ""
-    }${subtopic ? "&subtopic=" + subtopic : ""}`,
+    `https://mttbackend-production.up.railway.app/api/videos/?limit=${limit}&offset=${offset}&topic=${topic}&subtopic=${subtopic}&topic__name__iexact=${topic__name}&subtopic__name__iexact=${subtopic__name}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      agent: agent
+      agent: agent,
     }
   );
   const data = await response.json();

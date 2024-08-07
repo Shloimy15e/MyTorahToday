@@ -2,10 +2,7 @@
 import { useEffect, useState } from "react";
 import VideoCard from "./VideoCard";
 import VideoDialog from "./VideoDialog";
-import {
-  getVideosByTopic,
-  getVideosBySubtopic,
-} from "@/data/videoData";
+import { getVideosByTopic, getVideosBySubtopic } from "@/data/videoData";
 import Image from "next/image";
 import Link from "next/link";
 import { topicData } from "@/data/topicData";
@@ -19,6 +16,7 @@ export default function Main() {
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
   const [videos, setVideos] = useState<Video[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorFetchingVideos, setErrorFetchingVideos] = useState(false);
 
   useEffect(() => {
     const apiVideos = async () => {
@@ -32,12 +30,18 @@ export default function Main() {
             `HTTP error ${response.status}` + JSON.stringify(data)
           );
         }
-        console.log("Successfully fetched videos. Total videos:", data.length);
+        console.log(JSON.stringify(data));
+        console.log(
+          "Successfully fetched videos. Total videos:",
+          data.results.length
+        );
         // Extract videosfrom results
         setVideos(data.results);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching videos:", error);
+        setIsLoading(false);
+        setErrorFetchingVideos(true);
         return error;
       } finally {
         console.log("Video fetch process completed");
@@ -77,11 +81,35 @@ export default function Main() {
         {/* list of all videos devided by topic */}
         {isLoading ? (
           <LoadingAnimation />
-        ) : (
-          topicData.map((topic) => {
-            const videosInTopic = getVideosByTopic(videos, topic.name);
-            return videosInTopic.length === 0 ? null : (
-              <div key={topic.id}>
+        ) : errorFetchingVideos ? (
+          <div className="flex flex-col items-center justify-center h-64">
+            <h1 className="text-4xl font-bold mb-4">Error fetching videos</h1>
+            <p className="text-gray-600">
+              Sorry, there was an error fetching the videos. Please try again
+              later.
+            </p>
+          </div>
+        ) : 
+          topicData.length === 0 || topicData.every(topic => getVideosByTopic(videos, topic.name).length === 0) ? (
+            <div>
+              <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
+                Random
+              </h1>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
+                {videos.map((video) => (
+                  <VideoCard
+                    video={video}
+                    key={video.id}
+                    onClick={() => openDialog(video)}
+                    showDescription={true}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : (
+            topicData.map((topic) => {
+              const videosInTopic = getVideosByTopic(videos, topic.name);
+              return videosInTopic.length === 0 ? null : (              <div key={topic.id}>
                 <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
                   {topic.name}
                 </h1>
