@@ -9,8 +9,8 @@ import { EyeIcon, CalendarIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   params: {
-    topic: string;
-    subtopic: string;
+    topic: number;
+    subtopic: number;
     video_id: string;
   };
 };
@@ -35,54 +35,26 @@ export default function MainVideo({ params }: Props) {
   const { topic, subtopic, video_id } = params;
 
   useEffect(() => {
-    const apiVideo = async () => {
-      console.log("Starting video fetch process");
-      try {
-        const response = await fetch("/api/videos/" + video_id);
-        console.log(`Received response with status: ${response.status}`);
-        const data = await response.json();
-        if (!response.ok) {
-          console.error(
-            `HTTP error ${response.status}. Response data:`,
-            JSON.stringify(data, null, 2)
-          );
-          throw new Error(
-            `HTTP error ${response.status}` + JSON.stringify(data)
-          );
-        }
-        console.log("Successfully fetched video. ", data);
-        // Extract videosfrom results
-        setVideo(data);
-      } catch (error) {
-        console.error("Error fetching videos:", error);
-        console.error(
-          "Error details:",
-          JSON.stringify(error, Object.getOwnPropertyNames(error))
-        );
-        return error;
-      } finally {
-        console.log("Video fetch process completed");
-      }
-    };
-    apiVideo();
-    const apiRelatedVideos = async () => {
+    const fetchRelatedVideos = async () => {
       console.log("Starting related videos fetch process");
       try {
+        if(!topic) {
+          throw new Error("Topic ID is missing");
+        }
         const response = await fetch(
           `/api/videos/?limit=22&topic=${topic}&subtopic=${subtopic}`
         );
-        console.log(`Received response with status: ${response.status}`);
+        console.log(`Related videos received response with status: ${response.status}`);
+        console.log("Response data:", JSON.stringify(response));
         const data = await response.json();
         if (!response.ok) {
-          throw new Error(
-            `HTTP error ${response.status}` + JSON.stringify(data)
-          );
+          console.error("Error fetching related videos:", data.error);
         }
-        console.log("Successfully fetched videos. Total videos:", data.length);
+        console.log("Successfully fetched related videos. Total videos:", data.length);
         
         let receivedVideos = null
         if (data.results){
-          const receivedVideos = data.results
+          receivedVideos = data.results
         } 
         // Extract videosfrom results
         if (!receivedVideos || receivedVideos < 22) {
@@ -91,7 +63,7 @@ export default function MainVideo({ params }: Props) {
             const response = await fetch(
               `/api/videos/?limit=22&topic=${topic}`
             );
-            console.log(`Received response with status: ${response.status}`);
+            console.log(`Related videos inner received response with status: ${response.status}`);
             const data = await response.json();
             if (!response.ok) {
               throw new Error(
@@ -99,7 +71,7 @@ export default function MainVideo({ params }: Props) {
               );
             }
             console.log(
-              "Successfully fetched videos. Total videos:",
+              "Successfully fetched related videos. Total videos:",
               data.length
             );
             // Extract videosfrom results and add to receivedVideos
@@ -111,20 +83,37 @@ export default function MainVideo({ params }: Props) {
           } catch (error) {
             console.error("Error fetching videos:", error);
             return error;
-          } finally {
-            console.log("Video fetch process completed");
           }
         }
         setRelatedVideos(receivedVideos);
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching videos:", error);
+        console.error("Error fetching related videos: ", error);
         return error;
-      } finally {
-        console.log("Video fetch process completed");
       }
     };
-    apiRelatedVideos();
+
+    const fetchVideo = async () => {
+      console.log("Starting video fetch process");
+      try {
+        const response = await fetch("/api/videos/" + video_id);
+        console.log(`Received response with status: ${response.status}`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(
+            `HTTP error ${response.status}` + JSON.stringify(data)
+          );
+        }
+        console.log("Successfully fetched video.");
+        // Extract videosfrom results
+        setVideo(data);
+        fetchRelatedVideos();
+      } catch (error) {
+        console.error("Error fetching videos:", error);
+        return error;
+      }
+    };
+    fetchVideo();
   }, [topic, subtopic, video_id]);
   return (
     <>
