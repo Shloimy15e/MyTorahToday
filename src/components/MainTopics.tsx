@@ -45,7 +45,7 @@ export default function MainTopics({ params }: Props) {
       console.log("Fetching topics");
       try {
         const response = await fetch(
-          `/api/subtopics/?topic__name__iexact=${topic}`
+          `/api/subtopics/?topic__name__iexact=${displayTopic}`
         );
         const data = await response.json();
         if (!response.ok) {
@@ -63,7 +63,7 @@ export default function MainTopics({ params }: Props) {
       }
     };
     fetchSubtopics();
-  }, [topic]);
+  }, [displayTopic]);
 
   useEffect(() => {
     const fetchVideosBySubtopic = async () => {
