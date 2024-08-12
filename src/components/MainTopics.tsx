@@ -1,14 +1,12 @@
 "use client";
 import Image from "next/image";
-import { getVideosBySubtopic } from "@/data/videoData";
+import { getVideosBySubtopicName } from "@/data/videoData";
 import VideoCard from "@/components/VideoCard";
 import VideoDialog from "@/components/VideoDialog";
-import { subtopicData } from "@/data/subtopicData";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Video from "@/types/Video";
 import LoadingAnimation from "@/components/LoadingAnimation";
-import { delay } from "framer-motion";
 
 type Props = {
   params: {
@@ -23,10 +21,14 @@ export default function MainTopics({ params }: Props) {
   const displayTopic = Topic.replace("-", " ");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [topicObj, setTopicObj] = useState<object>({});
-  const [topicId, setTopicId] = useState<string>("");
+  const [videosBySubtopics, setVideosBySubtopics] = useState<
+    { subtopicName: string; videos: Video[] }[]
+  >([]);
+  const [subtopics, setSubtopics] = useState<
+    { name: string; id: number; subtopic_id: number; subtopic_name: string }[]
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorFetchingSubtopics, setErrorFetchingSubtopics] = useState(false);
   const [errorFetchingVideos, setErrorFetchingVideos] = useState(false);
 
   const openDialog = (video: Video) => {
@@ -39,35 +41,50 @@ export default function MainTopics({ params }: Props) {
   };
 
   useEffect(() => {
-    const fetchVideos = async () => {
-      console.log("Starting video fetch process");
+    const fetchSubtopics = async () => {
+      console.log("Fetching topics");
       try {
-        const response = await fetch(`/api/videos?limit=100&topic__name__iexact=${topic}`);
-        console.log(`Received response with status: ${response.status}`);
+        const response = await fetch(
+          `/api/subtopics/?topic__name__iexact=${topic}`
+        );
         const data = await response.json();
         if (!response.ok) {
           throw new Error(
             `HTTP error ${response.status}` + JSON.stringify(data)
           );
         }
-        console.log(
-          "Successfully fetched videos. Total videos:",
-          data.results.length
-        );
-        // Extract videosfrom results
-        setVideos(data.results);
-        setErrorFetchingVideos(false);
+        console.log("Subtopics retrieved: " + data.count);
+        setSubtopics(data.results);
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching videos:", error);
+        console.error("Error fetching topics: ", error);
+        setErrorFetchingSubtopics(true);
         setIsLoading(false);
-        setErrorFetchingVideos(true);
-        return error;
       }
     };
+    fetchSubtopics();
+  }, [topic]);
 
-    fetchVideos();
-  }, [topic, topicId]);
+  useEffect(() => {
+    const fetchVideosBySubtopic = async () => {
+      try {
+        setIsLoading(true);
+        const videosBySubtopic = await Promise.all(
+          subtopics.map(async (subtopic) => {
+            const videos = await getVideosBySubtopicName(subtopic.name);
+            return { subtopicName: subtopic.name, videos };
+          })
+        );
+        setVideosBySubtopics(videosBySubtopic);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching videos by topic: ", error);
+        setErrorFetchingVideos(true);
+        setIsLoading(false);
+      }
+    };
+    fetchVideosBySubtopic();
+  }, [subtopics]);
 
   return (
     <>
@@ -84,30 +101,27 @@ export default function MainTopics({ params }: Props) {
           {displayTopic}
         </h1>
       </div>
-      <div className="bg-neutral-100 grid grid-cols-1 justify-items-center">
-        {isLoading ? (
-          <LoadingAnimation />
-        ) : 
-        errorFetchingVideos ? (
-          <div className="flex flex-col items-center justify-center h-64">
-            <h1 className="text-4xl font-bold mb-4">Error fetching videos</h1>
-            <p className="text-gray-600 text-xl">
-              Sorry, there was an error fetching the videos. Please try again
-              later.
-            </p>
-          </div>
-        ) : videos.length > 0 ? (
-          // Get all videos in topic divided in subtopics
-          subtopicData.map((subtopic) =>
-            getVideosBySubtopic(videos, subtopic.name).length === 0 ? null : (
-              <div key={subtopic.id}>
-                <h1 className="text-4xl font-bold my-6 ml-6">
-                  {subtopic.name}
+      {isLoading ? (
+        <LoadingAnimation />
+      ) : errorFetchingVideos ? (
+        <div className="flex flex-col items-center justify-center h-64">
+          <h1 className="text-4xl font-bold mb-4">Error fetching videos</h1>
+          <p className="text-gray-600 text-xl">
+            Sorry, there was an error fetching the videos. Please try again
+            later.
+          </p>
+        </div>
+      ) : (
+        videosBySubtopics.map(
+          ({ subtopicName, videos }) =>
+            videos.length > 0 && (
+              <div key={subtopicName}>
+                <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
+                  {subtopicName}
                 </h1>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
-                  {getVideosBySubtopic(videos, subtopic.name)
-                    .slice(0, 10)
-                    .map((video) => (
+                <div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
+                    {videos.slice(0, 8).map((video) => (
                       <VideoCard
                         video={video}
                         key={video.id}
@@ -115,32 +129,22 @@ export default function MainTopics({ params }: Props) {
                         showDescription={true}
                       />
                     ))}
-                </div>
-                {getVideosBySubtopic(videos, subtopic.name).length > 10 && (
-                  <div className="flex justify-center items-center">
-                    <Link
-                      href={`/topics/${topic}/${subtopic.name.toLowerCase()}`}
-                      className="text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 my-6 w-4/5"
-                    >
-                      See more from {subtopic.name}
-                    </Link>
                   </div>
-                )}{" "}
+                  {videos.length > 11 && (
+                    <div className="flex justify-center items-center">
+                      <Link
+                        href={`${subtopicName.toLowerCase()}`}
+                        className="text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-24 my-6 w-4/5"
+                      >
+                        See more from {subtopicName}
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </div>
             )
-          )
-        ) : (
-          <div className="p-6 w-3/5 text-center">
-            <h1 className="text-3xl font-semibold text-gray-800">
-              No videos are in topic &quot;{displayTopic}&quot;{" "}
-            </h1>
-            <p className="text-2xl text-gray-600">
-              I&apos;m sorry but I didn&apos;t get yet to this topic you can
-              check in a different time to see where I&apos;m up to.
-            </p>
-          </div>
-        )}
-      </div>
+        )
+      )}
       <VideoDialog
         video={selectedVideo}
         isOpen={isDialogOpen}

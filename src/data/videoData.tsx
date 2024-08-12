@@ -1,23 +1,28 @@
 import Video from "@/types/Video";
 
-
-export const getVideoByVideo_id = (id: string) : Promise<Video> => {
+export const getVideoByVideo_id = (id: string): Promise<Video> => {
   const getVideoByVideo_id = async function (): Promise<Video> {
     const response = await fetch("/api/videos/" + id);
     return await response.json();
-  }
+  };
   return getVideoByVideo_id();
 };
 
-export const getVideosByTopic = (videos: Video[], topicName: string): Video[] => {
-  return videos.filter((video) => video.topic_name === topicName);
+export const getVideosByTopicName = async (
+  topicName: string
+): Promise<Video[]> => {
+  console.log("Fetching videos for topic: " + topicName);
+  const response = await fetch(`/api/videos/?topic__name__iexact=${topicName}`);
+  const data = await response.json();
+  return data.results;
 };
 
-export const getVideosBySubtopic = (
-  videos: Video[],
+export const getVideosBySubtopicName = async (
   subtopic: string
-): Video[] => {
-  return videos.filter((video) => video.subtopic_name === subtopic);
+): Promise<Video[]> => {
+  const response = await fetch("/api/videos/?subtopic__name__iexact=" + subtopic);
+  const data = await response.json();
+  return data.results;
 };
 
 export const signature: string =
