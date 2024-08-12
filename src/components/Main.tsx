@@ -9,7 +9,7 @@ import { topicData } from "@/data/topicData";
 import Video from "@/types/Video";
 import LoadingAnimation from "./LoadingAnimation";
 
-export const parshahThisWeek: string = "Balak";
+export const parshahThisWeek: string = "Va'eschanon";
 
 export default function Main() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
