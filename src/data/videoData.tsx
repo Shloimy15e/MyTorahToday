@@ -20,7 +20,7 @@ export const getVideosByTopicName = async (
 export const getVideosBySubtopicName = async (
   subtopic: string
 ): Promise<Video[]> => {
-  const response = await fetch("/api/videos/?subtopic__name__iexact=" + subtopic);
+  const response = await fetch("/api/videos/?subtopic__name__iexact=" + subtopic + "&limit=6");
   const data = await response.json();
   return data.results;
 };
