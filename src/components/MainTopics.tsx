@@ -121,16 +121,38 @@ export default function MainTopics({ params }: Props) {
                 </h1>
                 <div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
-                    {videos.slice(0, 8).map((video) => (
-                      <VideoCard
-                        video={video}
-                        key={video.id}
-                        onClick={() => openDialog(video)}
-                        showDescription={true}
-                      />
-                    ))}
+                    {videos
+                      .slice(
+                        0,
+                        window.innerWidth <= 640
+                          ? 3
+                          : window.innerWidth <= 1024
+                          ? 2
+                          : window.innerWidth <= 1280
+                          ? 3
+                          : window.innerWidth < 1536
+                          ? 4
+                          : 5
+                      )
+                      .map((video) => (
+                        <VideoCard
+                          video={video}
+                          key={video.id}
+                          onClick={() => openDialog(video)}
+                          showDescription={true}
+                        />
+                      ))}
                   </div>
-                  {videos.length > 11 && (
+                  {videos.length >
+                    (window.innerWidth < 640
+                      ? 3
+                      : window.innerWidth < 1024
+                      ? 2
+                      : window.innerWidth < 1280
+                      ? 3
+                      : window.innerWidth < 1536
+                      ? 4
+                      : 5) && (
                     <div className="flex justify-center items-center">
                       <Link
                         href={`${subtopicName.toLowerCase()}`}

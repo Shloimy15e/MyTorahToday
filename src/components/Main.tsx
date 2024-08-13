@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import VideoCard from "./VideoCard";
+import TopicCard from "./TopicCard";
 import VideoDialog from "./VideoDialog";
 import {
   getVideosByTopicName,
@@ -162,16 +163,30 @@ export default function Main() {
             </h1>
             <div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
-                {videosThisParshah.slice(0, 8).map((video) => (
-                  <VideoCard
-                    video={video}
-                    key={video.id}
-                    onClick={() => openDialog(video)}
-                    showDescription={true}
-                  />
-                ))}
+                {videosThisParshah
+                  .slice(
+                    0,
+                    window.innerWidth < 640
+                      ? 4
+                      : window.innerWidth < 1536
+                      ? 6
+                      : 10
+                  )
+                  .map((video) => (
+                    <VideoCard
+                      video={video}
+                      key={video.id}
+                      onClick={() => openDialog(video)}
+                      showDescription={true}
+                    />
+                  ))}
               </div>
-              {videosThisParshah.length > 8 && (
+              {videosThisParshah.length >
+                (window.innerWidth < 640
+                  ? 4
+                  : window.innerWidth < 1536
+                  ? 6
+                  : 10) && (
                 <div className="flex justify-center items-center">
                   <Link
                     href={`/topics/parshah/${parshahThisWeek.toLowerCase()}`}
@@ -181,6 +196,19 @@ export default function Main() {
                   </Link>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+        {/* List of topics */}
+        {isLoadingTopics ? null : errorFetchingTopics ? null : (
+          <div>
+            <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
+              Topics
+            </h1>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
+              {topics.map((topic) => (
+                <TopicCard topic={topic} isSubtopic={false} key={topic.id} />
+              ))}
             </div>
           </div>
         )}
@@ -212,7 +240,7 @@ export default function Main() {
                   these randomly fetched videos.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
-                  {randomVideos.slice(0, 8).map((video) => (
+                  {randomVideos.slice(0, 10).map((video) => (
                     <VideoCard
                       video={video}
                       key={video.id}
@@ -236,16 +264,30 @@ export default function Main() {
                   </h1>
                   <div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
-                      {videos.slice(0, 8).map((video) => (
-                        <VideoCard
-                          video={video}
-                          key={video.id}
-                          onClick={() => openDialog(video)}
-                          showDescription={true}
-                        />
-                      ))}
+                      {videos
+                        .slice(
+                          0,
+                          window.innerWidth < 640
+                            ? 4
+                            : window.innerWidth < 1536
+                            ? 6
+                            : 10
+                        )
+                        .map((video) => (
+                          <VideoCard
+                            video={video}
+                            key={video.id}
+                            onClick={() => openDialog(video)}
+                            showDescription={true}
+                          />
+                        ))}
                     </div>
-                    {videos.length > 11 && (
+                    {videos.length >
+                      (window.innerWidth < 640
+                        ? 4
+                        : window.innerWidth < 1536
+                        ? 6
+                        : 10) && (
                       <div className="flex justify-center items-center">
                         <Link
                           href={`/topics/${topicName.toLowerCase()}`}
