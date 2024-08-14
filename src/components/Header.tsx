@@ -15,6 +15,7 @@ import {
   Bars3Icon,
   XMarkIcon,
   UserCircleIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
@@ -74,18 +75,6 @@ export default function Header() {
             MyTorahToday
           </Link>
         </div>
-        {/*<div className="hidden lg:grid lg:grid-cols-subgrid col-span-9 items-center justify-items-end">
-          {navigation.map((item) => (
-            <div key={item.name} className="col-span-2">
-              <Link
-                href={item.href}
-                className="text-2xl font-semibold text-gray-800 hover:text-gray-900"
-              >
-                {item.name}
-              </Link>
-            </div>
-          ))}
-        </div>*/}
         <div className="flex items-center justify-center col-span-1 col-end-11">
           <Menu as="div" className="relative inline-block text-left">
             <div className="flex items-center justify-center">
@@ -107,12 +96,16 @@ export default function Header() {
               leaveTo="transform opacity-0 scale-95"
             >
               <MenuItems className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <div className="px-1 py-1 flex items-center justify-center">
+                <div className="p-4 flex flex-col gap-2 items-center justify-center text-2xl">
+                  {/* User Avatar */}
+                  <div className="flex items-center justify-center">
+                    <UserCircleIcon aria-hidden="true" className="h-10 w-10 stroke-1" />
+                  </div>
                   {isLoggedIn ? (
                     <MenuItem>
                       <button
                         onClick={() => setIsLogoutDialogOpen(true)}
-                        className="active:bg-gray-100 active:text-red-900 text-red-500 font-semibold group flex w-full items-center rounded-md px-2 py-2 text-sm"
+                        className="active:bg-gray-100 active:text-red-900 text-red-500 font-semibold group flex w-full items-center rounded-md px-2 py-2"
                       >
                         Log out
                       </button>
@@ -122,7 +115,7 @@ export default function Header() {
                       <MenuItem>
                         <button
                           onClick={() => setIsLoginDialogOpen(true)}
-                          className="active:bg-gray-100 active:text-gray-900 text-gray-700 group flex w-full items-center rounded-md px-2 py-2 text-sm"
+                          className="active:bg-gray-100 active:text-gray-900 text-gray-700 group flex w-full items-center rounded-md px-2 py-2"
                         >
                           Log in
                         </button>
@@ -130,7 +123,7 @@ export default function Header() {
                       <MenuItem>
                         <button
                           onClick={() => setIsSignupDialogOpen(true)}
-                          className="active:bg-gray-100 active:text-gray-900 text-gray-700 group flex w-full items-center rounded-md px-2 py-2 text-sm"
+                          className="active:bg-gray-100 active:text-gray-900 text-gray-700 group flex w-full items-center rounded-md px-2 py-2"
                         >
                           Sign up
                         </button>

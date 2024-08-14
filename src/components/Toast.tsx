@@ -13,7 +13,7 @@ export default function Toast({ message, type = 'info', duration = 3000 }: { mes
   }
 
   return (
-    <div className={`fixed top-6 right-6 p-6 rounded-lg text-white text-lg ${type === 'error' ? 'bg-red-500' : 'bg-blue-500'}`}>
+    <div className={`fixed z-50 top-6 right-6 p-6 rounded-lg text-white text-lg ${type === 'error' ? 'bg-red-500' : 'bg-blue-500'}`}>
       {message}
     </div>
   );
