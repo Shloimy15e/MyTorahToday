@@ -1,6 +1,6 @@
 "use client";
 import Header from "@/components/Header";
-import MainTopics from "@/components/MainTopics";
+import MainTopicPage from "@/components/MainTopicPage";
 import Footer from "@/components/Footer";
 
 type Props = {
@@ -14,7 +14,7 @@ export default function TopicPage({ params }: Props) {
   return (
     <>
       <Header />
-      <MainTopics params={params} />
+      <MainTopicPage params={params} />
       <Footer />
     </>
   );

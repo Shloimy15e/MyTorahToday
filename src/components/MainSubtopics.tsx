@@ -17,10 +17,10 @@ type Props = {
 //Get the topic name from the params and pass it to the getVideosByTopic function
 export default function MainSubtopics({ params }: Props) {
   const { topic, subtopic } = params;
-  const Topic = topic.charAt(0).toUpperCase() + topic.slice(1);
-  const Subtopic = subtopic.charAt(0).toUpperCase() + subtopic.slice(1);
-  const displayTopic = Topic.replace("-", " ");
-  const displaySubtopic = Subtopic.replace("-", " ");
+  const extractTopic = topic.replace("-", " ");
+  const Topic = extractTopic.charAt(0).toUpperCase() + topic.slice(1);
+  const extractSubtopic = subtopic.replace("-", " ");
+  const Subtopic = extractSubtopic.charAt(0).toUpperCase() + subtopic.slice(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
   const [videos, setVideos] = useState<Video[]>([]);
@@ -41,7 +41,7 @@ export default function MainSubtopics({ params }: Props) {
       console.log("Starting video fetch process");
       try {
         const response = await fetch(
-          `/api/videos?limit=100&topic__name__iexact=${topic}&subtopic__name__iexact=${subtopic}`
+          `/api/videos?limit=100&topic__name__iexact=${extractTopic}&subtopic__name__iexact=${subtopic}`
         );
         console.log(`Received response with status: ${response.status}`);
         const data = await response.json();
@@ -78,7 +78,7 @@ export default function MainSubtopics({ params }: Props) {
           className={"object-cover opacity-60"}
         />
         <h1 className="absolute text-white text-3xl md:text-5xl lg:text-6xl font-bold">
-          {displaySubtopic}
+          {Subtopic}
         </h1>
       </div>
       <div className="bg-neutral-100 grid grid-cols-1 justify-items-center py-16">
@@ -109,20 +109,20 @@ export default function MainSubtopics({ params }: Props) {
                 href={`/topics/${topic}`}
                 className="text-lg bg-primary-blue text-gray-100 font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 hover:bg-blue-950"
               >
-                Return to {displayTopic}
+                Return to {Topic}
               </Link>
             </div>
           </div>
         ) : (
           <div className="flex flex-col justify-center items-center m-2 gap-2">
             <h1 className="text-2xl font-bold">
-              No videos found in {displaySubtopic}
+              No videos found in {Subtopic}
             </h1>
             <Link
               href={`/topics/${topic}`}
               className="text-lg bg-primary-blue text-gray-100 font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 hover:bg-blue-950"
             >
-              Go back to {displayTopic}
+              Go back to {Topic}
             </Link>
           </div>
         )}
