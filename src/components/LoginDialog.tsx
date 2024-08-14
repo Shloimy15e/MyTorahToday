@@ -9,6 +9,7 @@ import {
 import { Fragment, useState } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useToast } from "./ToastProvider";
+import { parse } from "path";
 
 export default function LoginDialog(props: {
   isOpen: boolean;
@@ -56,8 +57,8 @@ export default function LoginDialog(props: {
       const data = await response.json();
       // If response is not ok, throw error
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(JSON.stringify(errorData));
+        console.error(JSON.stringify(data));
+        throw new Error(JSON.stringify({ data, status: response.status }));
       }
 
       setTimeout(() => {
@@ -74,9 +75,10 @@ export default function LoginDialog(props: {
         window.location.href = "/";
       }, 1000);
     } catch (error: any) {
-      console.error("Full error object:", error);
-      let errorMessage = "Login failed. Error: " + error;
+      // Extract the error message and response status
+      const errorMessage = "Login failed";
       showToast(errorMessage, "error");
+      setIsLoading(false);
       return;
     }
   }
