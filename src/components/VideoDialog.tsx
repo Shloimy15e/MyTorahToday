@@ -92,14 +92,14 @@ export default function VideoDialog(props: {
                   {/* Likes and other info */}
                   <div className="mx-4 mt-4 flex items-center justify-normal">
                     <span className="text-gray-500 flex items-center justify-center gap-2">
-                      {props.video.likes}
+                      {props.video.likes + props.video.userLikes}
                       <HandThumbUpIcon
-                        className="inline h-5 w-5 text-gray-400"
+                        className={`inline h-5 w-5 ${props.video.is_liked_by_user ? 'text-primary-blue' : 'text-gray-400'}`}
                         aria-hidden="true"
                       />
                     </span>
                     <span className="text-gray-500 ml-4 flex items-center justify-center gap-2">
-                      {props.video.views}
+                      {props.video.views + props.video.userViews}
                       <EyeIcon
                         className="inline h-5 w-5 text-gray-400"
                         aria-hidden="true"
