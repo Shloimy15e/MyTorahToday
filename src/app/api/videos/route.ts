@@ -22,6 +22,7 @@ export async function GET(request: Request): Promise<Response> {
   const topic__name = searchParams.get("topic__name__iexact") || "";
   const subtopic__name = searchParams.get("subtopic__name__iexact") || "";
   const url = `https://mttbackend-production.up.railway.app/api/videos/?limit=${limit}&offset=${offset}&topic=${topic}&subtopic=${subtopic}&topic__name__iexact=${topic__name}&subtopic__name__iexact=${subtopic__name}`
+  const authToken = request.headers.get("Authorization");
 
   console.log(url);
   const response = await fetch(url,
@@ -29,6 +30,7 @@ export async function GET(request: Request): Promise<Response> {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        ...(authToken && { "Authorization": `${authToken}` }),
       },
       agent: agent,
     }

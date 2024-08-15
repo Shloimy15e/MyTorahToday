@@ -5,7 +5,11 @@ import VideoDialog from "./VideoDialog";
 import LoadingAnimation from "./LoadingAnimation";
 import { useEffect, useState } from "react";
 import { HandThumbUpIcon } from "@heroicons/react/24/solid";
-import { EyeIcon, CalendarIcon } from "@heroicons/react/24/outline";
+import {
+  EyeIcon,
+  CalendarIcon,
+  BookmarkIcon,
+} from "@heroicons/react/24/outline";
 
 type Props = {
   params: {
@@ -19,8 +23,12 @@ export default function MainVideo({ params }: Props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
   const [video, setVideo] = useState<Video>({} as Video);
+  const [videoLikes, setVideoLikes] = useState<number>(0);
+  const [videoIsLiked, setVideoIsLiked] = useState<boolean>(false);
+  const [videoIsSaved, setVideoIsSaved] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [relatedVideos, setRelatedVideos] = useState<Video[]>([]);
+  const accessToken = localStorage.getItem("accessToken");
 
   const openDialog = (video: Video) => {
     setSelectedVideo(video);
@@ -34,6 +42,78 @@ export default function MainVideo({ params }: Props) {
 
   const { topic, subtopic, video_id } = params;
 
+  async function likeAndUnlikeVideo(id: Video["id"]) {
+    if (!localStorage.getItem("accessToken")) {
+      return;
+    }
+    try {
+      const response = await fetch(`/api/videos/${id}/like`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken
+            ? {
+                Authorization: `Token ${accessToken}`,
+              }
+            : {}),
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
+      }
+      if (data.detail.includes("unliked")) {
+        // Remove one like from props.video.likes
+        setVideoLikes(videoLikes - 1);
+        setVideoIsLiked(false);
+        console.log("Successfully unliked video");
+      } else if (data.detail.includes("liked")) {
+        // Add one like to props.video.likes
+        setVideoLikes(videoLikes + 1);
+        setVideoIsLiked(true);
+        console.log("Successfully liked video");
+      }
+    } catch (error) {
+      console.error("Error liking video:", error);
+      return error;
+    }
+  }
+
+  async function saveAndUnsaveVideo(id: Video["id"]) {
+    if (!localStorage.getItem("accessToken")) {
+      return;
+    }
+    try {
+      const response = await fetch(`/api/videos/${id}/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken
+            ? {
+                Authorization: `Token ${accessToken}`,
+              }
+            : {}),
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
+      }
+      if (data.detail.includes("unsaved")) {
+        // Set videoIsSaved to false
+        setVideoIsSaved(false);
+        console.log("Successfully unsaved video");
+      } else if (data.detail.includes("saved")) {
+        // Set videoIsSaved to true
+        setVideoIsSaved(true);
+        console.log("Successfully saved video");
+      }
+    } catch (error) {
+      console.error("Error liking video:", error);
+      return error;
+    }
+  }
+
   useEffect(() => {
     const fetchRelatedVideos = async () => {
       console.log("Starting related videos fetch process");
@@ -42,7 +122,17 @@ export default function MainVideo({ params }: Props) {
           throw new Error("Topic ID is missing");
         }
         const response = await fetch(
-          `/api/videos/?limit=22&topic__name__iexact=${topic}&subtopic__name__iexact=${subtopic}`
+          `/api/videos/?limit=22&topic__name__iexact=${topic}&subtopic__name__iexact=${subtopic}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              ...(accessToken
+                ? {
+                    Authorization: `Token ${accessToken}`,
+                  }
+                : {}),
+            },
+          }
         );
         console.log(
           `Related videos received response with status: ${response.status}`
@@ -68,7 +158,17 @@ export default function MainVideo({ params }: Props) {
           );
           try {
             const response = await fetch(
-              `/api/videos/?limit=22&topic__name__iexact=${topic}`
+              `/api/videos/?limit=22&topic__name__iexact=${topic}`,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  ...(accessToken
+                    ? {
+                        Authorization: `Token ${accessToken}`,
+                      }
+                    : {}),
+                },
+              }
             );
             console.log(
               `Related videos inner received response with status: ${response.status}`
@@ -105,7 +205,16 @@ export default function MainVideo({ params }: Props) {
     const fetchVideo = async () => {
       console.log("Starting video fetch process");
       try {
-        const response = await fetch("/api/videos/" + video_id);
+        const response = await fetch("/api/videos/" + video_id, {
+          headers: {
+            "Content-Type": "application/json",
+            ...(accessToken
+              ? {
+                  Authorization: `Token ${accessToken}`,
+                }
+              : {}),
+          },
+        });
         console.log(`Received response with status: ${response.status}`);
         const data = await response.json();
         if (!response.ok) {
@@ -116,6 +225,9 @@ export default function MainVideo({ params }: Props) {
         console.log("Successfully fetched video.");
         // Extract videosfrom results
         setVideo(data);
+        setVideoLikes(data.likes + data.userLikes);
+        setVideoIsLiked(data.is_liked_by_user);
+        console.log("is liked by user", data.is_liked_by_user);
         fetchRelatedVideos();
       } catch (error) {
         console.error("Error fetching videos:", error);
@@ -123,7 +235,7 @@ export default function MainVideo({ params }: Props) {
       }
     };
     fetchVideo();
-  }, [topic, subtopic, video_id]);
+  }, [topic, subtopic, video_id, accessToken]);
   return (
     <>
       {isLoading ? (
@@ -143,13 +255,35 @@ export default function MainVideo({ params }: Props) {
               {/* likes and views */}
               <div className="flex gap-4">
                 <div className="flex gap-2">
-                  <button className="text-xl flex flex-wrap items-center gap-2 bg-gray-200 text-gray-700 py-1.5 px-3 rounded-full">
-                    <HandThumbUpIcon className="w-5 h-5 fill-gray-200 stroke-gray-700 stroke-2" />
-                    {video.likes}{" "}
+                  <button
+                    onClick={() => likeAndUnlikeVideo(video.id)}
+                    className={`text-xl flex flex-wrap items-center gap-2 ${
+                      videoIsLiked
+                        ? "bg-primary-blue text-white"
+                        : "bg-gray-200 text-gray-700"
+                    } py-1.5 px-3 rounded-full`}
+                  >
+                    <HandThumbUpIcon
+                      className={`w-5 h-5 fill-gray-200 ${
+                        !videoIsLiked ? "stroke-gray-700" : ""
+                      } stroke-2`}
+                    />{" "}
+                    {videoLikes}{" "}
                   </button>{" "}
                 </div>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => saveAndUnsaveVideo(video.id)}
+                    className={`text-xl flex flex-wrap items-center gap-2 ${
+                      videoIsSaved
+                        ? "bg-primary-blue text-white"
+                        : "bg-gray-200 text-gray-700"
+                    } py-1.5 px-3 rounded-full`}  >
+                    <BookmarkIcon className="w-5 h-5" />{" "}
+                  </button>
+                </div>
               </div>
-              <div className="flex flex-col gap-2 bg-neutral-200 rounded-xl p-4">
+              <div className="flex flex-col gap-2 bg-neutral-200 rounded-xl p-4 w-full">
                 <div className="flex flex-wrap justify-between">
                   <div className="flex flex-wrap gap-6">
                     <span className="flex flex-wrap items-center gap-1">
