@@ -12,7 +12,7 @@ import Link from "next/link";
 import Video from "@/types/Video";
 import LoadingAnimation from "./LoadingAnimation";
 
-export const parshahThisWeek: string = "Va'eschanon";
+export const parshahThisWeek: string = "Eikev";
 
 export default function Main() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
