@@ -12,8 +12,6 @@ import Link from "next/link";
 import Video from "@/types/Video";
 import LoadingAnimation from "./LoadingAnimation";
 
-export const parshahThisWeek: string = "Va'eschanon";
-
 export default function Main() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
@@ -22,6 +20,8 @@ export default function Main() {
   >([{ topicName: "", videos: [] }]);
   const [videosThisParshah, setVideosThisParshah] = useState<Video[]>([]);
   const [randomVideos, setRandomVideos] = useState<Video[]>([]);
+  const [parshahThisWeek, setParshahThisWeek] = useState<string>("");
+  const [isLoadingParshah, setIsLoadingParshah] = useState(true);
   const [topics, setTopics] = useState<{ name: string; id: number }[]>([]);
   const [isLoadingTopics, setIsLoadingTopics] = useState(true);
   const [isLoadingVideosByTopics, setIsLoadingVideosByTopic] = useState(true);
@@ -35,6 +35,28 @@ export default function Main() {
   const [errorFetchingTopics, setErrorFetchingTopics] = useState(false);
   const [errorFetchingRandomVideos, setErrorFetchingRandomVideos] =
     useState(false);
+
+  useEffect(() => {
+    const fetchParshahThisWeek = async () => {
+      try {
+        const response = await fetch("/api/parshah-this-week");
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(
+            `HTTP error ${response.status}` + JSON.stringify(data)
+          );
+        }
+        console.log("Parshah this week retrieved: " + data.count);
+        setParshahThisWeek(data.torah_part);
+        setIsLoadingParshah(false);
+      } catch (error) {
+        console.error("Error fetching parshah this week: ", error);
+        setErrorFetchingVideosThisParshah(true);
+        setIsLoadingParshah(false);
+      }
+    };
+    fetchParshahThisWeek();
+  }, []);
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -72,8 +94,10 @@ export default function Main() {
         setIsLoadingVideosThisParshah(false);
       }
     };
-    fetchVideosThisParshah();
-  }, []);
+    if (parshahThisWeek !== "") {
+      fetchVideosThisParshah();
+    }
+  }, [parshahThisWeek]);
 
   useEffect(() => {
     const fetchVideosByTopic = async () => {
@@ -143,7 +167,7 @@ export default function Main() {
         {/* Parshah of the week */}
         {isLoadingVideosThisParshah ? (
           <div>
-            <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
+            <h1 className="leading-relaxed capitalize pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
               {parshahThisWeek}
             </h1>
             <LoadingAnimation />
@@ -158,7 +182,7 @@ export default function Main() {
           </div>
         ) : (
           <div>
-            <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
+            <h1 className="capitalize leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
               {parshahThisWeek}
             </h1>
             <div>
