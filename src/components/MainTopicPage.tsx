@@ -75,31 +75,6 @@ export default function MainTopicsPage({ params }: Props) {
     }
   }, [subtopicsData]); // Run effect whenever topicsData changes
 
-  useEffect(() => {
-    if (subtopicsError) {
-      const fetchRandomVideos = async () => {
-        try {
-          const response = await fetch("/api/videos/");
-          const data = await response.json();
-          if (!response.ok) {
-            throw new Error(
-              `HTTP error ${response.status}` + JSON.stringify(data)
-            );
-          }
-          console.log("Random videos retrieved: " + data.results.length);
-          setRandomVideos(data.results);
-          setIsLoadingRandomVideos(false);
-        } catch (error) {
-          console.error("Error fetching random videos: ", error);
-          setErrorFetchingRandomVideos(true);
-          setIsLoadingRandomVideos(false);
-        }
-      };
-      fetchRandomVideos();
-    }
-  }, [subtopicsError]);
-
-
   return (
     <>
       {/* hero section */}
