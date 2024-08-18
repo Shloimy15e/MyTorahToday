@@ -9,7 +9,8 @@ export const getVideoByVideo_id = (id: string): Promise<Video> => {
 };
 
 export const getVideosByTopicName = async (
-  topicName: string
+  topicName: string,
+  limit: number = 0
 ): Promise<Video[]> => {
   console.log("Fetching videos for topic: " + topicName);
   const response = await fetch(`/api/videos/?topic__name__iexact=${topicName}`);

@@ -9,7 +9,7 @@ import {
 import { Fragment, useState } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useToast } from "./ToastProvider";
-import { parse } from "path";
+import { useForm } from "react-hook-form";
 
 export default function LoginDialog(props: {
   isOpen: boolean;
@@ -19,8 +19,14 @@ export default function LoginDialog(props: {
   const [isLoading, setIsLoading] = useState(false);
   const closeModal = () => props.onClose();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   // Login function
-  async function login(username: string, password: string) {
+  async function login(data: any) {
     // Make sure user is not logged in yet
     if (
       localStorage.getItem("accessToken") &&
@@ -32,40 +38,29 @@ export default function LoginDialog(props: {
     }
     setIsLoading(true);
     try {
-      // Check if they are both valid
-      if (
-        username.length < 1 ||
-        password.length < 1 ||
-        !username ||
-        !password
-      ) {
-        alert("Please enter a valid username and password");
-        return;
-      }
-
       // API call to login url
       const response = await fetch("/api/auth/token/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
+        body: JSON.stringify(data),
       });
-      const data = await response.json();
+
+      const responseData = await response.json();
       // If response is not ok, throw error
       if (!response.ok) {
-        console.error(JSON.stringify(data));
-        throw new Error(JSON.stringify({ data, status: response.status }));
+        console.error(JSON.stringify(responseData));
+        throw new Error(
+          JSON.stringify({ responseData, status: response.status })
+        );
       }
 
       setTimeout(() => {
         setIsLoading(false);
 
         // Set the access token in local storage
-        localStorage.setItem("accessToken", data.auth_token);
+        localStorage.setItem("accessToken", responseData.auth_token);
         // Set logged in to true
         localStorage.setItem("loggedIn", "true");
         showToast("Login successful", "info");
@@ -81,83 +76,6 @@ export default function LoginDialog(props: {
       setIsLoading(false);
       return;
     }
-  }
-
-  function LoginForm() {
-    return (
-      <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-        <form className="mt-3">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email address
-            </label>
-            <div className="mt-1">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-          </div>
-          <div className="mt-3">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-              aria-describedby="password-description"
-            >
-              Password
-            </label>
-            <div className="mt-1">
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-              <p
-                className="mt-2 text-sm text-gray-500"
-                id="password-description"
-              >
-                Remember me for 30 days.
-                <a
-                  href="#"
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                  Forgot password?
-                </a>
-              </p>
-            </div>
-            <div className="mt-3">
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const form = e.currentTarget.closest("form");
-                  const username = form?.querySelector(
-                    "#email"
-                  ) as HTMLInputElement;
-                  const password = form?.querySelector(
-                    "#password"
-                  ) as HTMLInputElement;
-                  login(username.value, password.value);
-                }}
-              >
-                Login
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    );
   }
 
   return (
@@ -195,7 +113,71 @@ export default function LoginDialog(props: {
                     Log in to your account
                   </DialogTitle>
 
-                  <LoginForm />
+                  <form onSubmit={handleSubmit(login)}>
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Email address
+                      </label>
+                      <div className="mt-1">
+                        <input
+                          id="username"
+                          type="text"
+                          autoComplete="username"
+                          required
+                          className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          {...register("username", {
+                            required: true,
+                            validate: (value: string) =>
+                              value.trim() !== "" ||
+                              "Username or email is required",
+                          })}
+                        />
+                        {errors.username && (
+                          <span className="text-red-500">
+                            {errors.username?.message as React.ReactNode}
+                          </span>
+                        )}{" "}
+                      </div>
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="password"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Password
+                      </label>
+                      <div className="mt-1">
+                        <input
+                          id="password"
+                          type="password"
+                          autoComplete="current-password"
+                          required
+                          className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          {...register("password", {
+                            required: true, // Register input field
+                            validate: (value: string) =>
+                              value.trim() !== "" || "Password is required",
+                          })} // Basic validation
+                        ></input>
+                        {errors.password && (
+                          <span className="text-red-500">
+                            {errors.password?.message as React.ReactNode}
+                          </span>
+                        )}{" "}
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <button
+                        type="submit" // Change to type="submit"
+                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Login
+                      </button>
+                    </div>
+                  </form>
                   {isLoading && (
                     <div className="fixed inset-0 bg-black bg-opacity-65 flex items-center justify-center z-50">
                       <div className="text-white text-2xl flex flex-col gap-1 items-center">
