@@ -4,6 +4,7 @@ import { getVideosBySubtopicName } from "@/data/videoData";
 import VideoCard from "@/components/VideoCard";
 import VideoDialog from "@/components/VideoDialog";
 import { useState, useEffect } from "react";
+import {useQuery} from "react-query";
 import Link from "next/link";
 import Video from "@/types/Video";
 import LoadingAnimation from "@/components/LoadingAnimation";
@@ -22,14 +23,14 @@ export default function MainTopicsPage({ params }: Props) {
   const displayTopic = Topic.replace("-", " ");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
-  const [videosBySubtopics, setVideosBySubtopics] = useState<
+  /*const [videosBySubtopics, setVideosBySubtopics] = useState<
     { subtopicName: string; videos: Video[] }[]
-  >([]);
-  const [subtopics, setSubtopics] = useState<
+  >([]);*/
+  /*const [subtopics, setSubtopics] = useState<
     { name: string; id: number; subtopic_id: number; subtopic_name: string }[]
-  >([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingSubtopics, setIsLoadingSubtopics] = useState(true);
+  >([]);*/
+  //const [isLoading, setIsLoading] = useState(false);
+  //const [isLoadingSubtopics, setIsLoadingSubtopics] = useState(true);
   const [errorFetchingSubtopics, setErrorFetchingSubtopics] = useState(false);
   const [errorFetchingVideos, setErrorFetchingVideos] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -43,51 +44,61 @@ export default function MainTopicsPage({ params }: Props) {
     setSelectedVideo({} as Video);
   };
 
-  useEffect(() => {
-    const fetchSubtopics = async () => {
-      console.log("Fetching topics");
-      try {
-        const response = await fetch(
-          `/api/subtopics/?topic__name__iexact=${displayTopic}`
-        );
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(
-            `HTTP error ${response.status}` + JSON.stringify(data)
-          );
-        }
-        console.log("Subtopics retrieved: " + data.count);
-        setSubtopics(data.results);
-        setIsLoadingSubtopics(false);
-      } catch (error) {
-        console.error("Error fetching topics: ", error);
-        setErrorFetchingSubtopics(true);
-        setIsLoadingSubtopics(false);
-      }
-    };
-    fetchSubtopics();
-  }, [displayTopic]);
+  const {
+    isLoading: isLoadingSubtopics,
+    error: subtopicsError,
+    data: subtopicsData,
+  } = useQuery("subtopics", () => fetch(`/api/subtopics/?topic__name__iexact=${displayTopic}`).then((res) => res.json()));
+
+  const {
+    isLoading: isLoadingVideosBySubtopics,
+    error: videosBySubtopicError,
+    data: videosBySubtopics,
+  } = useQuery("videosBySubtopic", async () => {
+    return await Promise.all(
+      subtopics.map(async (subtopic: any) => {
+        const videos = await getVideosBySubtopicName(subtopic.name);
+        return {
+          subtopicName: subtopic.name,
+          videos: videos,
+        };
+      })
+    );
+  });
+
+  const [subtopics, setSubtopics] = useState([]);
 
   useEffect(() => {
-    const fetchVideosBySubtopic = async () => {
-      try {
-        setIsLoading(true);
-        const videosBySubtopic = await Promise.all(
-          subtopics.map(async (subtopic) => {
-            const videos = await getVideosBySubtopicName(subtopic.name);
-            return { subtopicName: subtopic.name, videos };
-          })
-        );
-        setVideosBySubtopics(videosBySubtopic);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching videos by topic: ", error);
-        setErrorFetchingVideos(true);
-        setIsLoading(false);
-      }
-    };
-    fetchVideosBySubtopic();
-  }, [subtopics]);
+    if (subtopicsData?.results) {
+      // Check if topicsData and results exist
+      setSubtopics(subtopicsData.results);
+    }
+  }, [subtopicsData]); // Run effect whenever topicsData changes
+
+  useEffect(() => {
+    if (subtopicsError) {
+      const fetchRandomVideos = async () => {
+        try {
+          const response = await fetch("/api/videos/");
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(
+              `HTTP error ${response.status}` + JSON.stringify(data)
+            );
+          }
+          console.log("Random videos retrieved: " + data.results.length);
+          setRandomVideos(data.results);
+          setIsLoadingRandomVideos(false);
+        } catch (error) {
+          console.error("Error fetching random videos: ", error);
+          setErrorFetchingRandomVideos(true);
+          setIsLoadingRandomVideos(false);
+        }
+      };
+      fetchRandomVideos();
+    }
+  }, [subtopicsError]);
+
 
   return (
     <>
@@ -104,9 +115,9 @@ export default function MainTopicsPage({ params }: Props) {
           {displayTopic}
         </h1>
       </div>
-      {isLoading || isLoadingSubtopics ? (
+      {isLoadingSubtopics || isLoadingVideosBySubtopics ? (
         <LoadingAnimation />
-      ) : errorFetchingVideos ? (
+      ) : subtopicsError ? (
         <div className="flex flex-col items-center justify-center h-64">
           <h1 className="text-4xl font-bold mb-4">Error fetching videos</h1>
           <p className="text-gray-600 text-xl">
@@ -124,7 +135,7 @@ export default function MainTopicsPage({ params }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
                 {subtopics
                   .slice(0, showMore ? subtopics.length : 6)
-                  .map((subtopic) => (
+                  .map((subtopic: any) => (
                     <TopicCard
                       key={subtopic.id}
                       subtopic={subtopic}
@@ -144,7 +155,7 @@ export default function MainTopicsPage({ params }: Props) {
               )}
             </div>
           )}
-          {videosBySubtopics.map(
+          {videosBySubtopics?.map(
             ({ subtopicName, videos }) =>
               videos.length > 0 && (
                 <div key={subtopicName}>
@@ -166,7 +177,7 @@ export default function MainTopicsPage({ params }: Props) {
                             ? 4
                             : 5
                         )
-                        .map((video) => (
+                        .map((video: any) => (
                           <VideoCard
                             video={video}
                             key={video.id}
