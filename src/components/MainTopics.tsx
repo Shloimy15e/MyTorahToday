@@ -1,5 +1,6 @@
 "use client";
 import TopicCard from "./TopicCard";
+import LoadingTopicCardAnimation from "./LoadingTopicCardsAnimation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import LoadingAnimation from "./LoadingAnimation";
@@ -38,7 +39,11 @@ export default function MainTopics() {
           </h1>
         </div>
         {isLoadingTopics ? (
-          <LoadingAnimation />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <LoadingTopicCardAnimation key={index} isSubtopic={false} />
+            ))}
+          </div>
         ) : topicsError ? (
           <div className="text-red-500">
             Error fetching topics. Please try again later.

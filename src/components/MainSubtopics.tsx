@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
 import VideoCard from "@/components/VideoCard";
+import LoadingVideoCardAnimation from "./LoadingVideoCardAnimation";
 import VideoDialog from "@/components/VideoDialog";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Video from "@/types/Video";
-import LoadingAnimation from "@/components/LoadingAnimation";
 import { useQuery } from "react-query";
 
 type Props = {
@@ -27,7 +27,11 @@ export default function MainSubtopics({ params }: Props) {
     isLoading: isLoading,
     error: videosError,
     data: videos,
-  } = useQuery("videos", async () => fetch(`/api/videos?limit=100&topic__name__iexact=${extractTopic}&subtopic__name__iexact=${subtopic}`).then((res) => res.json()));
+  } = useQuery("videos", async () =>
+    fetch(
+      `/api/videos?limit=100&topic__name__iexact=${extractTopic}&subtopic__name__iexact=${subtopic}`
+    ).then((res) => res.json())
+  );
 
   const openDialog = (video: Video) => {
     setSelectedVideo(video);
@@ -55,7 +59,11 @@ export default function MainSubtopics({ params }: Props) {
       </div>
       <div className="bg-neutral-100 grid grid-cols-1 justify-items-center py-16">
         {isLoading ? (
-          <LoadingAnimation />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <LoadingVideoCardAnimation key={index} />
+            ))}
+          </div>
         ) : videosError ? (
           <div className="flex flex-col items-center justify-center h-64">
             <h1 className="text-4xl font-bold mb-4">Error fetching videos</h1>

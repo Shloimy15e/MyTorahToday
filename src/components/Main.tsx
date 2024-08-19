@@ -2,17 +2,16 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import VideoCard from "./VideoCard";
+import LoadingVideoCardAnimation from "./LoadingVideoCardAnimation";
 import TopicCard from "./TopicCard";
+import LoadingTopicCardAnimation from "./LoadingTopicCardsAnimation";
 import VideoDialog from "./VideoDialog";
 import {
   getVideosByTopicName,
-  getVideosBySubtopicName,
 } from "@/data/videoData";
 import Image from "next/image";
 import Link from "next/link";
 import Video from "@/types/Video";
-import LoadingAnimation from "./LoadingAnimation";
-// React thing for window size
 import { useMediaQuery } from 'react-responsive'
 
 
@@ -40,20 +39,6 @@ export default function Main(props: {
     error: topicsError,
     data: topicsData,
   } = useQuery("topics", () => fetch("/api/topics/").then((res) => res.json()));
-
-  // 2. Fetch Videos by Topic (using React Query)
-  const {
-    isLoading: isLoadingVideosByTopics,
-    error: videosByTopicError,
-    data: videosByTopic,
-  } = useQuery("videosByTopic", async () => {
-    return await Promise.all(
-      topics.slice(0, 4).map(async (topic: any) => {
-        const videos = await getVideosByTopicName(topic.name);
-        return { topicName: topic.name, videos };
-      })
-    );
-  });
 
   const [topics, setTopics] = useState([]);
 
@@ -88,6 +73,21 @@ export default function Main(props: {
     }
   }, [topicsError]);
 
+  // 2. Fetch Videos by Topic (using React Query)
+  const {
+    isLoading: isLoadingVideosByTopics,
+    error: videosByTopicError,
+    data: videosByTopic,
+  } = useQuery("videosByTopic", async () => {
+    console.log("Fetching videos by topic...");
+    return await Promise.all(
+      topics.slice(0, 4).map(async (topic: any) => {
+        const videos = await getVideosByTopicName(topic.name);
+        return { topicName: topic.name, videos };
+      })
+    );
+  },{enabled: topics.length > 0});
+
   const openDialog = (video: Video) => {
     setSelectedVideo(video);
     setIsDialogOpen(true);
@@ -97,7 +97,8 @@ export default function Main(props: {
     setIsDialogOpen(false);
     setSelectedVideo({} as Video);
   };
-
+  console.log("videosByTopic", videosByTopic, " topics", topics);
+  console.log("isLoadingVideosByTopics", isLoadingVideosByTopics);
   return (
     <>
       <main className="bg-neutral-100 grid grid-cols-1">
@@ -150,7 +151,13 @@ export default function Main(props: {
           </div>
         )}
         {/* List of topics */}
-        {isLoadingTopics ? null : topicsError ? null : (
+        {isLoadingTopics ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <LoadingTopicCardAnimation key={index} isSubtopic={false} />
+            ))}
+          </div>
+        ) : topicsError ? null : (
           <div>
             <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
               Topics
@@ -168,13 +175,23 @@ export default function Main(props: {
             <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
               Topics
             </h1>
-            <LoadingAnimation />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
+              {Array.from({ length: 10 }).map((_, index) => (
+                <LoadingVideoCardAnimation key={index} />
+              ))}
+            </div>
           </div>
-        ) : topicsError ? (
+        ) : videosByTopicError ? (
           <div className="flex flex-col items-center justify-center h-64">
             <h1 className="text-4xl font-bold mb-4">No topics found</h1>
             {isLoadingRandomVideos ? (
-              <LoadingAnimation />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
+                {
+                  Array.from({ length: 10 }).map((_, index) => (
+                    <LoadingVideoCardAnimation key={index} />
+                  ))
+                }
+              </div>
             ) : errorFetchingRandomVideos ? (
               <div className="flex flex-col items-center justify-center h-64">
                 <h1 className="text-4xl font-bold mb-4">No videos found</h1>
@@ -202,8 +219,6 @@ export default function Main(props: {
               </div>
             )}
           </div>
-        ) : isLoadingVideosByTopics ? (
-          <LoadingAnimation />
         ) : (
           videosByTopic?.map(
             ({ topicName, videos }) =>
@@ -221,7 +236,7 @@ export default function Main(props: {
                             ? 4
                             : isTablet || isLaptop || isDesktop
                             ? 6 
-                            : 10
+                            : 8
                         )
                         .map((video) => (
                           <VideoCard
