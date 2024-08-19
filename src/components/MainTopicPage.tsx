@@ -4,11 +4,12 @@ import { getVideosBySubtopicName } from "@/data/videoData";
 import VideoCard from "@/components/VideoCard";
 import VideoDialog from "@/components/VideoDialog";
 import { useState, useEffect } from "react";
-import {useQuery} from "react-query";
+import { useQuery } from "react-query";
 import Link from "next/link";
 import Video from "@/types/Video";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import TopicCard from "./TopicCard";
+import { useMediaQuery } from "react-responsive";
 
 type Props = {
   params: {
@@ -23,17 +24,14 @@ export default function MainTopicsPage({ params }: Props) {
   const displayTopic = Topic.replace("-", " ");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
-  /*const [videosBySubtopics, setVideosBySubtopics] = useState<
-    { subtopicName: string; videos: Video[] }[]
-  >([]);*/
-  /*const [subtopics, setSubtopics] = useState<
-    { name: string; id: number; subtopic_id: number; subtopic_name: string }[]
-  >([]);*/
-  //const [isLoading, setIsLoading] = useState(false);
-  //const [isLoadingSubtopics, setIsLoadingSubtopics] = useState(true);
   const [errorFetchingSubtopics, setErrorFetchingSubtopics] = useState(false);
   const [errorFetchingVideos, setErrorFetchingVideos] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const isMobile = useMediaQuery({ maxWidth: 639 });
+  const isTablet = useMediaQuery({ minWidth: 640, maxWidth: 1023 });
+  const isLaptop = useMediaQuery({ minWidth: 1024, maxWidth: 1279 });
+  const isDesktop = useMediaQuery({ minWidth: 1280, maxWidth: 1535 });
+  const isLargeDesktop = useMediaQuery({ minWidth: 1536 });
 
   const openDialog = (video: Video) => {
     setSelectedVideo(video);
@@ -48,7 +46,11 @@ export default function MainTopicsPage({ params }: Props) {
     isLoading: isLoadingSubtopics,
     error: subtopicsError,
     data: subtopicsData,
-  } = useQuery("subtopics", () => fetch(`/api/subtopics/?topic__name__iexact=${displayTopic}`).then((res) => res.json()));
+  } = useQuery("subtopics", () =>
+    fetch(`/api/subtopics/?topic__name__iexact=${displayTopic}`).then((res) =>
+      res.json()
+    )
+  );
 
   const {
     isLoading: isLoadingVideosBySubtopics,
@@ -142,13 +144,13 @@ export default function MainTopicsPage({ params }: Props) {
                       {videos
                         .slice(
                           0,
-                          window.innerWidth <= 640
+                          isMobile
                             ? 3
-                            : window.innerWidth <= 1024
+                            : isTablet
                             ? 2
-                            : window.innerWidth <= 1280
+                            : isLaptop
                             ? 3
-                            : window.innerWidth < 1536
+                            : isDesktop
                             ? 4
                             : 5
                         )
@@ -162,13 +164,13 @@ export default function MainTopicsPage({ params }: Props) {
                         ))}
                     </div>
                     {videos.length >
-                      (window.innerWidth < 640
+                      (isMobile
                         ? 3
-                        : window.innerWidth < 1024
+                        : isTablet
                         ? 2
-                        : window.innerWidth < 1280
+                        : isLaptop
                         ? 3
-                        : window.innerWidth < 1536
+                        : isDesktop
                         ? 4
                         : 5) && (
                       <div className="flex justify-center items-center">

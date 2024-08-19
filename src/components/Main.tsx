@@ -12,6 +12,9 @@ import Image from "next/image";
 import Link from "next/link";
 import Video from "@/types/Video";
 import LoadingAnimation from "./LoadingAnimation";
+// React thing for window size
+import { useMediaQuery } from 'react-responsive'
+
 
 export default function Main(props: {
   parshahThisWeek: string;
@@ -19,22 +22,15 @@ export default function Main(props: {
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
-  //const [videosByTopic, setVideosByTopic] = useState<
-  //  { topicName: string; videos: Video[] }[]
-  //>([{ topicName: "", videos: [] }]);
   const [randomVideos, setRandomVideos] = useState<Video[]>([]);
-  //const [isLoadingParshah, setIsLoadingParshah] = useState(false);
-  //const [topics, setTopics] = useState<{ name: string; id: number }[]>([]);
-  //const [isLoadingTopics, setIsLoadingTopics] = useState(true);
-  //const [isLoadingVideosByTopics, setIsLoadingVideosByTopic] = useState(true);
   const [isLoadingRandomVideos, setIsLoadingRandomVideos] = useState(true);
-  //const [isLoadingVideosThisParshah, setIsLoadingVideosThisParshah] =
-  //  useState(false);
-  //const [errorFetchingVideosByTopics, setErrorFetchingVideosByTopics] =
-  //  useState(false);
-  //const [errorFetchingVideosThisParshah, setErrorFetchingVideosThisParshah] =
+  const isMobile = useMediaQuery({maxWidth: 639 })
+  const isTablet = useMediaQuery({minWidth: 640, maxWidth: 1023 })
+  const isLaptop = useMediaQuery({minWidth: 1024, maxWidth: 1279 })
+  const isDesktop = useMediaQuery({minWidth: 1280, maxWidth: 1535 })
+  const isLargeDesktop = useMediaQuery({minWidth: 1536 })
+
   useState(false);
-  //const [errorFetchingTopics, setErrorFetchingTopics] = useState(false);
   const [errorFetchingRandomVideos, setErrorFetchingRandomVideos] =
     useState(false);
 
@@ -125,9 +121,9 @@ export default function Main(props: {
                 {props.videosThisParshah
                   .slice(
                     0,
-                    window.innerWidth < 640
+                    isMobile
                       ? 4
-                      : window.innerWidth < 1536
+                      : isTablet || isLaptop || isDesktop || isLargeDesktop
                       ? 6
                       : 6
                   )
@@ -221,10 +217,10 @@ export default function Main(props: {
                       {videos
                         .slice(
                           0,
-                          window.innerWidth < 640
+                          isMobile
                             ? 4
-                            : window.innerWidth < 1536
-                            ? 6
+                            : isTablet || isLaptop || isDesktop
+                            ? 6 
                             : 10
                         )
                         .map((video) => (
@@ -237,9 +233,9 @@ export default function Main(props: {
                         ))}
                     </div>
                     {videos.length >
-                      (window.innerWidth < 640
+                      (isMobile
                         ? 4
-                        : window.innerWidth < 1536
+                        : isTablet || isLaptop || isDesktop
                         ? 6
                         : 10) && (
                       <div className="flex justify-center items-center">

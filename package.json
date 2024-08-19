@@ -21,7 +21,8 @@
     "react-dom": "^18",
     "react-hook-form": "^7.52.2",
     "react-lazy-load-image-component": "^1.6.2",
-    "react-query": "^3.39.3"
+    "react-query": "^3.39.3",
+    "react-responsive": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
