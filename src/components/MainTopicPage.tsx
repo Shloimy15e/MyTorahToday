@@ -35,7 +35,7 @@ export default function MainTopicsPage({ params }: Props) {
 
   useEffect(() => {
     router.refresh();
-  },[topic, router]);
+  }, [topic, router]);
 
   const openDialog = (video: Video) => {
     setSelectedVideo(video);
@@ -50,10 +50,13 @@ export default function MainTopicsPage({ params }: Props) {
     isLoading: isLoadingSubtopics,
     error: subtopicsError,
     data: subtopicsData,
-  } = useQuery("subtopics", () =>
-    fetch(`/api/subtopics/?topic__name__iexact=${displayTopic}`).then((res) =>
-      res.json()
-    )
+  } = useQuery(
+    "subtopics",
+    () =>
+      fetch(`/api/subtopics/?topic__name__iexact=${displayTopic}`).then((res) =>
+        res.json()
+      ),
+    { keepPreviousData: false }
   );
 
   const [subtopics, setSubtopics] = useState([]);
@@ -82,9 +85,9 @@ export default function MainTopicsPage({ params }: Props) {
         })
       );
     },
-    { enabled: subtopics.length > 0 }
+    { enabled: subtopics.length > 0, keepPreviousData: false }
   );
-
+  console.log(videosBySubtopics?.slice(0, 3));
   return (
     <>
       {/* hero section */}

@@ -18,9 +18,8 @@ type Props = {
 //Get the topic name from the params and pass it to the getVideosByTopic function
 export default function MainSubtopics({ params }: Props) {
   const { topic, subtopic } = params;
-  const extractTopic = topic.replace("-", " ");
-  const extractSubtopic = subtopic.replace("-", " ");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const extractTopic = topic.replace("-%", " ");
+  const extractSubtopic = subtopic.replace(/%20/g, " ").replace(/-/g, " ");  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
 
   const {
@@ -29,7 +28,7 @@ export default function MainSubtopics({ params }: Props) {
     data: videos,
   } = useQuery("videos", async () =>
     fetch(
-      `/api/videos?limit=100&topic__name__iexact=${extractTopic}&subtopic__name__iexact=${subtopic}`
+      `/api/videos?limit=100&topic__name__iexact=${extractTopic}&subtopic__name__iexact=${extractSubtopic}`
     ).then((res) => res.json())
   );
 
