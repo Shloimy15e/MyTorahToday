@@ -64,7 +64,6 @@ export const metadata: Metadata = {
     ],
   },
   manifest: "/site.webmanifest",
-  themeColor: "#ffffff",
   appleWebApp: {
     title: "My Torah Today",
     statusBarStyle: "default",
@@ -124,6 +123,7 @@ export const viewport: Viewport = {
   minimumScale: 1,
   maximumScale: 1,
   userScalable: true,
+themeColor: "#ffffff",
 };
 
 export default function RootLayout({
