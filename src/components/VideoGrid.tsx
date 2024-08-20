@@ -30,6 +30,7 @@ export default function VideoGrid(props: {
   const isLaptop = useMediaQuery({ minWidth: 1024, maxWidth: 1279 });
   const isDesktop = useMediaQuery({ minWidth: 1280, maxWidth: 1535 });
   const isLargeDesktop = useMediaQuery({ minWidth: 1536 });
+  
   return (
     <>
       <div>

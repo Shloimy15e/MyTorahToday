@@ -2,6 +2,7 @@ import { getVideosBySubtopicName } from "@/data/videoData";
 import HeroWithTitle from "@/components/ui/HeroWithTitle";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { Metadata } from "next";
 
 const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
   ssr: false, // Prevent server-side rendering
@@ -11,6 +12,12 @@ type Props = {
   params: {
     topic: string;
     subtopic: string;
+  };
+};
+
+export const generateMetadata = ({ params }: Props) => {
+  return {
+    title: `${params.subtopic.charAt(0).toUpperCase() + params.subtopic.slice(1).replace(/-/g, " ")} - My Torah Today`,
   };
 };
 

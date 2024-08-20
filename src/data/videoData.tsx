@@ -1,3 +1,4 @@
+import Subtopic from "@/types/Subtopic";
 import Video from "@/types/Video";
 
 export const getVideoByVideo_id = (id: string): Promise<Video> => {
@@ -31,6 +32,14 @@ export const getVideosBySubtopicName = async (
 
 export const fetchTopics = async (): Promise<any> => {
   const response = await fetch("https://www.mytorahtoday.com/api/topics/");
+  const data = await response.json();
+  return data.results;
+};
+
+export const fetchSubtopics = async (topic:string): Promise<Subtopic[]> => {
+  const url = `https://www.mytorahtoday.com/api/subtopics/?topic__name__iexact=${topic}`
+  console.log(url)
+  const response = await fetch(url);
   const data = await response.json();
   return data.results;
 };

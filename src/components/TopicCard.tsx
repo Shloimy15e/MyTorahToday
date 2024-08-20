@@ -1,15 +1,16 @@
+import Subtopic from "@/types/Subtopic";
+import Topic from "@/types/Topic";
 import Link from "next/link";
 
 export default function TopicCard(props: {
-  topic?: any;
+  topic: Topic | Subtopic;
   isSubtopic: boolean;
-  subtopic?: any;
 }) {
   const hrefTopic = props.isSubtopic
-    ? props.subtopic.topic_name.toLowerCase().replace(" ", "-")
+    ? (props.topic as Subtopic).topic_name.toLowerCase().replace(" ", "-")
     : props.topic.name.toLowerCase().replace(" ", "-");
   const hrefSubtopic = props.isSubtopic
-    ? props.subtopic.name.toLowerCase().replace(/ /g, "-")
+    ? props.topic.name.toLowerCase().replace(/ /g, "-")
     : null;
   return (
     <Link
@@ -22,21 +23,26 @@ export default function TopicCard(props: {
     >
       <div className="flex flex-col justify-between items-start w-full h-full p-4">
         <h1 className="text-4xl font-extrabold font-serif text-white tracking-wide rounded-xl">
-          {props.isSubtopic ? props.subtopic.name : props.topic.name}
+          {props.isSubtopic
+            ? (props.topic as Subtopic).name
+            : (props.topic as Topic).name}
         </h1>
         {!props.isSubtopic && (
           <p className="text-white text-center text-lg font-semibold">
-            {props.topic.subtopics
+            {(props.topic as Topic).subtopics
               .slice(0, 3)
               .map((subtopic: any, index: number) => (
                 <span key={subtopic.id}>
                   {subtopic.name}
-                  {index < Math.min(2, props.topic.subtopics.length - 1)
+
+                  {index <
+                  Math.min(2, (props.topic as Topic).subtopics.length - 1)
                     ? ", "
                     : "."}
                 </span>
               ))}
-            {props.topic.subtopics.length > 3 && ".."}
+
+            {(props.topic as Topic).subtopics.length > 3 && ".."}
           </p>
         )}{" "}
       </div>
