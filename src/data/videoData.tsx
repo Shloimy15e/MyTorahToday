@@ -2,26 +2,35 @@ import Video from "@/types/Video";
 
 export const getVideoByVideo_id = (id: string): Promise<Video> => {
   const getVideoByVideo_id = async function (): Promise<Video> {
-    const response = await fetch("/api/videos/" + id);
+    const response = await fetch("https://www.mytorahtoday.com/api/videos/" + id);
     return await response.json();
   };
   return getVideoByVideo_id();
 };
 
 export const getVideosByTopicName = async (
-  topicName: string,
-  limit: number = 0
+  topic: string,
+  limit: number = 6
+): Promise<{ topicName: string; videos: Video[] }> => {
+  const response = await fetch(
+    `https://www.mytorahtoday.com/api/videos/?limit=${limit}&topic__name__iexact=${topic}`
+  );
+  const data = await response.json();
+  return { topicName: topic, videos: data.results };
+};
+
+export const getVideosBySubtopicName = async (
+  subtopic: string,
+  limit: number = 10
 ): Promise<Video[]> => {
-  console.log("Fetching videos for topic: " + topicName);
-  const response = await fetch(`/api/videos/?topic__name__iexact=${topicName}`);
+  const url = `https://www.mytorahtoday.com/api/videos/?limit=${limit}&subtopic__name__iexact=${subtopic}`
+  const response = await fetch(url);
   const data = await response.json();
   return data.results;
 };
 
-export const getVideosBySubtopicName = async (
-  subtopic: string
-): Promise<Video[]> => {
-  const response = await fetch("/api/videos/?subtopic__name__iexact=" + subtopic + "&limit=6");
+export const fetchTopics = async (): Promise<any> => {
+  const response = await fetch("https://www.mytorahtoday.com/api/topics/");
   const data = await response.json();
   return data.results;
 };
