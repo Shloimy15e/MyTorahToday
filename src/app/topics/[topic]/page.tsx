@@ -1,7 +1,5 @@
-"use client";
-import Header from "@/components/Header";
 import MainTopicPage from "@/components/MainTopicPage";
-import Footer from "@/components/Footer";
+import { Metadata } from "next";
 
 type Props = {
   params: {
@@ -9,13 +7,16 @@ type Props = {
   };
 };
 
+export const generateMetadata = ({ params }: Props): Metadata => {
+  return {
+    title: `My Torah Today - ${params.topic.charAt(0).toUpperCase() + params.topic.slice(1)}`,  };
+};
+
 //Get the topic name from the params and pass it to the getVideosByTopic function
 export default function TopicPage({ params }: Props) {
   return (
     <>
-      <Header />
       <MainTopicPage params={params} />
-      <Footer />
     </>
   );
 }

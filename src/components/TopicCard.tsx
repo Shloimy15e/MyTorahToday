@@ -9,7 +9,7 @@ export default function TopicCard(props: {
     ? props.subtopic.topic_name.toLowerCase().replace(" ", "-")
     : props.topic.name.toLowerCase().replace(" ", "-");
   const hrefSubtopic = props.isSubtopic
-    ? props.subtopic.name.toLowerCase().replace(" ", "-")
+    ? props.subtopic.name.toLowerCase().replace(/ /g, "-")
     : null;
   return (
     <Link
@@ -31,7 +31,9 @@ export default function TopicCard(props: {
               .map((subtopic: any, index: number) => (
                 <span key={subtopic.id}>
                   {subtopic.name}
-                  {index < Math.min(2, props.topic.subtopics.length - 1) ? ", " : "."}
+                  {index < Math.min(2, props.topic.subtopics.length - 1)
+                    ? ", "
+                    : "."}
                 </span>
               ))}
             {props.topic.subtopics.length > 3 && ".."}

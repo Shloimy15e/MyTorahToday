@@ -1,36 +1,27 @@
 "use client";
 import TopicCard from "./TopicCard";
+import LoadingTopicCardAnimation from "./LoadingTopicCardsAnimation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import LoadingAnimation from "./LoadingAnimation";
+import { useQuery } from "react-query";
 
 export default function MainTopics() {
+  const {
+    isLoading: isLoadingTopics,
+    error: topicsError,
+    data: topicsData,
+  } = useQuery("topics", () => fetch("/api/topics/").then((res) => res.json()));
+
   const [topics, setTopics] = useState<{ name: string; id: number }[]>([]);
-  const [isLoadingTopics, setIsLoadingTopics] = useState(true);
-  const [errorFetchingTopics, setErrorFetchingTopics] = useState(false);
 
   useEffect(() => {
-    const fetchTopics = async () => {
-      console.log("Fetching topics");
-      try {
-        const response = await fetch("/api/topics/");
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(
-            `HTTP error ${response.status}` + JSON.stringify(data)
-          );
-        }
-        console.log("Topics retrieved: " + data.count);
-        setTopics(data.results);
-        setIsLoadingTopics(false);
-      } catch (error) {
-        console.error("Error fetching topics:", error);
-        setErrorFetchingTopics(true);
-        setIsLoadingTopics(false);
-      }
-    };
-    fetchTopics();
-  }, []);
+    if (topicsData?.results) {
+      // Check if topicsData and results exist
+      setTopics(topicsData.results);
+    }
+  }, [topicsData]); // Run effect whenever topicsData changes
+
   return (
     <>
       {/* hero secion */}
@@ -48,8 +39,12 @@ export default function MainTopics() {
           </h1>
         </div>
         {isLoadingTopics ? (
-          <LoadingAnimation />
-        ) : errorFetchingTopics ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <LoadingTopicCardAnimation key={index} isSubtopic={false} />
+            ))}
+          </div>
+        ) : topicsError ? (
           <div className="text-red-500">
             Error fetching topics. Please try again later.
           </div>
