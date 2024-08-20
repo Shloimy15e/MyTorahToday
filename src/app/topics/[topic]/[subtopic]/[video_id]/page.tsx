@@ -1,8 +1,3 @@
-"use client";
-import Header from "@/components/Header";
-import MainVideo from "@/components/MainVideo";
-import Footer from "@/components/Footer";
-
 type Props = {
   params: {
     topic: string;
@@ -13,11 +8,9 @@ type Props = {
 
 //Get the topic name from the params and pass it to the getVideosByTopic function
 export default function VideoPage({ params }: Props) {
-  return (
-    <>
-      <Header />
-      <MainVideo params={params} />
-      <Footer />
-    </>
-  );
+  try{
+    throw new Error("This page was not yet built")
+  } catch (error) {
+    throw error;
+  }
 }

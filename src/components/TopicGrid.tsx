@@ -8,6 +8,7 @@ import { useMediaQuery } from "react-responsive";
 export default function TopicGrid(props: {
   topics: Topic[] | Subtopic[];
   areSubtopics: boolean;
+  showAll: boolean;
 }) {
   const [showMore, setShowMore] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 639 });
@@ -22,35 +23,46 @@ export default function TopicGrid(props: {
         {props.areSubtopics ? "Subtopics" : "Topics"}
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
-        {props.topics
-          .slice(
-            0,
-            showMore
-              ? props.topics.length
-              : isMobile
-              ? 4
-              : isTablet || isLaptop || isDesktop
-              ? 6
-              : 8
-          )
-          .map((topic: Topic | Subtopic) => (
-            <TopicCard
-              topic={topic}
-              key={topic.id}
-              isSubtopic={props.areSubtopics}
-            />
-          ))}
+        {props.showAll
+          ? props.topics.map((topic) => (
+              <TopicCard
+                key={topic.id}
+                topic={topic}
+                isSubtopic={props.areSubtopics}
+              />
+            ))
+          : props.topics
+              .slice(
+                0,
+                showMore
+                  ? props.topics.length
+                  : isMobile
+                  ? 4
+                  : isTablet || isLaptop || isDesktop
+                  ? 6
+                  : 8
+              )
+              .map((topic: Topic | Subtopic) => (
+                <TopicCard
+                  topic={topic}
+                  key={topic.id}
+                  isSubtopic={props.areSubtopics}
+                />
+              ))}
       </div>
-      {props.topics.length > (isMobile ? 4 : isTablet || isLaptop || isDesktop ? 6 : 10) && !showMore && (
-        <div className="flex justify-center mt-6">
-          <button
-            onClick={() => setShowMore(true)}
-            className="text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-24 my-6 w-4/5"
-          >
-            Load More {props.areSubtopics ? "Subtopics" : "Topics"}
-          </button>
-        </div>
-      )}
+      {!props.showAll &&
+        props.topics.length >
+          (isMobile ? 4 : isTablet || isLaptop || isDesktop ? 6 : 10) &&
+        !showMore && (
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => setShowMore(true)}
+              className="text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-24 my-6 w-4/5"
+            >
+              Load More {props.areSubtopics ? "Subtopics" : "Topics"}
+            </button>
+          </div>
+        )}
     </div>
   );
 }

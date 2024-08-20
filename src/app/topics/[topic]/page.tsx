@@ -45,7 +45,7 @@ export default async function TopicPage({ params }: Props) {
         <main className="bg-neutral-100 grid grid-cols-1">
           <HeroWithTitle title={displayTopic} />
           {/* List of topics */}
-          <TopicGrid topics={subtopics} areSubtopics={true} />
+          <TopicGrid topics={subtopics} areSubtopics={true} showAll={false} />
           {/* List of videos by topic */}
           {videosBySubtopics &&
             videosBySubtopics.length > 0 &&

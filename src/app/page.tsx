@@ -90,7 +90,7 @@ export default async function Home() {
           )}{" "}
           {/* List of topics */}
           {topics && topics.length > 0 && (
-            <TopicGrid topics={topics} areSubtopics={false} />
+            <TopicGrid topics={topics} areSubtopics={false} showAll={false} />
           )}
           {/* List of videos by topic */}
           {videosByTopic &&
