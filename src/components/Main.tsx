@@ -60,7 +60,6 @@ export default function Main(props: {
               `HTTP error ${response.status}` + JSON.stringify(data)
             );
           }
-          console.log("Random videos retrieved: " + data.results.length);
           setRandomVideos(data.results);
           setIsLoadingRandomVideos(false);
         } catch (error) {
@@ -97,7 +96,6 @@ export default function Main(props: {
     setIsDialogOpen(false);
     setSelectedVideo({} as Video);
   };
-  console.log("videosByTopic", videosByTopic, " topics", topics);
   console.log("isLoadingVideosByTopics", isLoadingVideosByTopics);
   return (
     <>

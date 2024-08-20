@@ -3,6 +3,8 @@ import Script from "next/script";
 import "../styles/globals.css";
 import { ToastProvider } from "@/components/ToastProvider";
 import ClientWrapper from "./ClientWrapper";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export const metadata: Metadata = {
   title: "My Torah Today",
@@ -123,7 +125,7 @@ export const viewport: Viewport = {
   minimumScale: 1,
   maximumScale: 1,
   userScalable: true,
-themeColor: "#ffffff",
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
@@ -160,7 +162,9 @@ export default function RootLayout({
       </head>
       <body>
         <ClientWrapper>
-          <ToastProvider>{children}</ToastProvider>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
         </ClientWrapper>
         <Script src="https://www.youtube.com/iframe_api" />
       </body>
