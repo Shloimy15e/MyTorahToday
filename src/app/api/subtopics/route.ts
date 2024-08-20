@@ -19,17 +19,15 @@ export async function GET(request: Request): Promise<Response> {
   const offset = searchParams.get("offset") || "";
   const topic = searchParams.get("topic") || "";
   const topic__name = searchParams.get("topic__name__iexact") || "";
-
-  const response = await fetch(
-    `https://mttbackend-production.up.railway.app/api/subtopics/?limit=${limit}&offset=${offset}&topic=${topic}&topic__name__iexact=${topic__name}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      agent: agent
-    }
-  );
+  const url = `https://www.mytorahtoday.com/api/videos/?limit=${limit}&offset=${offset}&topic__name__iexact=${topic__name}`;
+  console.log(url);
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    agent: agent,
+  });
   const data = await response.json();
   if (!response.ok) {
     return NextResponse.json({ error: data }, { status: response.status });

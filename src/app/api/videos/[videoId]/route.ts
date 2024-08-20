@@ -33,7 +33,6 @@ export async function GET(
   }
 
   const authToken = request.headers.get("Authorization");
-  console.log("token", authToken);
   const response = await fetch(
     `https://mttbackend-production.up.railway.app/api/videos/${videoId}/`,
     {
