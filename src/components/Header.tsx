@@ -27,7 +27,7 @@ const navigation = [
   { name: "Parshah", href: "/topics/parshah" },
   { name: "Neviim", href: "/topics/neviim" },
   { name: "Chassidus", href: "/topics/chassidus" },
-  { name: "Lifes ways", href: "/topics/lifes-ways" },
+  { name: "Life's ways", href: "/topics/life's-ways" },
 ];
 
 export default function Header() {
