@@ -11,6 +11,7 @@ export default function VideoGrid(props: {
   title: string;
   topicName: string;
   showAll: boolean;
+  topicVideos: boolean;
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
@@ -65,10 +66,10 @@ export default function VideoGrid(props: {
         </div>
       </div>
       {!props.showAll && props.videos.length >
-        (isMobile ? 4 : isTablet || isLaptop || isDesktop ? 6 : 10) && (
+        (isMobile ? 4 : isTablet || isLaptop || isDesktop ? 6 : 8) && (
         <div className="flex justify-center items-center">
           <Link
-            href={`/topics/${props.topicName.toLowerCase()}`}
+            href={props.topicVideos ? `/topics/${props.topicName.toLowerCase().replace(' ', '-')}` : `/topics/${props.videos[0].topic_name.toLowerCase().replace(' ', '-')}/${props.topicName.toLowerCase().replace(' ', '-')}`}
             className="text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-24 my-6 w-4/5"
           >
             See more from {props.topicName}

@@ -2,10 +2,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Video from "@/types/Video";
 import Image from "next/image";
-import TopicGrid from "@/components/TopicGrid";
 import dynamic from 'next/dynamic';
+import { fetchTopics, getVideosBySubtopicName, getVideosByTopicName } from "@/data/videoData";
 
 const VideoGrid = dynamic(() => import('@/components/VideoGrid'), {
+  ssr: false, // Prevent server-side rendering
+});
+const TopicGrid = dynamic(() => import('@/components/TopicGrid'), {
   ssr: false, // Prevent server-side rendering
 });
 
@@ -24,31 +27,6 @@ async function getParshahThisWeek() {
     throw error; // Re-throw to handle in component
   }
 }
-const getVideosBySubtopicName = async (subtopic: string): Promise<Video[]> => {
-  const limit = 10;
-  const response = await fetch(
-    `https://www.mytorahtoday.com/api/videos/?limit=${limit}&subtopic__name__iexact=${subtopic}`
-  );
-  const data = await response.json();
-  return data.results;
-};
-
-const fetchTopics = async (): Promise<any> => {
-  const response = await fetch("https://www.mytorahtoday.com/api/topics/");
-  const data = await response.json();
-  return data.results;
-};
-
-const fetchVideosByTopicName = async (
-  topic: string
-): Promise<{ topicName: string; videos: Video[] }> => {
-  const limit = 6;
-  const response = await fetch(
-    `https://www.mytorahtoday.com/api/videos/?limit=${limit}&topic__name__iexact=${topic}`
-  );
-  const data = await response.json();
-  return { topicName: topic, videos: data.results };
-};
 
 export default async function Home() {
   try {
@@ -57,7 +35,7 @@ export default async function Home() {
     const topics = await fetchTopics();
     const videosByTopic = await Promise.all(
       topics.slice(0, 4).map(async (topic: any) => {
-        const videos = await fetchVideosByTopicName(topic.name);;
+        const videos = await getVideosByTopicName(topic.name, 9);;
         return videos;
       })
     );
@@ -86,6 +64,7 @@ export default async function Home() {
               title={`This week's parshah · ${parshahThisWeek}`}
               topicName={parshahThisWeek}
               showAll={false}
+              topicVideos={false}
             />
           )}{" "}
           {/* List of topics */}
@@ -102,6 +81,7 @@ export default async function Home() {
                 title={`${topicName}`}
                 topicName={topicName}
                 showAll={false}
+                topicVideos={true}
               />
             ))}
         </main>

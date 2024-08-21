@@ -15,9 +15,9 @@ type Props = {
   };
 };
 
-export const generateMetadata = ({ params }: Props) => {
+export const generateMetadata = ({ params }: Props): Metadata => {
   return {
-    title: `${params.subtopic.charAt(0).toUpperCase() + params.subtopic.slice(1).replace(/-/g, " ")} - My Torah Today`,
+    title: `${params.subtopic.charAt(0).toUpperCase() + params.subtopic.slice(1).replace("-", " ")} - My Torah Today`,
   };
 };
 
@@ -26,9 +26,9 @@ export default async function SubtopicPage({ params }: Props) {
   try {
     const { topic, subtopic } = params;
     const displayTopic = topic.replace("-%", " ");
-    const displaySubtopic = subtopic.replace(/%20/g, " ").replace(/-/g, " ");
+    const displaySubtopic = subtopic.replace(/-/g, " ").replace(/%20/g, " ");
+    const videos = await getVideosBySubtopicName(displaySubtopic, 100);
 
-    const videos = await getVideosBySubtopicName(displaySubtopic);
     if (!videos || videos.length === 0) {
       throw new Error("There was a problem fetching the videos");
     }
@@ -43,6 +43,7 @@ export default async function SubtopicPage({ params }: Props) {
               title={`${displaySubtopic}`}
               topicName={displaySubtopic}
               showAll={true}
+              topicVideos={false}
             />
           )}
           <div className="flex justify-center items-center mb-6">

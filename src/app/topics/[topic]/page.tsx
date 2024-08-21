@@ -2,11 +2,13 @@ import { Metadata } from "next";
 import { getVideosBySubtopicName, fetchSubtopics } from "@/data/videoData";
 import HeroWithTitle from "@/components/ui/HeroWithTitle";
 import dynamic from "next/dynamic";
-import Link from "next/link";
-import TopicGrid from "@/components/TopicGrid";
 import Subtopic from "@/types/Subtopic";
 
 const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
+  ssr: false, // Prevent server-side rendering
+});
+
+const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
   ssr: false, // Prevent server-side rendering
 });
 
@@ -56,6 +58,7 @@ export default async function TopicPage({ params }: Props) {
                 title={`${subtopicName}`}
                 topicName={subtopicName}
                 showAll={false}
+                topicVideos={false}
               />
             ))}
         </main>
