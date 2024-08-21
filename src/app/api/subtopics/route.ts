@@ -21,7 +21,7 @@ export async function GET(request: Request): Promise<Response> {
   const topic = searchParams.get("topic") || "";
   const topic__name = searchParams.get("topic__name__iexact") || "";
   const ordering = searchParams.get("ordering") || "";
-  const url = `https://mttbackend-production.up.railway.app/api/topics/?id=${id}&name__iexact=${name}&limit=${limit}&offset=${offset}&topic__name__iexact=${topic__name}&topic=${topic}&ordering=${ordering}`;
+  const url = `https://mttbackend-production.up.railway.app/api/subtopics/?id=${id}&name__iexact=${name}&limit=${limit}&offset=${offset}&topic__name__iexact=${topic__name}&topic=${topic}&ordering=${ordering}`;
 
   console.log(url);
   const response = await fetch(url, {
