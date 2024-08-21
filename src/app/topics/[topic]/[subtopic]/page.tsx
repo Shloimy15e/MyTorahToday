@@ -29,8 +29,12 @@ export default async function SubtopicPage({ params }: Props) {
     const displaySubtopic = subtopic.replace(/-/g, " ").replace(/%20/g, " ");
     const videos = await getVideosBySubtopicName(displaySubtopic, 100);
 
-    if (!videos || videos.length === 0) {
-      throw new Error("There was a problem fetching the videos");
+    if (!videos) {
+      throw new Error("400 - Bad Request – The request returned undefined");
+    }
+
+    if (videos.length === 0) {
+      throw new Error("404 - No data was found");
     }
 
     return (

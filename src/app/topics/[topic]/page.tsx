@@ -38,9 +38,14 @@ export default async function TopicPage({ params }: Props) {
       })
     );
 
-    if (!subtopics || subtopics.length === 0) {
-      throw new Error("There was a problem fetching the subtopics");
+    if(!subtopics){
+      throw new Error("400 - Bad Request – The request returned undefined");
     }
+
+    if (subtopics.length === 0) {
+      throw new Error("404 - No data was found");      
+    }
+
 
     return (
       <>

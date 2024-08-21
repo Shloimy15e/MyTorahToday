@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
-export const dynamic = "force-dynamic";
+import Redis from "ioredis";
+
+const redis = new Redis();
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -17,9 +19,13 @@ export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
   const limit = searchParams.get("limit") || "";
   const offset = searchParams.get("offset") || "";
+  const id = searchParams.get("id") || "";
+  const name = searchParams.get("name__iexact") || "";
   const topic = searchParams.get("topic") || "";
   const topic__name = searchParams.get("topic__name__iexact") || "";
-  const url = `https://www.mytorahtoday.com/api/videos/?limit=${limit}&offset=${offset}&topic__name__iexact=${topic__name}`;
+  const ordering = searchParams.get("ordering") || "";
+  const url = `https://mttbackend-production.up.railway.app/api/topics/?id=${id}&name__iexact=${name}&limit=${limit}&offset=${offset}&topic__name__iexact=${topic__name}&topic=${topic}&ordering=${ordering}`;
+
   console.log(url);
   const response = await fetch(url, {
     method: "GET",

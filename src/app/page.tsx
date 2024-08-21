@@ -41,7 +41,7 @@ export default async function Home() {
     );
 
     if (!videosThisParshah && !topics) {
-      throw new Error("There was a problem fetching the videos");
+      throw new Error("500 - Internal Server Error");
     }
     return (
       <>
