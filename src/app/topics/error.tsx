@@ -23,11 +23,8 @@ export default function Error({
         <h3 className="text-xl text-center mx-auto my-4 w-full">
             {error.message}
         </h3>
-        <p className="text-lg text-center mb-2">
-            Have you manually entered the topic name?
-        </p>
-        <p className="text-base text-center text-gray-600 mb-4">
-            Please note that manually entering a topic name may result in errors, as it needs to match the data available in our application.
+        <p className="text-center mx-auto mt-4 w-full">
+            Please reach out to me at <a href="mailto:shloimyelbaum@gmail.com" className="text-blue-600 hover:underline">shloimyelbaum@gmail.com</a>
         </p>
         <div className="flex gap-4 justify-center items-center">
           <button
@@ -40,10 +37,10 @@ export default function Error({
             Try again
           </button>
           <Link
-            href={`/topics/`}
+            href={`/`}
             className="bg-primary-blue hover:bg-blue-700 active:scale-90 text-white font-bold py-2 px-4 rounded"
           >
-            Return to Topics
+            Return to Home
           </Link>
         </div>
       </main>

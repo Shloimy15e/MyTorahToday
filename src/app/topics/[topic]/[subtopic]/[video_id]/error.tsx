@@ -23,11 +23,8 @@ export default function Error({
         <h3 className="text-xl text-center mx-auto my-4 w-full">
             {error.message}
         </h3>
-        <p className="text-lg text-center mb-2">
-            Have you manually entered the topic name?
-        </p>
-        <p className="text-base text-center text-gray-600 mb-4">
-            Please note that manually entering a topic name may result in errors, as it needs to match the data available in our application.
+        <p className="text-lg text-center text-gray-700 mb-4">
+            Please excuse us while we build this special app.
         </p>
         <div className="flex gap-4 justify-center items-center">
           <button
