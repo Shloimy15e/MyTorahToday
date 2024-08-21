@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
-export const dynamic = "force-dynamic";
+import Redis from "ioredis";
+
+const redis = new Redis();
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -17,19 +19,21 @@ export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
   const limit = searchParams.get("limit") || "";
   const offset = searchParams.get("offset") || "";
+  const id = searchParams.get("id") || "";
+  const name = searchParams.get("name__iexact") || "";
   const topic = searchParams.get("topic") || "";
   const topic__name = searchParams.get("topic__name__iexact") || "";
+  const ordering = searchParams.get("ordering") || "";
+  const url = `https://mttbackend-production.up.railway.app/api/topics/?id=${id}&name__iexact=${name}&limit=${limit}&offset=${offset}&topic__name__iexact=${topic__name}&topic=${topic}&ordering=${ordering}`;
 
-  const response = await fetch(
-    `https://mttbackend-production.up.railway.app/api/subtopics/?limit=${limit}&offset=${offset}&topic=${topic}&topic__name__iexact=${topic__name}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      agent: agent
-    }
-  );
+  console.log(url);
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    agent: agent,
+  });
   const data = await response.json();
   if (!response.ok) {
     return NextResponse.json({ error: data }, { status: response.status });

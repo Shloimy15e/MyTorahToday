@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
-export const dynamic = "force-dynamic";
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -15,10 +14,12 @@ const agent = new https.Agent({
  */
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
+  const limit = searchParams.get("limit") || "";
+  const offset = searchParams.get("offset") || "";
   const name = searchParams.get("name__iexact") || "";
 
   const response = await fetch(
-    `https://mttbackend-production.up.railway.app/api/topics/?name__iexact=${name}`,
+    `https://mttbackend-production.up.railway.app/api/topics/?name__iexact=${name}&limit=${limit}&offset=${offset}`,
     {
       method: "GET",
       headers: {

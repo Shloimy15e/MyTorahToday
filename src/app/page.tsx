@@ -1,16 +1,21 @@
-import { notFound } from "next/navigation";
 import Header from "@/components/Header";
-import Main from "@/components/Main";
 import Footer from "@/components/Footer";
 import Video from "@/types/Video";
+import Image from "next/image";
+import dynamic from 'next/dynamic';
+import { fetchTopics, getVideosBySubtopicName, getVideosByTopicName } from "@/data/videoData";
+
+const VideoGrid = dynamic(() => import('@/components/VideoGrid'), {
+  ssr: false, // Prevent server-side rendering
+});
+const TopicGrid = dynamic(() => import('@/components/TopicGrid'), {
+  ssr: false, // Prevent server-side rendering
+});
 
 async function getParshahThisWeek() {
   try {
     const response = await fetch(
-      "https://api.ginzburg.io/zmanim/shabbat?cl_offset=18&lat=32.09&lng=34.86&elevation=0&havdala=tzeis_8_5_degrees",
-      {
-        // next: { revalidate: 3600 } // Revalidate every hour
-      }
+      "https://api.ginzburg.io/zmanim/shabbat?cl_offset=18&lat=32.09&lng=34.86&elevation=0&havdala=tzeis_8_5_degrees"
     );
     const data = await response.json();
     if (!response.ok) {
@@ -22,32 +27,68 @@ async function getParshahThisWeek() {
     throw error; // Re-throw to handle in component
   }
 }
-const getVideosBySubtopicName = async (subtopic: string): Promise<Video[]> => {
-  const limit = 6;
-  const response = await fetch(
-    `https://mttbackend-production.up.railway.app/api/videos/?limit=${limit}&subtopic__name__iexact=${subtopic}`
-  );
-  const data = await response.json();
-  return data.results;
-};
 
 export default async function Home() {
   try {
     const parshahThisWeek = await getParshahThisWeek();
     const videosThisParshah = await getVideosBySubtopicName(parshahThisWeek);
-    if (!videosThisParshah) {
-      throw new Error("No videos found for this parshah", videosThisParshah);
+    const topics = await fetchTopics();
+    const videosByTopic = await Promise.all(
+      topics.slice(0, 4).map(async (topic: any) => {
+        const videos = await getVideosByTopicName(topic.name, 9);;
+        return videos;
+      })
+    );
+
+    if (!videosThisParshah && !topics) {
+      throw new Error("500 - Internal Server Error");
     }
     return (
       <>
         <Header />
-        <Main parshahThisWeek={parshahThisWeek} videosThisParshah={videosThisParshah} />
+        <main className="bg-neutral-100 grid grid-cols-1">
+          {/* Hero section */}
+          <div>
+            <Image
+              src="/images/banner.jpg"
+              alt="banner"
+              width={30000}
+              height={1080}
+              className=" object-cover"
+            />
+          </div>
+          {/* Parshah of the week */}
+          {videosThisParshah && videosThisParshah.length > 0 && (
+            <VideoGrid
+              videos={videosThisParshah}
+              title={`This week's parshah · ${parshahThisWeek}`}
+              topicName={parshahThisWeek}
+              showAll={false}
+              topicVideos={false}
+            />
+          )}{" "}
+          {/* List of topics */}
+          {topics && topics.length > 0 && (
+            <TopicGrid topics={topics} areSubtopics={false} showAll={false} />
+          )}
+          {/* List of videos by topic */}
+          {videosByTopic &&
+            videosByTopic.length > 0 &&
+            videosByTopic.map(({ topicName, videos }) => (
+              <VideoGrid
+                key={topicName}
+                videos={videos}
+                title={`${topicName}`}
+                topicName={topicName}
+                showAll={false}
+                topicVideos={true}
+              />
+            ))}
+        </main>
         <Footer />
       </>
     );
   } catch (error) {
-    // Handle errors gracefully
-    console.error("Error fetching data:", error);
-    return notFound(); // Or display an error component
+    throw error;
   }
 }

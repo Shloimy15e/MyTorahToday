@@ -1,17 +1,34 @@
-import Header from "@/components/Header";
-import MainTopics from "@/components/MainTopics";
-import Footer from "@/components/Footer";
 import { Metadata } from "next";
+import { fetchTopics } from "@/data/videoData";
+import HeroWithTitle from "@/components/ui/HeroWithTitle";
+import dynamic from "next/dynamic";
+const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
+  ssr: false, // Prevent server-side rendering
+});
 
 export const metadata: Metadata = {
   title: "My Torah Today - Topics",
-}
-export default function Topics() {
-  return (
-    <>
-      <Header />
-      <MainTopics />
-      <Footer />
-    </>
-  );
+};
+export default async function Topics() {
+  try {
+    const topics = await fetchTopics();
+    if(!topics) {
+      throw new Error("500 - There was a serer error fetching topics");
+    }
+
+    if (topics.length === 0) {
+      throw new Error("404 - No topics found");
+    }
+
+    return (
+      <>
+        <main>
+          <HeroWithTitle title="Topics" />
+          <TopicGrid topics={topics} areSubtopics={false} showAll={true} />
+        </main>
+      </>
+    );
+  } catch (error) {
+    throw error;
+  }
 }
