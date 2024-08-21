@@ -13,6 +13,11 @@ const agent = new https.Agent({
 export async function POST(request: Request): Promise<Response>{
   // Get the token from the request headers
   const token = request.headers.get("Authorization");
+
+  if (!token) {
+    return NextResponse.json({ error: "No token provided" }, { status: 400 });
+  }
+
   const response = await fetch(
     "https://mttbackend-production.up.railway.app/api/auth/token/logout/",
     {

@@ -14,6 +14,10 @@ const agent = new https.Agent({
 export async function POST(request: Request): Promise<Response> {
   const { username, password, email } = await request.json();
 
+  if (!username || !password) {
+    return NextResponse.json({ error: 'Username, and password are required' }, { status: 400 });
+  }
+
   const response = await fetch('https://mttbackend-production.up.railway.app/api/auth/users/', {
     method: 'POST',
     headers: {

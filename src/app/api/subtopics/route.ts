@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
-import Redis from "ioredis";
-
-const redis = new Redis();
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
