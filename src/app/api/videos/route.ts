@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
-import { url } from "inspector";
-export const dynamic = "force-dynamic";
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
