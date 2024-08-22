@@ -10,6 +10,7 @@ import { Fragment, useState } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useToast } from "./ToastProvider";
 import { useForm } from "react-hook-form";
+import { cookies } from "next/headers";
 
 export default function LoginDialog(props: {
   isOpen: boolean;
@@ -27,15 +28,6 @@ export default function LoginDialog(props: {
 
   // Login function
   async function login(data: any) {
-    // Make sure user is not logged in yet
-    if (
-      localStorage.getItem("accessToken") &&
-      localStorage.getItem("accessToken") !== "undefined"
-    ) {
-      showToast("You are already logged in!");
-      closeModal();
-      return;
-    }
     setIsLoading(true);
     try {
       // API call to login url
@@ -46,7 +38,6 @@ export default function LoginDialog(props: {
         },
         body: JSON.stringify(data),
       });
-
       const responseData = await response.json();
       // If response is not ok, throw error
       if (!response.ok) {
@@ -55,20 +46,9 @@ export default function LoginDialog(props: {
           JSON.stringify({ responseData, status: response.status })
         );
       }
-
-      setTimeout(() => {
-        setIsLoading(false);
-
-        // Set the access token in local storage
-        localStorage.setItem("accessToken", responseData.auth_token);
-        // Set logged in to true
-        localStorage.setItem("loggedIn", "true");
-        showToast("Login successful", "info");
-        // close modal
-        closeModal();
-        // Redirect to home page
-        window.location.href = "/";
-      }, 1000);
+      showToast("Login successful", "info");
+      // Reset page with logged in user
+      window.location.reload();
     } catch (error: any) {
       // Extract the error message and response status
       const errorMessage = "Login failed";
