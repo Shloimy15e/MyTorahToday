@@ -10,6 +10,7 @@ import { Fragment } from "react";
 import { useState } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useToast } from "./ToastProvider";
+import { set } from "react-hook-form";
 
 export default function LogoutDialog(props: {
   isOpen: boolean;
@@ -21,36 +22,19 @@ export default function LogoutDialog(props: {
 
   async function logout() {
     setIsLoading(true);
-    const accessToken = localStorage.getItem("accessToken");
-    // Make sure user is not logged in yet
-    if (!accessToken || accessToken === "undefined") {
-      showToast("You are not logged in", "error");
-      closeModal();
-      return;
-    }
     try {
       // API call to log out
       const response = await fetch("/api/auth/token/logout", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: accessToken,
-        },
       });
       const data = await response.json();
       // If response is not ok, throw error
       if (!response.ok) {
         throw new Error(JSON.stringify(data));
       }
-
-      setTimeout(() => {
-        setIsLoading(false);
-        showToast("Logged out successfully");
-        localStorage.removeItem("accessToken");
-        localStorage.setItem("loggedIn", "false");
-        closeModal();
-        window.location.href = "/";
-      }, 1000);
+      showToast("Logged out successfully");
+      setIsLoading(false);
+      window.location.reload();
     } catch (error: any) {
       console.error("Full error object:", error);
       console.error("Error type:", Object.prototype.toString.call(error));

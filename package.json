@@ -18,6 +18,7 @@
     "ioredis": "^5.4.1",
     "next": "14.2.4",
     "node-fetch": "^2.7.0",
+    "nookies": "^2.5.2",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.52.2",
