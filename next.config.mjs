@@ -2,7 +2,20 @@
 const nextConfig = {
     reactStrictMode: true,
     images: {
-        domains: ['tailwindui.com', 'img.youtube.com', "i.ytimg.com"],
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'img.youtube.com',
+                port: '',
+                pathname: '/vi/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'i.ytimg.com',
+                port: '',
+                pathname: '/vi/**',
+            }
+        ]
     },
 };
 
