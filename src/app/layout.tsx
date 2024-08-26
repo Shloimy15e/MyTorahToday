@@ -3,8 +3,8 @@ import Script from "next/script";
 import "../styles/globals.css";
 import { ToastProvider } from "@/components/ToastProvider";
 import ClientWrapper from "./ClientWrapper";
-import { Suspense } from "react";
-import Loading from "./loading";
+import { SessionProvider as NextAuthSessionProvider } from "next-auth/react";
+import { SessionProvider } from "@/context/SessionContext";
 
 export const metadata: Metadata = {
   title: "My Torah Today",
@@ -161,11 +161,13 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <ClientWrapper>
-          <ToastProvider>
-            {children}
-          </ToastProvider>
-        </ClientWrapper>
+        <NextAuthSessionProvider>
+          <SessionProvider>
+            <ClientWrapper>
+              <ToastProvider>{children}</ToastProvider>
+            </ClientWrapper>
+          </SessionProvider>
+        </NextAuthSessionProvider>
         <Script src="https://www.youtube.com/iframe_api" />
       </body>
     </html>
