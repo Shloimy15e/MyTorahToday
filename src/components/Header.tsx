@@ -11,6 +11,7 @@ import {
   MenuItem,
   Transition,
   TransitionChild,
+  MenuHeading,
 } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -98,14 +99,19 @@ export default function Header() {
                     />
                   </div>
                   {session ? (
-                    <MenuItem>
-                      <button
-                        onClick={() => setIsLogoutDialogOpen(true)}
-                        className="active:bg-gray-100 active:text-red-900 text-red-500 font-semibold group flex w-full items-center rounded-md px-2 py-2"
-                      >
-                        Log out
-                      </button>
-                    </MenuItem>
+                    <div>
+                      <h2 className="text-lg capitalize font-medium text-gray-900">
+                        Welcome {session.user.username}
+                      </h2>
+                      <MenuItem>
+                        <button
+                          onClick={() => setIsLogoutDialogOpen(true)}
+                          className="active:bg-gray-100 active:text-red-900 text-red-500 font-semibold group flex w-full items-center rounded-md px-2 py-2"
+                        >
+                          Log out
+                        </button>
+                      </MenuItem>
+                    </div>
                   ) : (
                     <>
                       <MenuItem>

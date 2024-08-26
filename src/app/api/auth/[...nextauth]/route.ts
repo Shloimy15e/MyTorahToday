@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { Session } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { signInSchema } from "@/lib/zod";
 // Your own logic for dealing with plaintext password strings; be careful!
@@ -27,7 +27,19 @@ const { handlers, auth } = NextAuth({
         const user = await res.json();
 
         if (res.ok && user) {
-          return { ...user, auth_token: user.auth_token };
+          const UserDataRes = await fetch(
+            "https://mttbackend-production.up.railway.app/api/auth/users/me/",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${user.auth_token}`,
+              },
+            }
+          );
+          const UserData = await UserDataRes.json();
+          console.log("UserData", UserData);
+          return { ...user, username: UserData.username, auth_token: user.auth_token };
         } else {
           return null;
         }
@@ -37,14 +49,14 @@ const { handlers, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user && 'auth_token' in user) {
-        token.accessToken = user.auth_token;
+        token.user = user;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token } : { session: Session, token: any }) {
       return {
         ...session,
-        accessToken: token.accessToken as string
+        user: token.user,
       };
     },
   }
