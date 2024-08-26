@@ -5,11 +5,12 @@ import {
   DialogTitle,
   TransitionChild,
 } from "@headlessui/react";
-import { Fragment } from "react";
-import { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { useToast } from "./ToastProvider";
 import { useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
 
+// Remove the import statement for 'fs' module
 export default function SignupDialog(props: {
   isOpen: boolean;
   onClose: () => void;
@@ -17,100 +18,39 @@ export default function SignupDialog(props: {
   const closeModal = () => props.onClose();
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-
-  // Login function decleration
-  async function login(data: any) {
-    // Make sure user is not logged in yet
-    if (
-      localStorage.getItem("accessToken") &&
-      localStorage.getItem("accessToken") !== "undefined"
-    ) {
-      showToast("You are already logged in!");
-      closeModal();
-      return;
-    }
-    setIsLoading(true);
-    try {
-      // API call to login url
-      const response = await fetch("/api/auth/token/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      const responseData = await response.json();
-      // If response is not ok, throw error
-      if (!response.ok) {
-        throw new Error(JSON.stringify(responseData));
-      }
-      console.log(JSON.stringify(responseData));
-
-      setTimeout(() => {
-        setIsLoading(false);
-
-        // Set the access token in local storage
-        localStorage.setItem("accessToken", responseData.auth_token);
-        // Set logged in to true
-        localStorage.setItem("loggedIn", "true");
-        showToast("Login successful", "info");
-        // close modal
-        closeModal();
-        // Redirect to home page
-        window.location.href = "/";
-      }, 1000);
-    } catch (error: any) {
-      console.error("Full error object:", error);
-      console.error("Error type:", Object.prototype.toString.call(error));
-      console.error("Error properties:", Object.getOwnPropertyNames(error));
-
-      let errorMessage = "Login failed.";
-      showToast(errorMessage, "error");
-      return;
-    }
-  }
-
-  async function signup(data: any) {
-    console.log(data);
-    // Make sure user is not logged in yet
-    if (localStorage.getItem("loggedIn") === "true") {
-      showToast("You are already logged in!", "error");
-      closeModal();
-      return;
-    }
-    try {
-      // API call to signup url
-      const response = await fetch("/api/auth/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      // If response is not ok, throw error
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(JSON.stringify(errorData));
-      }
-      setTimeout(() => {
-        setIsLoading(false);
-        showToast("Signed up successfully");
-      }, 1000);
-      //Log in
-      login(data);
-    } catch (error: any) {
-      console.error("Full error object:", error);
-      let errorMessage = "Signup failed. We are sorry for the inconvenience.";
-      showToast(errorMessage, "error");
-      return;
-    }
-  }
-
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const onSubmit = async (data: any) => {
+    const response = await fetch("/api/auth/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      // Automatically log in the user after successful signup
+      console.log("Signup successful. Automatically logging in...");
+      const result = await signIn("credentials", {
+        redirect: false,
+        username: data.username,
+        password: data.password,
+      });
+      if (result?.error) {
+        console.error("Failed to sign in:", result.error);
+      } else {
+        console.log("Sign in successful:", result);
+      }
+    } else {
+      const errorData = await response.json();
+      console.error("Signup failed:", errorData);
+    }
+  };
 
   return (
     <>
@@ -147,7 +87,7 @@ export default function SignupDialog(props: {
                     Create an account
                   </DialogTitle>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <form className="mt-3" onSubmit={handleSubmit(signup)}>
+                    <form className="mt-3" onSubmit={handleSubmit(onSubmit)}>
                       <div>
                         <label
                           htmlFor="username"
@@ -167,6 +107,11 @@ export default function SignupDialog(props: {
                             autoComplete="username"
                             className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                           />
+                          {errors.username && (
+                            <p className="mt-2 text-sm text-red-600">
+                              {errors.username.message as React.ReactNode}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div>
@@ -179,11 +124,23 @@ export default function SignupDialog(props: {
                         <div className="mt-1">
                           <input
                             id="email"
-                            {...register("email", { required: false })}
+                            {...register("email", {
+                              required: false,
+                              pattern: {
+                                value:
+                                  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                message: "Invalid email address",
+                              },
+                            })}
                             type="email"
                             autoComplete="email"
                             className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                           />
+                          {errors.email && (
+                            <p className="text-red-500 text-sm mt-1">
+                              {errors.email.message as React.ReactNode}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="mt-3">
@@ -208,27 +165,20 @@ export default function SignupDialog(props: {
                                 hasNumber: (value) =>
                                   /\d/.test(value) ||
                                   "Password must contain at least one number",
-                                hasSpecialChar: (value) =>
-                                  /[!@#$%^&*(),.?":{}|<>]/.test(value) ||
-                                  "Password must contain at least one special character",
+                                doesNotContainUsername: (value, formValues) =>
+                                  !value.includes(formValues.username) ||
+                                  "Password cannot contain your username",
                               },
                             })}
                             type="password"
                             autoComplete="current-password"
                             className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                           />
-                          <p
-                            className="mt-2 text-sm text-gray-500"
-                            id="password-description"
-                          >
-                            Remember me for 30 days.{" "}
-                            <a
-                              href="#"
-                              className="font-medium text-indigo-600 hover:text-indigo-500"
-                            >
-                              Forgot password?
-                            </a>
-                          </p>
+                          {errors.password && (
+                            <p className="mt-2 text-sm text-red-600">
+                              {errors.password.message as React.ReactNode}
+                            </p>
+                          )}
                         </div>
                         <div className="mt-3">
                           <button
@@ -250,3 +200,4 @@ export default function SignupDialog(props: {
     </>
   );
 }
+

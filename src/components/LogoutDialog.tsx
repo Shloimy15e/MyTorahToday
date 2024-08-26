@@ -1,4 +1,3 @@
-"use client";
 import {
   Dialog,
   Transition,
@@ -10,7 +9,8 @@ import { Fragment } from "react";
 import { useState } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useToast } from "./ToastProvider";
-import { set } from "react-hook-form";
+import { signOut } from "next-auth/react";
+import { useSessionContext } from "@/context/SessionContext";
 
 export default function LogoutDialog(props: {
   isOpen: boolean;
@@ -19,33 +19,36 @@ export default function LogoutDialog(props: {
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const closeModal = () => props.onClose();
+  const { session } = useSessionContext();
 
-  async function logout() {
-    setIsLoading(true);
-    try {
-      // API call to log out
-      const response = await fetch("/api/auth/token/logout", {
-        method: "POST",
-      });
-      const data = await response.json();
-      // If response is not ok, throw error
-      if (!response.ok) {
-        throw new Error(JSON.stringify(data));
-      }
-      showToast("Logged out successfully");
-      setIsLoading(false);
-      window.location.reload();
-    } catch (error: any) {
-      console.error("Full error object:", error);
-      console.error("Error type:", Object.prototype.toString.call(error));
-      console.error("Error properties:", Object.getOwnPropertyNames(error));
-
-      let errorMessage = "logout failed. Error: " + error;
-      showToast(errorMessage);
+  const handleOnSubmit = async () => {
+    if (!session) {
+      showToast("You are not logged in", "error");
+      closeModal();
       return;
     }
-  }
-
+    console.log("handleOnSubmit called");
+    setIsLoading(true);
+    const response = await fetch("/api/auth/token/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${session.user.auth_token}`,
+      },
+    });
+    const data = await response.json();
+    await signOut({ redirect: false })
+      .then(() => {
+        showToast("Logged out successfully", "info");
+        setIsLoading(false);
+        props.onClose();
+      })
+      .catch((error) => {
+        console.error("Failed to log out:", error);
+        showToast("Failed to log out", "error");
+        setIsLoading(false);
+      });
+  };
   return (
     <>
       <Transition show={props.isOpen} as={Fragment}>
@@ -90,8 +93,7 @@ export default function LogoutDialog(props: {
                             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             onClick={(e) => {
                               e.preventDefault();
-                              // Logout
-                              logout();
+                              handleOnSubmit();
                             }}
                           >
                             Log out

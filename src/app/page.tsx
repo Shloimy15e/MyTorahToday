@@ -31,6 +31,7 @@ async function getParshahThisWeek() {
 export default async function Home() {
   try {
     const parshahThisWeek = await getParshahThisWeek();
+    console.log("Parshah this week: ", parshahThisWeek);
     const videosThisParshah = await getVideosBySubtopicName(parshahThisWeek);
     const topics = await fetchTopics();
     const videosByTopic = await Promise.all(

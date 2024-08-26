@@ -25,7 +25,7 @@ export async function POST(request: Request): Promise<Response>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        'Authorization': "Token " + token,
+        'Authorization': token,
       },
       agent: agent,
     }

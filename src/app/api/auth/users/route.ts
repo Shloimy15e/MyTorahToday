@@ -12,6 +12,7 @@ const agent = new https.Agent({
  * @description This function handles the POST request to create a new user.
  */
 export async function POST(request: Request): Promise<Response> {
+  console.log('POST /api/auth/users/');
   const { username, password, email } = await request.json();
 
   if (!username || !password) {
@@ -30,8 +31,8 @@ export async function POST(request: Request): Promise<Response> {
   const data = await response.json();
 
   if (!response.ok) {
+    console.error({ error: data }, { status: response.status });
     return NextResponse.json({ error: data }, { status: response.status });
   }
-
   return NextResponse.json(data);
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState } from "react";
+import { useSessionContext } from "@/context/SessionContext";
 import {
   Dialog,
   DialogPanel,
@@ -10,6 +11,7 @@ import {
   MenuItem,
   Transition,
   TransitionChild,
+  MenuHeading,
 } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -35,8 +37,8 @@ export default function Header() {
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
   const [isSignupDialogOpen, setIsSignupDialogOpen] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
-  const [, setSelectedVideo] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const { session } = useSessionContext();
 
   const closeDialog = () => {
     setIsLoginDialogOpen(false);
@@ -44,14 +46,6 @@ export default function Header() {
     setIsLogoutDialogOpen(false);
     setSelectedVideo(null);
   };
-
-  useEffect(() => {
-    const accessToken =
-      typeof window !== "undefined"
-        ? localStorage.getItem("accessToken")
-        : null;
-    setIsLoggedIn(accessToken !== null && accessToken !== undefined);
-  }, []);
 
   return (
     <header className="bg-white shadow-md grid grid-cols-1 grid-rows-2">
@@ -95,21 +89,29 @@ export default function Header() {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <MenuItems className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <MenuItems className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                 <div className="p-4 flex flex-col gap-2 items-center justify-center text-2xl">
                   {/* User Avatar */}
                   <div className="flex items-center justify-center">
-                    <UserCircleIcon aria-hidden="true" className="h-10 w-10 stroke-1" />
+                    <UserCircleIcon
+                      aria-hidden="true"
+                      className="h-10 w-10 stroke-1"
+                    />
                   </div>
-                  {isLoggedIn ? (
-                    <MenuItem>
-                      <button
-                        onClick={() => setIsLogoutDialogOpen(true)}
-                        className="active:bg-gray-100 active:text-red-900 text-red-500 font-semibold group flex w-full items-center rounded-md px-2 py-2"
-                      >
-                        Log out
-                      </button>
-                    </MenuItem>
+                  {session ? (
+                    <div>
+                      <h2 className="text-lg capitalize font-medium text-gray-900">
+                        Welcome {session.user.username}
+                      </h2>
+                      <MenuItem>
+                        <button
+                          onClick={() => setIsLogoutDialogOpen(true)}
+                          className="active:bg-gray-100 active:text-red-900 text-red-500 font-semibold group flex w-full items-center rounded-md px-2 py-2"
+                        >
+                          Log out
+                        </button>
+                      </MenuItem>
+                    </div>
                   ) : (
                     <>
                       <MenuItem>

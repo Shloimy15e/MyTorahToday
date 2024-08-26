@@ -17,6 +17,7 @@
     "framer-motion": "^11.3.8",
     "ioredis": "^5.4.1",
     "next": "14.2.4",
+    "next-auth": "^5.0.0-beta.20",
     "node-fetch": "^2.7.0",
     "nookies": "^2.5.2",
     "react": "^18",
@@ -24,7 +25,8 @@
     "react-hook-form": "^7.52.2",
     "react-lazy-load-image-component": "^1.6.2",
     "react-query": "^3.39.3",
-    "react-responsive": "^10.0.0"
+    "react-responsive": "^10.0.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",
