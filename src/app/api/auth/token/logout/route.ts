@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
-import { cookies } from "next/headers";
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -11,10 +10,10 @@ const agent = new https.Agent({
  * @param request
  * @returns {NextResponse}
  */
-export async function POST(request: Request): Promise<Response>{
+export async function POST(request: Request): Promise<Response> {
   // Get the token from the request headers
-  const token = cookies().get("accessToken")?.value;
-  
+  const token = request.headers.get("Authorization");
+
   if (!token) {
     return NextResponse.json({ error: "No token provided" }, { status: 400 });
   }
@@ -25,7 +24,7 @@ export async function POST(request: Request): Promise<Response>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        'Authorization': token,
+        Authorization: token,
       },
       agent: agent,
     }
@@ -33,16 +32,25 @@ export async function POST(request: Request): Promise<Response>{
 
   if (response.ok) {
     // Handle successful logout
-    return NextResponse.json({ message: "Logged out successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Logged out successfully" },
+      { status: 200 }
+    );
   } else {
     // Handle error responses
     try {
       const errorData = await response.json();
       console.error("Error logging out:", errorData);
-      return NextResponse.json({ error: errorData.detail || "Logout failed" }, { status: response.status });
+      return NextResponse.json(
+        { error: errorData.detail || "Logout failed" },
+        { status: response.status }
+      );
     } catch (error) {
       console.error("Error parsing error response:", error);
-      return NextResponse.json({ error: "Unexpected server response" }, { status: response.status });
+      return NextResponse.json(
+        { error: "Unexpected server response" },
+        { status: response.status }
+      );
     }
   }
 }
