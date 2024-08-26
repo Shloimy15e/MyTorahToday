@@ -70,7 +70,7 @@ export async function toggleLike(id: Video["id"]): Promise<Response> {
   console.log("toggleLike called with id:", id);
   try {
     const response = await fetch(
-      `http://localhost:3000//api/videos/${id}/like`,
+      `https://www.mytorahtoday.com/api/videos/${id}/like`,
       {
         method: "POST",
       }
@@ -100,7 +100,7 @@ export async function toggleLike(id: Video["id"]): Promise<Response> {
 }
 
 export const getVideoByVideoId = async (videoId: string, authToken: string | null): Promise<Video> => {
-  const response = await fetch(`http://localhost:3000/api/videos/${videoId}/`, {
+  const response = await fetch(`https://www.mytorahtoday.com/api/videos/${videoId}/`, {
     cache: "no-store",
     headers: {
       "Content-Type": "application/json",
