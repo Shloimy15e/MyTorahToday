@@ -49,7 +49,6 @@ export default function LogoutDialog(props: {
         setIsLoading(false);
       });
   };
-
   return (
     <>
       <Transition show={props.isOpen} as={Fragment}>

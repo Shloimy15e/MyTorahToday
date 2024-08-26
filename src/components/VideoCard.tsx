@@ -70,12 +70,12 @@ function VideoCard(props: {
               : "text-gray-400"
           }`}
         >
-          <p className="flex flex-wrap justify-start items-center gap-1">
-            {props.video.is_liked_by_user ? (
-              <HandThumbUpIconSolid className="h-5 w-5 text-primary-blue" />
-            ) : (
-              <HandThumbUpIcon className="h-5 w-5 text-gray-600" />
-            )}
+          {props.video.is_liked_by_user ? (
+            <HandThumbUpIconSolid className="h-5 w-5 text-primary-blue" />
+          ) : (
+            <HandThumbUpIcon className="h-5 w-5 text-gray-600" />
+          )}
+          <p className="text-sm pr-2 border-r border-gray-300">
             {props.video.likes + props.video.userLikes}
           </p>
         </div>

@@ -4,14 +4,17 @@ export default function formatDuration(duration: string): string {
     return duration;
   }
 
-  const hours = parseInt(match[1] || "0") || 0;
+  const hours = parseInt(match[1] || "0") || "HH";
   const minutes = parseInt(match[2] || "0") || 0;
   const seconds = parseInt(match[3] || "0") || 0;
 
   const parts = [];
-  if (hours > 0) {
+  if (typeof hours === "number" && hours > 0) {
     parts.push(hours.toString().padStart(2, "0"));
+  } else {
+    parts.push(hours);
   }
+  
   parts.push(minutes.toString().padStart(2, "0"));
   parts.push(seconds.toString().padStart(2, "0"));
 

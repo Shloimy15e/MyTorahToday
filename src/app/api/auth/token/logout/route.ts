@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
+import { cookies } from "next/headers";
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -12,8 +13,8 @@ const agent = new https.Agent({
  */
 export async function POST(request: Request): Promise<Response>{
   // Get the token from the request headers
-  const token = request.headers.get("Authorization");
-
+  const token = cookies().get("accessToken")?.value;
+  
   if (!token) {
     return NextResponse.json({ error: "No token provided" }, { status: 400 });
   }
