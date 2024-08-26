@@ -22,7 +22,7 @@ export async function GET(request: Request): Promise<Response> {
   const topic__name = searchParams.get("topic__name__iexact") || "";
   const subtopic__name = searchParams.get("subtopic__name__iexact") || "";
   const url = `https://mttbackend-production.up.railway.app/api/videos/?limit=${limit}&offset=${offset}&topic=${topic}&subtopic=${subtopic}&topic__name__iexact=${topic__name}&subtopic__name__iexact=${subtopic__name}`
-  const authToken = cookies().get("accessToken")?.value;
+  const authToken = cookies().get("auth_token")?.value;
 
   const response = await fetch(url,
     {

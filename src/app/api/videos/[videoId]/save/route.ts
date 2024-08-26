@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
+import { cookies } from "next/headers";
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -18,7 +19,7 @@ export async function POST(
 ): Promise<Response> {
   // Get video.id from the request
   const { videoId } = params;
-  const authToken = request.headers.get("Authorization");
+  const authToken = cookies().get("auth_token")?.value;
   if (!authToken) {
     return NextResponse.json(
       { error: "No authToken provided" },
@@ -27,7 +28,7 @@ export async function POST(
   }
 
   if (!videoId) {
-    // Return a 400 Bad Request if no video.id is provided
+    // Return a 400 Bad Request if no video_id is provided
     return NextResponse.json(
       { error: "No video.id provided" },
       { status: 400 }

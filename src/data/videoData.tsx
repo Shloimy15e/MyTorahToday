@@ -1,12 +1,14 @@
 import Subtopic from "@/types/Subtopic";
 import Video from "@/types/Video";
 
-export const fetchRelatedVideos = async (topic: string, subtopic: string) : Promise<Video[]> => {
+export const fetchRelatedVideos = async (
+  topic: string,
+  subtopic: string
+): Promise<Video[]> => {
   try {
     const response = await fetch(
       `https://www.mytorahtoday.com/api/videos/?limit=22&topic__name__iexact=${topic}&subtopic__name__iexact=${subtopic}`
     );
-    console.log("Response data:", JSON.stringify(response));
     const data = await response.json();
     if (!response.ok) {
       console.error("Error fetching related videos:", data.error);
@@ -65,9 +67,10 @@ export const fetchRelatedVideos = async (topic: string, subtopic: string) : Prom
 };
 
 export async function toggleLike(id: Video["id"]): Promise<Response> {
+  console.log("toggleLike called with id:", id);
   try {
     const response = await fetch(
-      `https://www.mytorahtoday.com/api/videos/${id}/like`,
+      `http://localhost:3000//api/videos/${id}/like`,
       {
         method: "POST",
       }
@@ -82,25 +85,31 @@ export async function toggleLike(id: Video["id"]): Promise<Response> {
       // Add one like to props.video.likes
       console.log("Successfully liked video");
     }
-    return response;
+    return new Response(JSON.stringify(data), {
+      status: response.status,
+      statusText: response.statusText,
+    });
   } catch (error) {
     console.error("Error liking video:", error);
 
-    return new Response(JSON.stringify({ error: "Error liking video" }), {
+    return new Response(JSON.stringify({ error: JSON.stringify(error) }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
   }
 }
 
-export const getVideoByVideoId = async (videoId: string): Promise<Video> => {
-  const response = await fetch(
-    `https://www.mytorahtoday.com/api/videos/${videoId}/`,
-    {
-      cache: "no-store",
-    }
-  );
-  return await response.json();
+export const getVideoByVideoId = async (videoId: string, authToken: string | null): Promise<Video> => {
+  const response = await fetch(`http://localhost:3000/api/videos/${videoId}/`, {
+    cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+      ...(authToken && { "Authorization": `${authToken}` }),
+    },
+  });
+  const data = await response.json();
+  console.log("data", JSON.stringify(data));
+  return data;
 };
 
 export const getVideosByTopicName = async (
@@ -111,6 +120,7 @@ export const getVideosByTopicName = async (
     `https://www.mytorahtoday.com/api/videos/?limit=${limit}&topic__name__iexact=${topic}`
   );
   const data = await response.json();
+
   return { topicName: topic, videos: data.results };
 };
 

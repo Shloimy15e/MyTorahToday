@@ -1,9 +1,7 @@
 import NextAuth, { Session } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { cookies } from "next/headers";
 import { signInSchema } from "@/lib/zod";
-// Your own logic for dealing with plaintext password strings; be careful!
-//import { saltAndHashPassword } from "@/utils/password"
-//import { getUserFromDb } from "@/utils/db"
 
 const { handlers, auth } = NextAuth({
   providers: [
@@ -38,8 +36,13 @@ const { handlers, auth } = NextAuth({
             }
           );
           const UserData = await UserDataRes.json();
-          console.log("UserData", UserData);
-          return { ...user, username: UserData.username, auth_token: user.auth_token };
+          cookies().set("auth_token", user.auth_token, {
+            httpOnly: true,
+            sameSite: "lax", // Adjust this based on your requirements
+            path: "/",
+            secure: process.env.NODE_ENV === "production",
+          });
+          return { ...user, username: UserData.username };
         } else {
           return null;
         }
@@ -48,19 +51,19 @@ const { handlers, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user && 'auth_token' in user) {
+      if (user && "auth_token" in user) {
         token.user = user;
       }
       return token;
     },
-    async session({ session, token } : { session: Session, token: any }) {
+    async session({ session, token }: { session: Session; token: any }) {
       return {
         ...session,
         user: token.user,
       };
     },
-  }
+  },
 });
 
-export const {GET} = handlers;
-export const {POST} = handlers;
+export const { GET } = handlers;
+export const { POST } = handlers;

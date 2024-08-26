@@ -22,13 +22,13 @@ type Props = {
 export default async function VideoPage({ params }: Props) {
   try {
     const { topic, subtopic, video_id } = params;
-    const video: Video = await getVideoByVideoId(video_id);
+    const authToken = cookies().get("auth_token")?.value || null;
+    const video: Video = await getVideoByVideoId(video_id, authToken);
     const relatedVideos = await fetchRelatedVideos(
       video.topic_name,
       video.subtopic_name
     );
-    const accessToken = cookies().get("accessToken")?.value;
-    if (!video) {
+    if (!video || typeof video !== "object") {
       throw new Error("404 - Video not found");
     }
     return (
