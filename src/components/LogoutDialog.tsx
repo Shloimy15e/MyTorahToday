@@ -39,6 +39,7 @@ export default function LogoutDialog(props: {
     const data = await response.json();
     await signOut({ redirect: false })
       .then(() => {
+        document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         showToast("Logged out successfully", "info");
         setIsLoading(false);
         props.onClose();

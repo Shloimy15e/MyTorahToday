@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
 import { cookies } from "next/headers";
+import { serialize } from "cookie"
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -13,7 +14,7 @@ const agent = new https.Agent({
  */
 export async function POST(request: Request): Promise<Response> {
   // Get the token from the request headers
-  const token = cookies().get('auth_token')?.value || null;
+  const token = cookies().get("auth_token")?.value || null;
   if (!token) {
     return NextResponse.json({ error: "No token provided" }, { status: 400 });
   }
@@ -31,10 +32,18 @@ export async function POST(request: Request): Promise<Response> {
   );
 
   if (response.ok) {
+    // Clear the auth_token cookie
+    const authTokenCookie = serialize("auth_token", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      expires: new Date(0),
+    });
     // Handle successful logout
     return NextResponse.json(
       { message: "Logged out successfully" },
-      { status: 200 }
+      { status: 200, headers: { 'Set-Cookie': authTokenCookie } }
     );
   } else {
     // Handle error responses

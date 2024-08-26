@@ -28,7 +28,7 @@ export default async function VideoPage({ params }: Props) {
       video.topic_name,
       video.subtopic_name
     );
-    if (!video) {
+    if (!video || typeof video !== "object") {
       throw new Error("404 - Video not found");
     }
     return (
