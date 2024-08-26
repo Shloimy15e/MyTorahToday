@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
+import { cookies } from "next/headers";
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -23,6 +24,15 @@ export async function GET(
 ): Promise<Response> {
   // Get /video_id from the request
   const { videoId } = params;
+  let authToken = cookies().get('auth_token')?.value || null;
+  if(!authToken) {
+    authToken = request.headers.get('Authorization') || null;
+    console.log("auth_token not found in cookies");
+    console.log("auth_token from request headers: ", authToken);
+    if (!authToken) {
+      console.log("auth_token not found in cookies or request headers");
+    }
+  }
 
   if (!videoId) {
     // Return a 400 Bad Request if no video_id is provided
@@ -32,14 +42,13 @@ export async function GET(
     );
   }
 
-  const authToken = request.headers.get("Authorization");
   const response = await fetch(
     `https://mttbackend-production.up.railway.app/api/videos/${videoId}/`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        ...(authToken && { "Authorization": `${authToken}` }),
+        ...(authToken && { "Authorization": `Token ${authToken}` }),
       },
       agent: agent,
     }

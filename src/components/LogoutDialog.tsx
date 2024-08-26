@@ -33,7 +33,7 @@ export default function LogoutDialog(props: {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Token ${session.user.auth_token}`,
+        Authorization: `Token ${""}`,
       },
     });
     const data = await response.json();

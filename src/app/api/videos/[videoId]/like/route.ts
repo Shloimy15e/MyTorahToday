@@ -19,7 +19,8 @@ export async function POST(
 ): Promise<Response> {
   // Get video.id from the request
   const { videoId } = params;
-  const authToken = cookies().get("accessToken")?.value;
+  const authToken = cookies().get("auth_token")?.value;
+  
   if (!authToken) {
     return NextResponse.json(
       { error: "No authToken provided" },
@@ -39,7 +40,7 @@ export async function POST(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      ...(authToken && { Authorization: `${authToken}` }),
+      Authorization: `Token ${authToken}`,
     },
     agent: agent,
   });
