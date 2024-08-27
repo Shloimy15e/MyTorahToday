@@ -24,14 +24,23 @@ export default function TopicGrid(props: {
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
         {props.showAll
-          ? props.topics.map((topic) => (
-              <TopicCard
-                key={topic.id}
-                topic={topic}
-                isSubtopic={props.areSubtopics}
-              />
-            ))
+          ? props.topics
+              .filter(
+                (topic) =>
+                  props.areSubtopics || (topic as Topic).subtopics.length > 0
+              )
+              .map((topic) => (
+                <TopicCard
+                  key={topic.id}
+                  topic={topic}
+                  isSubtopic={props.areSubtopics}
+                />
+              ))
           : props.topics
+              .filter(
+                (topic) =>
+                  props.areSubtopics || (topic as Topic).subtopics.length > 0
+              )
               .slice(
                 0,
                 showMore
