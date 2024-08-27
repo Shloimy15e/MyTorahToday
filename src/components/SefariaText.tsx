@@ -4,7 +4,13 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import { Transition } from "@headlessui/react";
 import DOMPurify from "dompurify";
 
-export default function SefariaText({ text, title }: { text: string[], title: string }) {
+export default function SefariaText({
+  text,
+  title,
+}: {
+  text: string[];
+  title: string;
+}) {
   const [showMore, setShowMore] = useState(false);
   const [showEverything, setShowEverything] = useState(false);
   const showMoreRef = useRef<HTMLDivElement>(null);
@@ -14,33 +20,51 @@ export default function SefariaText({ text, title }: { text: string[], title: st
   const sanitizedTextArray = text.map((item) =>
     purify ? purify.sanitize(item) : item
   );
-  const initialRender = useRef(true);
-
-  useEffect(() => {
-    const scrollOptions: ScrollIntoViewOptions = {
-      behavior: "smooth",
-      block: "start",
-    };
-    const targetRef =
-      !showMore && showEverything
-        ? showEverythingRef
-        : showMore
-        ? showMoreRef
-        : textRef;
-
-    const handleScroll = () => {
-      if (targetRef.current) {
-        targetRef.current.scrollIntoView(scrollOptions);
-      }
-    };
-
-    //Only run this when user interacts with the show more button
-    if (initialRender.current) {
-      initialRender.current = false;
+  
+  const handleSetShowMore = (boolean: boolean) => {
+    setShowMore(boolean);
+    if (boolean) {
+      // wait till showMoreRef is defined
+      setTimeout(() => {
+        if (showMoreRef.current) {
+          showMoreRef.current.scrollIntoView({ behavior: "smooth" });
+        } else {
+          setTimeout(() => {
+            showMoreRef.current?.scrollIntoView({ behavior: "smooth" });
+          }, 100);
+        }
+      }, 100);
     } else {
-      handleScroll();
+      if (showEverythingRef.current) {
+        showEverythingRef.current.scrollIntoView({ behavior: "smooth" });
+      } else {
+        textRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
     }
-  }, [showMore, showEverything]);
+  };
+
+  const handleSetShowEverything = (boolean: boolean) => {
+    setShowEverything(boolean);
+    if (boolean) {
+      // wait till showEverythingRef is defined
+      setTimeout(() => {
+        if (showEverythingRef.current) {
+          showEverythingRef.current.scrollIntoView({ behavior: "smooth" });
+        } else {
+          setTimeout(() => {
+            showEverythingRef.current?.scrollIntoView({ behavior: "smooth" });
+          }, 100);
+        }
+      }, 100);
+    } else {
+      if (showMoreRef.current) {
+        showMoreRef.current.scrollIntoView({ behavior: "smooth" });
+      } else {
+        textRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   return (
     <div
       className="bg-white rounded-lg shadow-lg p-6 m-6 transition-all duration-500 font-serif text-2xl leading-relaxed tracking-wide"
@@ -71,13 +95,13 @@ export default function SefariaText({ text, title }: { text: string[], title: st
         ></p>
       </Transition>
       <Transition
-        show={!showMore && showEverything}
+        show={showEverything}
         enter="transition-all duration-500 ease-in-out"
-        enterFrom="max-h-0 opacity-0 transform scale-95"
-        enterTo="max-h-screen opacity-100 transform scale-100"
+        enterFrom="max-h-0 opacity-0"
+        enterTo="max-h-screen opacity-100"
         leave="transition-all duration-500 ease-in-out"
-        leaveFrom="max-h-screen opacity-100 transform scale-100"
-        leaveTo="max-h-0 opacity-0 transform scale-95"
+        leaveFrom="max-h-screen opacity-100"
+        leaveTo="max-h-0 opacity-0"
       >
         <p
           ref={showEverythingRef}
@@ -90,9 +114,14 @@ export default function SefariaText({ text, title }: { text: string[], title: st
       <div className="flex justify-center text-lg font-mono leading-normal tracking-normal">
         <button
           onClick={() => {
-            showMore
-              ? (setShowMore(!showMore), setShowEverything(!showEverything))
-              : setShowEverything(!showEverything);
+            if (showMore && !showEverything) {
+              handleSetShowMore(false);
+              handleSetShowEverything(true);
+            } else if (showEverything) {
+              handleSetShowEverything(false);
+            } else {
+              handleSetShowEverything(true);
+            }
           }}
           className="flex text-lg items-center justify-center gap-5 bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-5 my-1 w-4/5"
         >
@@ -124,8 +153,10 @@ export default function SefariaText({ text, title }: { text: string[], title: st
         <button
           onClick={() => {
             showEverything
-              ? (setShowEverything(!showEverything), setShowMore(!showMore))
-              : setShowMore(!showMore);
+              ? (handleSetShowEverything(false), handleSetShowMore(true))
+              : showMore
+              ? handleSetShowMore(false)
+              : handleSetShowMore(true);
           }}
           className="flex text-lg items-center justify-center gap-5 bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-5 my-1 w-4/5"
         >
