@@ -30,7 +30,7 @@ export default async function VideoPage({ params }: Props) {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          ...(authToken && { "Authorization": `Token ${authToken}` }),
+          ...(authToken && { Authorization: `Token ${authToken}` }),
         },
         cache: "no-store",
       }
