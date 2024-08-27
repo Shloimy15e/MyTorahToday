@@ -28,7 +28,6 @@ export async function GET(
   if(!authToken) {
     authToken = request.headers.get('Authorization') || null;
     console.log("auth_token not found in cookies");
-    console.log("auth_token from request headers: ", authToken);
     if (!authToken) {
       console.log("auth_token not found in cookies or request headers");
     }
