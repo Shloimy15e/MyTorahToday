@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
 import { cookies } from "next/headers";
@@ -19,7 +19,7 @@ type Props = {
  * @description This function handles the GET request to retrieve one video by vdeo_id.
  */
 export async function GET(
-  request: Request,
+  request: any,
   { params }: Props
 ): Promise<Response> {
   // Get /video_id from the request
