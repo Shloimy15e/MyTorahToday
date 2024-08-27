@@ -2,45 +2,51 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Video from "@/types/Video";
 import Image from "next/image";
-import dynamic from 'next/dynamic';
-import { fetchTopics, getVideosBySubtopicName, getVideosByTopicName } from "@/data/videoData";
+import dynamic from "next/dynamic";
+import {
+  fetchTopics,
+  getVideosBySubtopicName,
+  getVideosByTopicName,
+} from "@/data/videoData";
+import { get } from "http";
+import SefariaText from "@/components/SefariaText";
 
-const VideoGrid = dynamic(() => import('@/components/VideoGrid'), {
+const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
   ssr: false, // Prevent server-side rendering
 });
-const TopicGrid = dynamic(() => import('@/components/TopicGrid'), {
+const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
   ssr: false, // Prevent server-side rendering
 });
 
 async function getParshahThisWeek() {
   try {
-    const response = await fetch(
-      "https://api.ginzburg.io/zmanim/shabbat?cl_offset=18&lat=32.09&lng=34.86&elevation=0&havdala=tzeis_8_5_degrees"
-    );
+    const apiUrl = `https://www.sefaria.org/api/calendars`;
+    const response = await fetch(apiUrl);
     const data = await response.json();
     if (!response.ok) {
       throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
     }
-    return data.torah_part;
+    return data.calendar_items[0].displayValue.en;
   } catch (error) {
     console.error("Error fetching parshah this week: ", error);
-    throw error; // Re-throw to handle in component
+    return null;
   }
 }
 
 export default async function Home() {
   try {
     const parshahThisWeek = await getParshahThisWeek();
+    let videosThisParshah = null;
     console.log("Parshah this week: ", parshahThisWeek);
-    const videosThisParshah = await getVideosBySubtopicName(parshahThisWeek);
+    if (parshahThisWeek) {
+      videosThisParshah = await getVideosBySubtopicName(parshahThisWeek);
+    }
     const topics = await fetchTopics();
     const videosByTopic = await Promise.all(
       topics.slice(0, 4).map(async (topic: any) => {
-        const videos = await getVideosByTopicName(topic.name, 9);;
-        return videos;
+        return await getVideosByTopicName(topic.name, 9);
       })
     );
-
     if (!videosThisParshah && !topics) {
       throw new Error("500 - Internal Server Error");
     }
@@ -66,7 +72,8 @@ export default async function Home() {
               topicName={parshahThisWeek}
               showAll={false}
               topicVideos={false}
-            />
+              showLinkAlways={true}
+              />
           )}{" "}
           {/* List of topics */}
           {topics && topics.length > 0 && (
