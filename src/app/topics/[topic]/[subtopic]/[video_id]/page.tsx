@@ -26,7 +26,8 @@ export default async function VideoPage({ params }: Props) {
     const video: Video = await getVideoByVideoId(video_id, authToken);
     const relatedVideos = await fetchRelatedVideos(
       video.topic_name,
-      video.subtopic_name
+      video.subtopic_name,
+      authToken
     );
     if (!video || typeof video !== "object") {
       throw new Error("404 - Video not found");
