@@ -106,11 +106,12 @@ export async function toggleLike(id: Video["id"]): Promise<Response> {
 }
 
 export const getVideoByVideoId = async (videoId: string, authToken: string | null): Promise<Video> => {
+  console.log("is this authToken null?", authToken === null);
   const response = await fetch(`https://www.mytorahtoday.com/api/videos/${videoId}/`, {
     cache: "no-store",
     headers: {
       "Content-Type": "application/json",
-      ...(authToken && { "Authorization": `${authToken}` }),
+      ...(authToken && { Authorization: `${authToken}` }),
     },
   });
   const data = await response.json();
