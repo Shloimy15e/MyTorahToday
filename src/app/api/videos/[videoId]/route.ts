@@ -23,15 +23,17 @@ export async function GET(
   { params }: Props
 ): Promise<Response> {
   // Get /video_id from the request
+  console.log("videoById: Request received for video_id:", params.videoId);
   const { videoId } = params;
   let authToken = cookies().get('auth_token')?.value || null;
   if(!authToken) {
     authToken = request.headers.get('Authorization') || null;
-    console.log("auth_token not found in cookies");
+    console.log("videoById: auth_token not found in cookies");
     if (!authToken) {
-      console.log("auth_token not found in cookies or request headers");
+      console.log("videoById: auth_token not found in cookies or request headers");
     }
   }
+  console.log("authToken", authToken);
 
   if (!videoId) {
     // Return a 400 Bad Request if no video_id is provided
