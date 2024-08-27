@@ -27,9 +27,10 @@ export default async function VideoPage({ params }: Props) {
     const response = await fetch(
       `https://www.mytorahtoday.com/api/videos/${video_id}/`,
       {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
-          ...(authToken && { Authorization: `${authToken}` }),
+          ...(authToken && { "Authorization": `Token ${authToken}` }),
         },
         cache: "no-store",
       }
