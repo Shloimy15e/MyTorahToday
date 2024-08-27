@@ -17,28 +17,6 @@ type Props = {
     video_id: string;
   };
 };
-const getVideoByVideoId = async (
-  videoId: string,
-  authToken: string | null
-): Promise<Video> => {
-  console.log("is this authToken null?", authToken === null);
-  if (authToken) {
-    console.log("token is true");
-  }
-  const response = await fetch(
-    `https://www.mytorahtoday.com/api/videos/${videoId}/`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        ...(authToken && { Authorization: `${authToken}` }),
-      },
-      cache: "no-store",
-    }
-  );
-  const data = await response.json();
-  console.log("data", JSON.stringify(data));
-  return data;
-};
 
 //Get the topic name from the params and pass it to the getVideosByTopic function
 export default async function VideoPage({ params }: Props) {
@@ -46,29 +24,18 @@ export default async function VideoPage({ params }: Props) {
     const { topic, subtopic, video_id } = params;
     const authToken = cookies().get("auth_token")?.value || null;
     console.log("authToken", authToken);
-    const getVideoByVideoId = async (
-      videoId: string,
-      authToken: string | null
-    ): Promise<Video> => {
-      console.log("is this authToken null?", authToken === null);
-      if (authToken) {
-        console.log("token is true");
+    const response = await fetch(
+      `https://www.mytorahtoday.com/api/videos/${video_id}/`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...(authToken && { Authorization: `${authToken}` }),
+        },
+        cache: "no-store",
       }
-      const response = await fetch(
-        `https://www.mytorahtoday.com/api/videos/${videoId}/`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            ...(authToken && { Authorization: `${authToken}` }),
-          },
-          cache: "no-store",
-        }
-      );
-      const data = await response.json();
-      console.log("data", JSON.stringify(data));
-      return data;
-    };
-    const video: Video = await getVideoByVideoId(video_id, authToken);
+    );
+    console.log(`Response status: ${response.status}`);
+    const video: Video = await response.json();
     const relatedVideos = await fetchRelatedVideos(
       video.topic_name,
       video.subtopic_name,

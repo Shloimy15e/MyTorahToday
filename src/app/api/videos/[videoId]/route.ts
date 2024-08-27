@@ -23,6 +23,7 @@ export async function GET(
   { params }: Props
 ): Promise<Response> {
   // Get /video_id from the request
+  console.log("request", request);
   console.log("videoById: Request received for video_id:", params.videoId);
   const { videoId } = params;
   let authToken = cookies().get('auth_token')?.value || null;
