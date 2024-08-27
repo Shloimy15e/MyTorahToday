@@ -70,7 +70,7 @@ export async function toggleLike(id: Video["id"]): Promise<Response> {
   console.log("toggleLike called with id:", id);
   try {
     const response = await fetch(
-      `https://www.mytorahtoday.com/api/videos/${id}/like`,
+      `/api/videos/${id}/like`,
       {
         method: "POST",
       }

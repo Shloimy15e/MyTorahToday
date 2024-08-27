@@ -85,8 +85,9 @@ export default function Header() {
                 {session && session.user.username ? (
                   <span className="capitalize w-8 flex items-center justify-center text-xl font-semibold bg-primary-blue text-white rounded-full aspect-square border border-gray-700">{session.user.username.slice(0, 1)}</span>
                 ) : (
-                  <span className="flex flex-nowrap items-center justify-center w-max md:text-lg lg:text-xl xl:font-semibold text-gray-800">
-                    Log in or Sign up
+                  <span className="flex flex-nowrap items-center justify-center w-max md:text-lg lg:text-xl xl:font-semibold text-gray-800 hover:text-primary-blue transition-colors duration-300 cursor-pointer">
+                    <UserCircleIcon aria-hidden="true" className="h-10 w-10 stroke-1" />
+                    <span className="ml-2 text-sm">Log in / Sign up</span>
                   </span>
                 )}
               </MenuButton>

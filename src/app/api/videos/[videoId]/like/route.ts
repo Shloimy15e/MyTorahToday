@@ -29,9 +29,9 @@ export async function POST(
   }
 
   if (!videoId) {
-    // Return a 400 Bad Request if no video.id is provided
+    // Return a 400 Bad Request if no video_id is provided
     return NextResponse.json(
-      { error: "No video.id provided" },
+      { error: "No video_id provided" },
       { status: 400 }
     );
   }
