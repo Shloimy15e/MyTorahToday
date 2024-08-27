@@ -3,12 +3,18 @@ import Video from "@/types/Video";
 
 export const fetchRelatedVideos = async (
   topic: string,
-  subtopic: string
+  subtopic: string,
+  authToken: string | null = null
 ): Promise<Video[]> => {
   try {
     const response = await fetch(
       `https://www.mytorahtoday.com/api/videos/?limit=22&topic__name__iexact=${topic}&subtopic__name__iexact=${subtopic}`
-    );
+    , {
+      headers: {
+        "Content-Type": "application/json",
+        ...(authToken && { "Authorization": `${authToken}` }),
+      },
+    });
     const data = await response.json();
     if (!response.ok) {
       console.error("Error fetching related videos:", data.error);

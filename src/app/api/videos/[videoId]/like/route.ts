@@ -19,13 +19,17 @@ export async function POST(
 ): Promise<Response> {
   // Get video.id from the request
   const { videoId } = params;
-  const authToken = cookies().get("auth_token")?.value;
-  
-  if (!authToken) {
-    return NextResponse.json(
-      { error: "No authToken provided" },
-      { status: 400 }
-    );
+  let authToken = cookies().get('auth_token')?.value || null;
+  if(!authToken) {
+    authToken = request.headers.get('Authorization') || null;
+    console.log("auth_token not found in cookies");
+    if (!authToken) {
+      console.log("auth_token not found in cookies or request headers");
+      return NextResponse.json(
+        { error: "No authToken provided" },
+        { status: 400 }
+      );
+    }
   }
 
   if (!videoId) {

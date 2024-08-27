@@ -51,6 +51,11 @@ const { handlers, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
+      const authToken = cookies().get("auth_token")?.value;
+      if (authToken) {
+        token.auth_token = authToken;
+      }
+
       if (user && "auth_token" in user) {
         token.user = user;
       }
