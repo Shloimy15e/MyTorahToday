@@ -23,6 +23,7 @@ export default async function VideoPage({ params }: Props) {
   try {
     const { topic, subtopic, video_id } = params;
     const authToken = cookies().get("auth_token")?.value || null;
+    console.log("authToken", authToken);
     const video: Video = await getVideoByVideoId(video_id, authToken);
     const relatedVideos = await fetchRelatedVideos(
       video.topic_name,
