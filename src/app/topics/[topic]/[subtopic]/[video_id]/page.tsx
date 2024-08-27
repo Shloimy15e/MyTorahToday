@@ -25,7 +25,7 @@ export default async function VideoPage({ params }: Props) {
     const authToken = cookies().get("auth_token")?.value || null;
     console.log("authToken", authToken);
     const response = await fetch(
-      `https://www.mytorahtoday.com/api/videos/${video_id}/`,
+      `https://mttbackend-production.up.railway.app/api/videos/${video_id}/`,
       {
         method: "GET",
         headers: {
