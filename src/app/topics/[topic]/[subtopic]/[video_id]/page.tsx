@@ -23,25 +23,31 @@ export default async function VideoPage({ params }: Props) {
   try {
     const { topic, subtopic, video_id } = params;
     const authToken = cookies().get("auth_token")?.value || null;
-    console.log("authToken", authToken);
     const response = await fetch(
-      `https://www.mytorahtoday.com/api/videos/${video_id}/`,
+      `${process.env.BACKEND_URL}/api/videos/${video_id}/`,
       {
-        method: "GET",
-        credentials: "include",
-        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+          ...(authToken && { Authorization: `Token ${authToken}` }),
+          cache: "no-store",
+        },
       }
     );
     console.log(`Response status: ${response.status}`);
+    if (!response.ok) {
+      if (typeof response === "object") {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+      throw new Error("404 - Video not found");
+    }
     const video: Video = await response.json();
-    const relatedVideos = await fetchRelatedVideos(
-      video.topic_name,
-      video.subtopic_name,
-      authToken
-    );
     if (!video || typeof video !== "object") {
       throw new Error("404 - Video not found");
     }
+    const relatedVideos = await fetchRelatedVideos(
+      video.topic_name,
+      video.subtopic_name
+    );
     return (
       <main className="grid grid-cols-1 md:grid-cols-12 gap-8 2xl:gap-10 p-4 video-page-container w-full 2xl:max-w-screen-2xl mx-auto">
         {/* Main Video Section */}

@@ -18,39 +18,51 @@ type Props = {
  * @returns {Promise<Response>}
  * @description This function handles the GET request to retrieve one video by vdeo_id.
  */
-export async function GET(request: NextRequest, { params }: Props): Promise<Response> {
-  const session = await getSession({})
-  // Get /video_id from the request
-  console.log("videoById: Request received for video_id:", params.videoId);
-  const { videoId } = params;
-  const authToken = session?.accessToken || null;
-  console.log("authToken", authToken);
-  if (!authToken){
-    console.log("videoById: authToken was not found in cookies")
-  }
+export async function GET(
+  request: NextRequest,
+  { params }: Props
+): Promise<Response> {
+  try {
+    const session = await getSession();
+    // Get /video_id from the request
+    console.log("videoById: Request received for video_id:", params.videoId);
+    const { videoId } = params;
+    const authToken = session?.accessToken || null;
+    console.log("videoById: authToken", authToken);
+    if (!authToken) {
+      console.log("videoById: authToken was not found in cookies");
+    }
 
-  if (!videoId) {
-    // Return a 400 Bad Request if no video_id is provided
+    if (!videoId) {
+      // Return a 400 Bad Request if no video_id is provided
+      return NextResponse.json(
+        { error: "No video_id provided" },
+        { status: 400 }
+      );
+    }
+
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/api/videos/${videoId}/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          ...(authToken && { Authorization: `Token ${authToken}` }),
+          cache: "no-store",
+        },
+        agent: agent,
+      }
+    );
+    const data = await response.json();
+    if (!response.ok) {
+      return NextResponse.json({ error: data }, { status: response.status });
+    }
+    return NextResponse.json(data, { status: response.status });
+  } catch (error) {
+    console.error("Error fetching video:", error);
     return NextResponse.json(
-      { error: "No video_id provided" },
-      { status: 400 }
+      { error: "Internal Server Error " + error },
+      { status: 500 }
     );
   }
-
-  const response = await fetch(
-    `${process.env.BACKEND_URL}/api/videos/${videoId}/`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        ...(authToken && { Authorization: `Token ${authToken}` }),
-      },
-      agent: agent,
-    }
-  );
-  const data = await response.json();
-  if (!response.ok) {
-    return NextResponse.json({ error: data }, { status: response.status });
-  }
-  return NextResponse.json(data, { status: response.status });
 }

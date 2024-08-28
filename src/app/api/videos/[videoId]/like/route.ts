@@ -20,6 +20,7 @@ export async function POST(
   // Get video.id from the request
   const { videoId } = params;
   let authToken = cookies().get('auth_token')?.value || null;
+  console.log("likeVideo: auth token from cookies", authToken);
   if(!authToken) {
     authToken = request.headers.get('Authorization') || null;
     console.log("auth_token not found in cookies");

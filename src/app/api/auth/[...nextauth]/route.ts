@@ -84,3 +84,4 @@ const { handlers, auth } = NextAuth({
 
 export const { GET } = handlers;
 export const { POST } = handlers;
+export { auth };
