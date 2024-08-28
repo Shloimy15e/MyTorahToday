@@ -46,21 +46,6 @@ function VideoCard(props: {
           </p>
         </div>
       )}
-      {/* loop through tags */}
-      {props.video.tags &&
-        props.video.tags.length > 0 &&
-        props.video.tags[0].length > 0 && (
-          <div className="flex flex-wrap justify-start items-center pl-5 w-full">
-            {props.video.tags.map((tag: string) => (
-              <p
-                key={tag}
-                className="text-sm text-gray-600 w-fit p-2 bg-gray-100 rounded-2xl leading-3 m-1"
-              >
-                {tag}
-              </p>
-            ))}
-          </div>
-        )}
       {/* likes and views */}
       <div className="flex flex-wrap justify-center items-center mx-4 gap-2 mt-auto pt-2 border-t border-gray-200 mb-2">
         <div
