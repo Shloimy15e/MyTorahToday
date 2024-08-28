@@ -4,12 +4,13 @@ import Video from "@/types/Video";
 export const fetchRelatedVideos = async (
   topic: string,
   subtopic: string,
-  authToken: string | null = null
+  authToken: string | null = null,
+  limit: number = 22
 ): Promise<Video[]> => {
   try {
     const response = await fetch(
-      `https://www.mytorahtoday.com/api/videos/?limit=22&topic__name__iexact=${topic}&subtopic__name__iexact=${subtopic}`
-    , {
+      `${process.env.BACKEND_URL}/api/videos/?limit=${limit}&topic__name__iexact=${topic}&subtopic__name__iexact=${subtopic}`,
+    {
       headers: {
         "Content-Type": "application/json",
         ...(authToken && { "Authorization": `${authToken}` }),
@@ -110,7 +111,7 @@ export const getVideoByVideoId = async (videoId: string, authToken: string | nul
   if (authToken) {
     console.log("token is true");
   }
-  const response = await fetch(`https://www.mytorahtoday.com/api/videos/${videoId}/`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/videos/${videoId}/`, {
     headers: {
       "Content-Type": "application/json",
       ...(authToken && { Authorization: `${authToken}` }),

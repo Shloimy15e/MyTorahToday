@@ -6,7 +6,7 @@ import { ClockIcon, EyeIcon, CalendarIcon, HandThumbUpIcon as HandThumbUpIconSol
 // A card that has the videoEmbed in it and takes a video from a video list by a parent
 export default function LoadingVideoCardAnimation() {
   return (
-    <div className="group relative bg-white w-full h-full rounded-2xl shadow-md transition hover:scale-105 hover:cursor-pointer duration-300 grid grid-rows-[auto_auto_1fr_auto] overflow-hidden gap-3">
+    <div className="group relative bg-white w-full h-full rounded-2xl shadow-md transition grid grid-rows-[auto_auto_1fr_auto] overflow-hidden gap-3">
       <div className="w-full aspect-video relative">
         <div className="rounded-t-2xl w-full h-full object-cover bg-gray-300 animate-pulse"></div>
         <div className="absolute inset-0 flex items-center justify-center">

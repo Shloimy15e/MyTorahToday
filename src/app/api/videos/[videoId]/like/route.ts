@@ -22,10 +22,10 @@ export async function POST(
   let authToken = cookies().get('auth_token')?.value || null;
   console.log("likeVideo: auth token from cookies", authToken);
   if(!authToken) {
+    console.log("likeVideo: auth_token not found in cookies");
     authToken = request.headers.get('Authorization') || null;
-    console.log("auth_token not found in cookies");
     if (!authToken) {
-      console.log("auth_token not found in cookies or request headers");
+      console.log("likeVideo: auth_token also not found in request headers");
       return NextResponse.json(
         { error: "No authToken provided" },
         { status: 400 }
