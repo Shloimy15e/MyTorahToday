@@ -125,7 +125,7 @@ export default async function VideoPage({ params }: Props) {
   }
 }
 
-export async function RelatedVideosSection({
+async function RelatedVideosSection({
   topic,
   subtopic,
   authToken,
