@@ -18,23 +18,24 @@ type Props = {
  * @returns {Promise<Response>}
  * @description This function handles the GET request to retrieve one video by vdeo_id.
  */
-export async function GET(
-  request: any,
-  { params }: Props
-): Promise<Response> {
+export async function GET(request: any, { params }: Props): Promise<Response> {
   // Get /video_id from the request
   console.log("request", request);
   console.log("headers", request.headers);
   console.log(JSON.stringify(request.headers));
-  console.log(JSON.stringify(request))
+  console.log(JSON.stringify(request));
   console.log("videoById: Request received for video_id:", params.videoId);
   const { videoId } = params;
-  let authToken = cookies().get('auth_token')?.value || null;
-  if(!authToken) {
-    authToken = request.headers.get('Authorization') || null;
+  let authToken = cookies().get("auth_token")?.value || null;
+  if (!authToken) {
+    authToken = request.headers.get("Authorization") || null;
     console.log("videoById: auth_token not found in cookies");
     if (!authToken) {
-      console.log("videoById: auth_token not found in cookies or request headers");
+      authToken = request.cookies.get("auth_token")?.value;
+      console.log("videoById: auth_token not found in header");
+      if (!authToken){
+        console.log("videoById: auth_token not found in request cookies")
+      }
     }
   }
   console.log("authToken", authToken);
@@ -53,7 +54,7 @@ export async function GET(
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        ...(authToken && { "Authorization": `Token ${authToken}` }),
+        ...(authToken && { Authorization: `Token ${authToken}` }),
       },
       agent: agent,
     }
