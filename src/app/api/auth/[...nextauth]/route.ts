@@ -13,20 +13,24 @@ const { handlers, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        const res = await fetch(
-          "https://mttbackend-production.up.railway.app/api/auth/token/login/",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(credentials),
+        try {
+          const res = await fetch(
+            `${process.env.BACKEND_URL}/api/auth/token/login/`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(credentials),
+            }
+          );
+
+          if (!res.ok) {
+            throw new Error("Failed to log in");
           }
-        );
 
-        const user = await res.json();
+          const user = await res.json();
 
-        if (res.ok && user) {
           const UserDataRes = await fetch(
-            "https://mttbackend-production.up.railway.app/api/auth/users/me/",
+            `${process.env.BACKEND_URL}/api/auth/users/me/`,
             {
               method: "GET",
               headers: {
@@ -35,6 +39,9 @@ const { handlers, auth } = NextAuth({
               },
             }
           );
+          if (!UserDataRes.ok) {
+            throw new Error("Failed to fetch user data");
+          }
           const UserData = await UserDataRes.json();
           cookies().set("auth_token", user.auth_token, {
             httpOnly: true,
@@ -43,7 +50,8 @@ const { handlers, auth } = NextAuth({
             secure: process.env.NODE_ENV === "production",
           });
           return { ...user, username: UserData.username };
-        } else {
+        } catch (error) {
+          console.error("Error logging in:", error);
           return null;
         }
       },
@@ -65,13 +73,15 @@ const { handlers, auth } = NextAuth({
       return {
         ...session,
         user: token.user,
+        accessToken: token.auth_token,
       };
     },
   },
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === "development",
   secret: process.env.NEXTAUTH_SECRET,
   trustHost: true,
 });
 
 export const { GET } = handlers;
 export const { POST } = handlers;
+export { auth };
