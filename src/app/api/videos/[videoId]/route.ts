@@ -20,11 +20,10 @@ type Props = {
  */
 export async function GET(request: any, { params }: Props): Promise<Response> {
   // Get /video_id from the request
-  console.log("request", request);
-  console.log("headers", request.headers);
-  console.log(JSON.stringify(request.headers));
-  console.log(JSON.stringify(request));
   console.log("videoById: Request received for video_id:", params.videoId);
+  console.log("videoById: request ", request);
+  console.log("videoById: cookies", request.cookies);
+  console.log(JSON.stringify(request));
   const { videoId } = params;
   let authToken = cookies().get("auth_token")?.value || null;
   if (!authToken) {
