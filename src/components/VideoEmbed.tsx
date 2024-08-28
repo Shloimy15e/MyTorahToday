@@ -5,7 +5,7 @@ export default function VideoEmbed({
 }: {
   src: string;
   className: string;
-  autoplay: boolean;
+  autoplay?: boolean;
 }) {
   return (
     <iframe
