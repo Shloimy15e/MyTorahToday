@@ -18,25 +18,13 @@ type Props = {
  * @returns {Promise<Response>}
  * @description This function handles the GET request to retrieve one video by vdeo_id.
  */
-export async function GET(request: any, { params }: Props): Promise<Response> {
+export async function GET(request: NextRequest, { params }: Props): Promise<Response> {
   // Get /video_id from the request
   console.log("videoById: Request received for video_id:", params.videoId);
   console.log("videoById: request ", request);
   console.log("videoById: cookies", request.cookies);
-  console.log(JSON.stringify(request));
   const { videoId } = params;
-  let authToken = cookies().get("auth_token")?.value || null;
-  if (!authToken) {
-    authToken = request.headers.get("Authorization") || null;
-    console.log("videoById: auth_token not found in cookies");
-    if (!authToken) {
-      authToken = request.cookies.get("auth_token")?.value;
-      console.log("videoById: auth_token not found in header");
-      if (!authToken){
-        console.log("videoById: auth_token not found in request cookies")
-      }
-    }
-  }
+  const authToken = request.cookies.get("auth_token")?.value
   console.log("authToken", authToken);
 
   if (!videoId) {
