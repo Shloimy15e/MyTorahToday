@@ -28,10 +28,7 @@ export default async function VideoPage({ params }: Props) {
       `https://www.mytorahtoday.com/api/videos/${video_id}/`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          ...(authToken && { Authorization: `Token ${authToken}` }),
-        },
+        credentials: "include",
         cache: "no-store",
       }
     );
