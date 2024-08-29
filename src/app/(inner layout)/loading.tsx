@@ -8,9 +8,6 @@ export default function Loading() {
   return (
     <>
       <section>
-        <Header></Header>
-      </section>
-      <section>
         <div>
           <h1 className="h-8 w-24 bg-gray-400 rounded-full animate-pulse pb-4 relative  my-6 ml-10"></h1>
         </div>
@@ -25,9 +22,6 @@ export default function Loading() {
             <TopicSkeleton key={index} isSubtopic={false} />
           ))}
         </div>
-      </section>
-      <section>
-        <Footer></Footer>
       </section>
     </>
   );

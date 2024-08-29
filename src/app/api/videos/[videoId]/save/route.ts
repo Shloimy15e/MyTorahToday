@@ -19,12 +19,18 @@ export async function POST(
 ): Promise<Response> {
   // Get video.id from the request
   const { videoId } = params;
-  const authToken = cookies().get("auth_token")?.value;
-  if (!authToken) {
-    return NextResponse.json(
-      { error: "No authToken provided" },
-      { status: 400 }
-    );
+  let authToken = cookies().get('auth_token')?.value || null;
+  console.log("authToken", authToken);
+  if(!authToken) {
+    console.log("saveVideo: auth_token not found in cookies");
+    authToken = request.headers.get('Authorization') || null;
+    if (!authToken) {
+      console.log("saveVideo: auth_token also not found in request headers");
+      return NextResponse.json(
+        { error: "No authToken provided" },
+        { status: 400 }
+      );
+    }
   }
 
   if (!videoId) {
@@ -39,11 +45,12 @@ export async function POST(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      ...(authToken && { Authorization: `${authToken}` }),
+      ...(authToken && { Authorization: `Token ${authToken}` }),
     },
     agent: agent,
   });
   const data = await response.json();
+  console.log("data", JSON.stringify(data));
   if (!response.ok) {
     return NextResponse.json({ error: data }, { status: response.status });
   }

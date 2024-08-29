@@ -106,6 +106,40 @@ export async function toggleLike(id: Video["id"]): Promise<Response> {
   }
 }
 
+export async function toggleSave(id: Video["id"]): Promise<Response> {
+  console.log("toggleSave called with id:", id);
+  try {
+    const response = await fetch(
+      `/api/videos/${id}/save`,
+      {
+        method: "POST",
+      }
+    );
+    const data = await response.json();
+    console.log("data", JSON.stringify(data));
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
+    }
+    if (data.detail.includes("unsaved")) {
+      console.log("Successfully unsaved video");
+    } else if (data.detail.includes("saved")) {
+      // Add one like to props.video.likes
+      console.log("Successfully saved video");
+    }
+    return new Response(JSON.stringify(data), {
+      status: response.status,
+      statusText: response.statusText,
+    });
+  } catch (error) {
+    console.error("Error saving video:", error);
+
+    return new Response(JSON.stringify({ error: JSON.stringify(error) }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
 export const getVideoByVideoId = async (videoId: string, authToken: string | null): Promise<Video> => {
   console.log("is this authToken null?", authToken === null);
   if (authToken) {
