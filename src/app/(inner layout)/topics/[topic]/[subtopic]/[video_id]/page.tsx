@@ -12,6 +12,7 @@ import HorizontalVideoGrid from "./components/HorizontalVideoGrid";
 import dynamic from "next/dynamic";
 import { Suspense, lazy } from "react";
 import LoadingVideoCardAnimation from "@/components/LoadingVideoCardAnimation";
+import SaveButton from "@/components/ui/SaveButton";
 
 type Props = {
   params: {
@@ -67,6 +68,7 @@ export default async function VideoPage({ params }: Props) {
                 isLiked={video.is_liked_by_user}
                 videoId={video.id}
               />
+              <SaveButton videoId={video.id} isSaved={video.is_saved_by_user} />
             </div>
             <div className="flex flex-col gap-4 w-full overflow-clip max-h-full bg-neutral-200 rounded-xl p-4">
               <div className="flex gap-4 justify-between">

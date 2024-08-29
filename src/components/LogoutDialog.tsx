@@ -11,6 +11,7 @@ import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useToast } from "./ToastProvider";
 import { signOut } from "next-auth/react";
 import { useSessionContext } from "@/context/SessionContext";
+import LoadingAnimation from "./LoadingAnimation";
 
 export default function LogoutDialog(props: {
   isOpen: boolean;
@@ -91,7 +92,7 @@ export default function LogoutDialog(props: {
                         <div className="mt-3">
                           <button
                             type="submit"
-                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            className="w-full flex-nowrap flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             onClick={(e) => {
                               e.preventDefault();
                               handleOnSubmit();
@@ -117,12 +118,12 @@ export default function LogoutDialog(props: {
                     </form>
                   </div>
                   {isLoading && (
-                    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-                      <div className="text-white text-2xl flex flex-col gap-1 items-center">
-                        <ArrowPathIcon className="animate-spin h-10 w-10" />
-                        <span>Logging you out...</span>
-                      </div>
+                    <div className="fixed inset-0 bg-black bg-opacity-65 flex items-center justify-center z-50">
+                    <div className="text-white text-2xl flex flex-col gap-1 items-center">
+                      <LoadingAnimation />
+                      <span>Please wait while we log you out</span>
                     </div>
+                  </div>
                   )}
                 </DialogPanel>
               </TransitionChild>

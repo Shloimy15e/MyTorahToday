@@ -18,7 +18,6 @@ export default function Error({
 
   return (
     <>
-      <Header />
       <div>
         <main className="h-96 w-full flex flex-col justify-start items-center">
           <h2 className="text-2xl text-center mx-auto mt-10 w-full">
@@ -58,7 +57,6 @@ export default function Error({
           </div>
         </main>
       </div>
-      <Footer />
     </>
   );
 }

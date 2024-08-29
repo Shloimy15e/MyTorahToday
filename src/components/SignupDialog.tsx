@@ -9,6 +9,9 @@ import React, { Fragment, useState } from "react";
 import { useToast } from "./ToastProvider";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
+import { set } from "zod";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import LoadingAnimation from "./LoadingAnimation";
 
 // Remove the import statement for 'fs' module
 export default function SignupDialog(props: {
@@ -18,6 +21,7 @@ export default function SignupDialog(props: {
   const closeModal = () => props.onClose();
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const {
     register,
     handleSubmit,
@@ -25,6 +29,7 @@ export default function SignupDialog(props: {
   } = useForm();
 
   const onSubmit = async (data: any) => {
+    setIsLoading(true);
     const response = await fetch("/api/auth/users", {
       method: "POST",
       headers: {
@@ -35,6 +40,8 @@ export default function SignupDialog(props: {
 
     if (response.ok) {
       // Automatically log in the user after successful signup
+      showToast("Signup successful. Automatically logging in...", "info");
+      setIsLoggingIn(true);
       console.log("Signup successful. Automatically logging in...");
       const result = await signIn("credentials", {
         redirect: false,
@@ -43,13 +50,19 @@ export default function SignupDialog(props: {
       });
       if (result?.error) {
         console.error("Failed to sign in:", result.error);
+        showToast("Failed to log in. Please reload and try again.", "error");
       } else {
-        console.log("Sign in successful:", result);
+        console.log("log in successful:", result);
+        showToast("Log in successful", "info");
       }
     } else {
       const errorData = await response.json();
       console.error("Signup failed:", errorData);
+      showToast("Signup failed. Please try again later.", "error");
     }
+    setIsLoading(false);
+    setIsLoggingIn(false);
+    props.onClose();
   };
 
   return (
@@ -197,7 +210,14 @@ export default function SignupDialog(props: {
           </div>
         </Dialog>
       </Transition>
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-65 flex items-center justify-center z-50">
+          <div className="text-white text-2xl flex flex-col gap-1 items-center">
+            <LoadingAnimation />
+            <span>Please wait while we {isLoggingIn ? ("log you in") : ("sign you up")}</span>
+          </div>
+        </div>
+      )}
     </>
   );
 }
-

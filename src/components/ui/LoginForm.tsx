@@ -2,19 +2,22 @@ import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/components/ToastProvider";
 import { useRouter } from "next/navigation";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import LoadingAnimation from "../LoadingAnimation";
+import { useState } from "react";
 
 
 export function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isLoading },
+    formState: { errors },
   } = useForm();
   const { showToast } = useToast();
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter();
 
   const onSubmit = async (data: any) => {
+    setIsLoading(true);
     console.log("Submitting form data for user:", data.username);
     const result = await signIn("credentials", {
       username: data.username,
@@ -26,9 +29,11 @@ export function LoginForm() {
     if (result?.error) {
       console.error("Failed to sign in:", result.error);
       showToast("Invalid username or password", "error");
+      setIsLoading(false);
     } else {
       console.log("Sign in successful:", result);
       showToast("Logged in successfully", "info");
+      setIsLoading(false);
       router.refresh();
     }
   };
@@ -103,7 +108,7 @@ export function LoginForm() {
       {isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-65 flex items-center justify-center z-50">
           <div className="text-white text-2xl flex flex-col gap-1 items-center">
-            <ArrowPathIcon className="animate-spin h-10 w-10" />
+            <LoadingAnimation />
             <span>Logging you in...</span>
           </div>
         </div>

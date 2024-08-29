@@ -60,10 +60,10 @@ export default function LikeButtonAndCount({
           toggleLike();
         }}
         disabled={isLoading}
-        className={`text-xl flex flex-wrap items-center gap-2 border border-gray-700 ${
+        className={`text-xl h-9 flex items-center justify-center gap-2 border border-gray-700  ${
           isLikedState
             ? "bg-primary-blue text-white"
-            : " "
+            : "bg-white"
         } py-1.5 px-3 rounded-full ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         {isLoading ? (

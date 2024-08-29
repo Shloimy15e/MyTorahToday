@@ -15,6 +15,6 @@ export default interface Video {
   views: number;
   userViews: number;
   is_liked_by_user: boolean;
-  is_viewed_by_user?: boolean;
-  is_saved_by_user?: boolean;
+  is_viewed_by_user: boolean;
+  is_saved_by_user: boolean;
 }
