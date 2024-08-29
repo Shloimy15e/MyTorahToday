@@ -20,17 +20,26 @@ import {
   ArrowLeftStartOnRectangleIcon,
   ArrowRightEndOnRectangleIcon,
   PencilSquareIcon,
+  BookmarkIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
 import LoginDialog from "./LoginDialog";
 import SignupDialog from "./SignupDialog";
 import LogoutDialog from "./LogoutDialog";
-import { IoSearchOutline, IoSettingsOutline } from "react-icons/io5";
+import {
+  IoBookmarkOutline,
+  IoBookmarksOutline,
+  IoSaveOutline,
+  IoSearchOutline,
+  IoSettingsOutline,
+  IoThumbsUpOutline,
+} from "react-icons/io5";
 import { MdManageAccounts } from "react-icons/md";
 import { useRouter, useSearchParams } from "next/navigation";
 import Topic from "@/types/Topic";
 import { useMediaQuery } from "react-responsive";
+import { BiLike } from "react-icons/bi";
 
 const navigation = [
   { name: "Parshah", href: "/topics/parshah" },
@@ -137,10 +146,7 @@ export default function Header() {
           </button>
         )}
 
-        <Transition
-          as={Fragment}
-          show={showSearchbar}
-        >
+        <Transition as={Fragment} show={showSearchbar}>
           <form className="grid h-fit md:h-10 grid-rows-auto md:grid-rows-1 grid-cols-12 items-center border border-primary-blue rounded-2xl md:rounded-full justify-center col-start-4 md:col-start-8 col-end-10  transition duration-300 ease-in data-[closed]:opacity-0">
             <div className="col-span-full row-start-2 md:row-auto md:col-span-3 flex md:flex-col items-start justify-center w-full h-full rounded-b-2xl md:rounded-l-full border-t md:border-t-0 md:border-r border-primary-blue">
               <div
@@ -153,7 +159,11 @@ export default function Header() {
                 <select
                   value={selectedTopic}
                   onChange={(e) => setSelectedTopic(e.target.value)}
-                  className={`w-full h-full px-1 text-left align-top placeholder-gray-500 bg-transparent cursor-pointer rounded-b-2xl focus:outline-none focus:ring-0 sm:text-sm ${selectedTopic == "all" ? "rounded-b-2xl md:rounded-l-full" : "rounded-bl-2xl md:rounded-tl-full"}`}
+                  className={`w-full h-full px-1 text-left align-top placeholder-gray-500 bg-transparent cursor-pointer rounded-b-2xl focus:outline-none focus:ring-0 sm:text-sm ${
+                    selectedTopic == "all"
+                      ? "rounded-b-2xl md:rounded-l-full"
+                      : "rounded-bl-2xl md:rounded-tl-full"
+                  }`}
                 >
                   <option value="all" className="text-gray-800">
                     All Videos
@@ -263,6 +273,30 @@ export default function Header() {
                       <h2 className="text-lg capitalize font-medium text-gray-900 text-center">
                         {session.user.username}
                       </h2>
+                      <MenuItem>
+                        <Link
+                          href="/videos/saved"
+                          className="active:bg-gray-100 active:text-primary-blue text-gray-800 group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
+                        >
+                          <IoBookmarksOutline
+                            className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500"
+                            aria-hidden="true"
+                          />
+                          <span>Saved videos</span>
+                        </Link>
+                      </MenuItem>
+                      <MenuItem>
+                        <Link
+                          href={"/videos/liked"}
+                          className="active:bg-gray-100 active:text-primary-blue text-gray-800 group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
+                        >
+                          <BiLike
+                            className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500"
+                            aria-hidden="true"
+                          />
+                          <span>Liked videos</span>
+                        </Link>
+                      </MenuItem>
                       <MenuItem>
                         <Link
                           href="#"
