@@ -9,6 +9,7 @@ const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
 export const metadata: Metadata = {
   title: "My Torah Today - Topics",
 };
+
 export default async function Topics() {
   try {
     const topics = await fetchTopics();

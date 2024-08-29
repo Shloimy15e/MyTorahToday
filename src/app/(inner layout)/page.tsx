@@ -52,7 +52,6 @@ export default async function Home() {
     }
     return (
       <>
-        <Header />
         <main className="bg-neutral-100 grid grid-cols-1">
           {/* Hero section */}
           <div>
@@ -93,7 +92,6 @@ export default async function Home() {
               />
             ))}
         </main>
-        <Footer />
       </>
     );
   } catch (error) {

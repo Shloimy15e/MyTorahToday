@@ -1,6 +1,5 @@
 "use client";
-
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState, useMemo } from "react";
 import { useSessionContext } from "@/context/SessionContext";
 import {
   Dialog,
@@ -20,15 +19,18 @@ import {
   UserIcon,
   ArrowLeftStartOnRectangleIcon,
   ArrowRightEndOnRectangleIcon,
-  PencilSquareIcon
+  PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
 import LoginDialog from "./LoginDialog";
 import SignupDialog from "./SignupDialog";
 import LogoutDialog from "./LogoutDialog";
-import { IoSettingsOutline } from "react-icons/io5";
+import { IoSearchOutline, IoSettingsOutline } from "react-icons/io5";
 import { MdManageAccounts } from "react-icons/md";
+import { useRouter, useSearchParams } from "next/navigation";
+import Topic from "@/types/Topic";
+import { useMediaQuery } from "react-responsive";
 
 const navigation = [
   { name: "Parshah", href: "/topics/parshah" },
@@ -43,7 +45,58 @@ export default function Header() {
   const [isSignupDialogOpen, setIsSignupDialogOpen] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const searchParams = useSearchParams();
+  const { queryParams, topicParams, subtopicParams } = useMemo(() => {
+    return {
+      queryParams: searchParams.get("query") || "",
+      topicParams: searchParams.get("topic") || "all",
+      subtopicParams: searchParams.get("subtopic") || "all",
+    };
+  }, [searchParams]);
+  const [query, setQuery] = useState(queryParams);
+  const [selectedTopic, setSelectedTopic] = useState(topicParams);
+  const [selectedSubtopic, setSelectedSubtopic] = useState(subtopicParams);
+  const [topics, setTopics] = useState<Topic[]>([]);
+  const router = useRouter();
   const { session } = useSessionContext();
+  const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
+  const [showSearchbar, setShowSearchbar] = useState(!isMobile);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const fetchTopics = async () => {
+      const res = await fetch(`/api/topics/`);
+      const data = await res.json();
+      console.log(data.results);
+      setTopics(data.results);
+    };
+    if (topics.length === 0) {
+      fetchTopics();
+    }
+  }, [topics]);
+
+  const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    if (query.trim() !== "") {
+      if (selectedTopic === "all" && selectedSubtopic === "all") {
+        router.push(`/videos/search?query=${query}`);
+      } else if (selectedTopic !== "all" && selectedSubtopic === "all") {
+        router.push(`/videos/search?query=${query}&topic=${selectedTopic}`);
+      } else if (selectedTopic !== "all" && selectedSubtopic !== "all") {
+        router.push(
+          `/videos/search?query=${query}&topic=${selectedTopic}&subtopic=${selectedSubtopic}`
+        );
+      } else {
+        router.push(
+          `/videos/search?query=${query}&subtopic=${selectedSubtopic}`
+        );
+      }
+    }
+  };
 
   const closeDialog = () => {
     setIsLoginDialogOpen(false);
@@ -56,25 +109,113 @@ export default function Header() {
     <header className="bg-white shadow-md grid grid-cols-1 grid-rows-2">
       <nav
         aria-label="Global"
-        className="grid grid-rows-1 grid-cols-12 gap-8 w-full p-4 px-6 lg:px-10 row-span-6 place-items-center"
+        className="grid grid-rows-1 gap-2 w-full min-w-96 p-3 md:p-4 lg:px-10 row-span-6 place-items-center"
       >
-        <div className="grid grid-rows-1 col-span-1 lg:flex-1 items-center">
+        <div className="grid grid-rows-1 col-span-3 lg:flex-1 items-center">
           <Link
             href="/"
-            className="-m-1.5 p-1.5 justify-items-center text-gray-800 grid grid-col-1"
+            className="md:px-1.5 justify-center items-center text-gray-800 flex flex-col"
           >
             <span className="sr-only">My Torah Today</span>
             <Image
               alt="The Rosh Yeshiva Reb Shimon Semp"
               src="/images/rosh-yeshiva.png"
-              className="h-20 w-auto rounded-full"
-              width={200}
-              height={100}
+              className="h-16 md:h-20 w-auto aspect-square rounded-full"
+              width={80}
+              height={80}
+              loading="eager"
             />
             MyTorahToday
           </Link>
         </div>
-        <div className="flex items-center justify-center col-span-1 col-end-9 md:col-end-10 xl:col-end-11">
+        {mounted && !showSearchbar && (
+          <button
+            onClick={() => setShowSearchbar(true)}
+            className="col-span-1 col-end-10 flex items-center justify-center gap-1.5 p-2.5 rounded-full border border-primary-blue text-gray-700 hover:bg-gray-100 active:bg-gray-200"
+          >
+            <IoSearchOutline className="h-6 w-6" />
+          </button>
+        )}
+
+        <Transition
+          as={Fragment}
+          show={showSearchbar}
+        >
+          <form className="grid h-fit md:h-10 grid-rows-auto md:grid-rows-1 grid-cols-12 items-center border border-primary-blue rounded-2xl md:rounded-full justify-center col-start-4 md:col-start-8 col-end-10  transition duration-300 ease-in data-[closed]:opacity-0">
+            <div className="col-span-full row-start-2 md:row-auto md:col-span-3 flex md:flex-col items-start justify-center w-full h-full rounded-b-2xl md:rounded-l-full border-t md:border-t-0 md:border-r border-primary-blue">
+              <div
+                className={`px-1 w-full hover:bg-gray-100 active:bg-gray-200 ${
+                  selectedTopic == "all"
+                    ? "rounded-b-2xl md:rounded-l-full  h-full"
+                    : "rounded-bl-2xl md:rounded-tl-full h-full md:h-1/2"
+                }`}
+              >
+                <select
+                  value={selectedTopic}
+                  onChange={(e) => setSelectedTopic(e.target.value)}
+                  className={`w-full h-full px-1 text-left align-top placeholder-gray-500 bg-transparent cursor-pointer rounded-b-2xl focus:outline-none focus:ring-0 sm:text-sm ${selectedTopic == "all" ? "rounded-b-2xl md:rounded-l-full" : "rounded-bl-2xl md:rounded-tl-full"}`}
+                >
+                  <option value="all" className="text-gray-800">
+                    All Videos
+                  </option>
+                  {topics
+                    .filter((topic) => topic.subtopics.length > 0)
+                    .map((topic) => (
+                      <option
+                        className="text-gray-800"
+                        key={topic.id}
+                        value={topic.name}
+                      >
+                        {topic.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              {selectedTopic != "all" && (
+                <div className="px-1 h-full md:h-1/2 w-full hover:bg-gray-100 active:bg-gray-200 rounded-br-2xl md:rounded-bl-full border-l md:border-l-0 md:border-t border-primary-blue">
+                  <select
+                    value={selectedSubtopic}
+                    onChange={(e) => setSelectedSubtopic(e.target.value)}
+                    className="w-full h-full px-1 align-top text-left placeholder-gray-500 bg-transparent cursor-pointer rounded-none focus:outline-none focus:ring-0 sm:text-sm"
+                  >
+                    <option value="all" className="text-gray-800">
+                      All Subtopics
+                    </option>
+                    {topics
+                      .find((topic) => topic.name === selectedTopic)
+                      ?.subtopics.map((subtopic) => (
+                        <option
+                          className="text-gray-800"
+                          key={subtopic.id}
+                          value={subtopic.name}
+                        >
+                          {subtopic.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              )}
+            </div>
+            <input
+              type="text"
+              name="search"
+              id="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search for a video"
+              className="w-full col-span-8 md:col-span-6 p-1 md:p-3 md:ml-2.5 inline-flex items-center justify-center text-gray-800 placeholder-gray-500 bg-inherit rounded-none focus:outline-none focus:ring-0 sm:text-sm"
+            />
+            <button
+              type="submit"
+              onClick={(e) => handleSearch(e)}
+              className="w-full h-full gap-1 md:gap-2 col-end-auto text-center col-span-4 md:col-span-3 inline-flex items-center justify-center rounded-tr-2xl md:rounded-r-full bg-primary-blue hover:bg-blue-950 text-white"
+            >
+              <IoSearchOutline className="h-6 w-6 flex-shrink-0" />
+              <span className="hidden md:inline">Search</span>
+            </button>
+          </form>
+        </Transition>
+        <div className="flex items-center justify-center col-span-1 col-end-11">
           <Menu as="div" className="relative inline-block text-left">
             <div className="flex items-center justify-center">
               <MenuButton
@@ -83,11 +224,18 @@ export default function Header() {
               >
                 <span className="sr-only">Open profile menu</span>
                 {session && session.user.username ? (
-                  <span className="capitalize w-8 flex items-center justify-center text-xl font-semibold bg-primary-blue text-white rounded-full aspect-square border border-gray-700">{session.user.username.slice(0, 1)}</span>
+                  <span className="capitalize w-8 flex items-center justify-center text-xl font-semibold bg-primary-blue text-white rounded-full aspect-square border border-gray-700">
+                    {session.user.username.slice(0, 1)}
+                  </span>
                 ) : (
-                  <span className="flex flex-nowrap items-center justify-center w-max md:text-lg lg:text-xl xl:font-semibold text-gray-800 hover:text-primary-blue transition-colors duration-300 cursor-pointer">
-                    <UserCircleIcon aria-hidden="true" className="h-10 w-10 stroke-1" />
-                    <span className="ml-2 text-sm">Log in / Sign up</span>
+                  <span className="flex flex-col items-center justify-center w-max md:text-lg lg:text-xl xl:font-semibold text-gray-800 hover:text-primary-blue transition-colors duration-300 cursor-pointer">
+                    <UserCircleIcon
+                      aria-hidden="true"
+                      className="h-10 w-10 stroke-1"
+                    />
+                    <span className="ml-2 text-sm hidden md:inline">
+                      Log in / Sign up
+                    </span>
                   </span>
                 )}
               </MenuButton>
@@ -120,7 +268,10 @@ export default function Header() {
                           href="#"
                           className="active:bg-gray-100 active:text-primary-blue text-gray-800 group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
                         >
-                          <MdManageAccounts className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500" aria-hidden="true" />
+                          <MdManageAccounts
+                            className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500"
+                            aria-hidden="true"
+                          />
                           <span>My account</span>
                         </Link>
                       </MenuItem>
@@ -129,7 +280,10 @@ export default function Header() {
                           href="#"
                           className="active:bg-gray-100 active:text-primary-blue text-gray-800 group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
                         >
-                          <IoSettingsOutline className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500" aria-hidden="true" />
+                          <IoSettingsOutline
+                            className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500"
+                            aria-hidden="true"
+                          />
                           <span>Settings</span>
                         </Link>
                       </MenuItem>
