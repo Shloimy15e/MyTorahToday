@@ -1,7 +1,8 @@
 import {
   PlayIcon,
 } from "@heroicons/react/24/outline";
-import { ClockIcon, EyeIcon, CalendarIcon, HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/react/24/solid";
+import { ClockIcon, EyeIcon, CalendarIcon } from "@heroicons/react/24/solid";
+import { MdThumbUp } from "react-icons/md";
 
 // A card that has the videoEmbed in it and takes a video from a video list by a parent
 export default function LoadingVideoCardAnimation() {
@@ -30,7 +31,7 @@ export default function LoadingVideoCardAnimation() {
       {/* likes and views */}
       <div className="flex flex-wrap justify-center items-center mx-4 gap-2 mt-auto pt-2 border-t border-gray-200 mb-2">
         <div className="flex flex-wrap justify-start items-center gap-1 text-gray-400  animate-pulse pr-2 border-r border-gray-300">
-            <HandThumbUpIconSolid className="h-5 w-5" />
+            <MdThumbUp className="h-5 w-5" />
             <p className="text-sm">
             </p>
         </div>
