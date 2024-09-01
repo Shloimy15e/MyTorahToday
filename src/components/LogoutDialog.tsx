@@ -40,7 +40,8 @@ export default function LogoutDialog(props: {
     const data = await response.json();
     await signOut({ redirect: false })
       .then(() => {
-        document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         showToast("Logged out successfully", "success");
         setIsLoading(false);
         props.onClose();
@@ -119,11 +120,11 @@ export default function LogoutDialog(props: {
                   </div>
                   {isLoading && (
                     <div className="fixed inset-0 bg-black bg-opacity-65 flex items-center justify-center z-50">
-                    <div className="text-white text-2xl flex flex-col gap-1 items-center">
-                      <LoadingAnimation />
-                      <span>Please wait while we log you out</span>
+                      <div className="text-white text-2xl flex flex-col gap-1 items-center">
+                        <LoadingAnimation />
+                        <span>Please wait while we log you out</span>
+                      </div>
                     </div>
-                  </div>
                   )}
                 </DialogPanel>
               </TransitionChild>

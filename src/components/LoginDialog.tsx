@@ -49,7 +49,7 @@ export default function LoginDialog(props: {
                     Log in to your account
                   </DialogTitle>
 
-                  <LoginForm />
+                  <LoginForm onClose={closeModal} />
                 </DialogPanel>
               </TransitionChild>
             </div>

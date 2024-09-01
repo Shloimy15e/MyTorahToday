@@ -6,7 +6,7 @@ import LoadingAnimation from "../LoadingAnimation";
 import { useState } from "react";
 
 
-export function LoginForm() {
+export function LoginForm({ onClose }: { onClose: () => void }) {
   const {
     register,
     handleSubmit,
@@ -31,8 +31,8 @@ export function LoginForm() {
       showToast("Invalid username or password", "error");
       setIsLoading(false);
     } else {
-      console.log("Sign in successful:", result);
-      showToast("Logged in successfully", "success");
+      onClose();
+      showToast(`Logged in successfully as`, "success");
       setIsLoading(false);
       router.refresh();
     }
