@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { fetchTopics } from "@/data/videoData";
+import { fetchTopicsServer } from "@/data/videoData";
 import HeroWithTitle from "@/components/ui/HeroWithTitle";
 import dynamic from "next/dynamic";
 const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function Topics() {
   try {
-    const topics = await fetchTopics();
+    const topics = await fetchTopicsServer();
     if(!topics) {
       throw new Error("500 - There was a serer error fetching topics");
     }

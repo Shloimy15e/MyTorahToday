@@ -108,7 +108,7 @@ export default function Header() {
           )
         );
       } else {
-        navigation.splice(-1, 0, ...navObjects);
+        navigation.splice(-1, 0, ...navObjects.filter((item) => !navigation.some((navItem) => navItem.name === item.name)));
       }
     };
     if (topics.length > 0) {

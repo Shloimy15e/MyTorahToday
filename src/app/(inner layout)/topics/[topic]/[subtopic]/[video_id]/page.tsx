@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { fetchRelatedVideos } from "@/data/videoData";
+import { fetchRelatedVideosServer } from "@/data/videoData";
 import formatDuration from "@/utils/formatDuration";
 import VideoEmbed from "@/components/VideoEmbed";
 import VideoDescription from "./components/VideoDescription";
@@ -136,7 +136,7 @@ async function RelatedVideosSection({
   subtopic: string;
   authToken: string | null;
 }) {
-  const relatedVideos = await fetchRelatedVideos(topic, subtopic, authToken);
+  const relatedVideos = await fetchRelatedVideosServer(topic, subtopic, authToken);
 
   return (
     <>

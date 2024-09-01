@@ -1,10 +1,11 @@
-import { getVideosBySubtopicName } from "@/data/videoData";
+import { getVideosBySubtopicNameServer } from "@/data/videoData";
 import HeroWithTitle from "@/components/ui/HeroWithTitle";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Metadata } from "next";
 import SefariaText from "@/components/SefariaText";
 import { title } from "process";
+import { cookies } from "next/headers";
 
 const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
   ssr: false, // Prevent server-side rendering
@@ -61,10 +62,11 @@ async function getSubtopicText(subtopic: string) {
 //Get the topic name from the params and pass it to the getVideosByTopic function
 export default async function SubtopicPage({ params }: Props) {
   try {
+    const authToken = cookies().get("auth_token")?.value || null;
     const { topic, subtopic } = params;
     const displayTopic = topic.replace(/-/g, " ").replace(/%20/g, " ");
     const displaySubtopic = subtopic.replace(/-/g, " ").replace(/%20/g, " ");
-    const videos = await getVideosBySubtopicName(displaySubtopic, 100);
+    const videos = await getVideosBySubtopicNameServer(displaySubtopic, authToken, 100);
     const subtopicText = await getSubtopicText(displaySubtopic);
 
     if (!videos) {

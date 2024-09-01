@@ -1,7 +1,7 @@
 import Subtopic from "@/types/Subtopic";
 import Video from "@/types/Video";
 
-export const fetchRelatedVideos = async (
+export const fetchRelatedVideosServer = async (
   topic: string,
   subtopic: string,
   authToken: string | null = null,
@@ -10,12 +10,14 @@ export const fetchRelatedVideos = async (
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/api/videos/?limit=${limit}&topic__name__iexact=${topic}&subtopic__name__iexact=${subtopic}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        ...(authToken && { "Authorization": `${authToken}` }),
-      },
-    });
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...(authToken && { Authorization: `Token ${authToken}` }),
+        },
+        cache: "no-store",
+      }
+    );
     const data = await response.json();
     if (!response.ok) {
       console.error("Error fetching related videos:", data.error);
@@ -38,7 +40,14 @@ export const fetchRelatedVideos = async (
       const limit = 15 - receivedVideos.length;
       try {
         const response = await fetch(
-          `https://www.mytorahtoday.com/api/videos/?limit=${limit}&topic__name__iexact=${topic}`
+          `${process.env.BACKEND_URL}/api/videos/?limit=${limit}&topic__name__iexact=${topic}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              ...(authToken && { Authorization: `Token ${authToken}` }),
+            },
+            cache: "no-store",
+          }
         );
         console.log(
           `Related videos inner received response with status: ${response.status}`
@@ -76,12 +85,9 @@ export const fetchRelatedVideos = async (
 export async function toggleLike(id: Video["id"]): Promise<Response> {
   console.log("toggleLike called with id:", id);
   try {
-    const response = await fetch(
-      `/api/videos/${id}/like`,
-      {
-        method: "POST",
-      }
-    );
+    const response = await fetch(`/api/videos/${id}/like`, {
+      method: "POST",
+    });
     const data = await response.json();
     if (!response.ok) {
       throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
@@ -109,12 +115,9 @@ export async function toggleLike(id: Video["id"]): Promise<Response> {
 export async function toggleSave(id: Video["id"]): Promise<Response> {
   console.log("toggleSave called with id:", id);
   try {
-    const response = await fetch(
-      `/api/videos/${id}/save`,
-      {
-        method: "POST",
-      }
-    );
+    const response = await fetch(`/api/videos/${id}/save`, {
+      method: "POST",
+    });
     const data = await response.json();
     console.log("data", JSON.stringify(data));
     if (!response.ok) {
@@ -140,12 +143,14 @@ export async function toggleSave(id: Video["id"]): Promise<Response> {
   }
 }
 
-export const getVideoByVideoId = async (videoId: string, authToken: string | null): Promise<Video> => {
-  console.log("is this authToken null?", authToken === null);
+export const getVideoByVideoId = async (
+  videoId: string,
+  authToken: string | null
+): Promise<Video> => {
   if (authToken) {
     console.log("token is true");
   }
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/videos/${videoId}/`, {
+  const response = await fetch(`/api/videos/${videoId}/`, {
     headers: {
       "Content-Type": "application/json",
       ...(authToken && { Authorization: `${authToken}` }),
@@ -162,10 +167,29 @@ export const getVideosByTopicName = async (
   limit: number = 6
 ): Promise<{ topicName: string; videos: Video[] }> => {
   const response = await fetch(
-    `https://www.mytorahtoday.com/api/videos/?limit=${limit}&topic__name__iexact=${topic}`
+    `/api/videos/?limit=${limit}&topic__name__iexact=${topic}`
   );
   const data = await response.json();
 
+  return { topicName: topic, videos: data.results };
+};
+
+export const getVideosByTopicNameServer = async (
+  topic: string,
+  authToken: string | null,
+  limit: number = 6
+): Promise<{ topicName: string; videos: Video[] }> => {
+  const response = await fetch(
+    `${process.env.BACKEND_URL}/api/videos/?limit=${limit}&topic__name__iexact=${topic}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        ...(authToken && { Authorization: `Token ${authToken}` }),
+      },
+      cache: "no-store",
+    }
+  );
+  const data = await response.json();
   return { topicName: topic, videos: data.results };
 };
 
@@ -173,20 +197,54 @@ export const getVideosBySubtopicName = async (
   subtopic: string,
   limit: number = 10
 ): Promise<Video[]> => {
-  const url = `https://www.mytorahtoday.com/api/videos/?limit=${limit}&subtopic__name__iexact=${subtopic}`;
+  const url = `/api/videos/?limit=${limit}&subtopic__name__iexact=${subtopic}`;
   const response = await fetch(url);
   const data = await response.json();
   return data.results;
 };
 
+export const getVideosBySubtopicNameServer = async (
+  subtopic: string,
+  authToken: string | null,
+  limit: number = 10
+): Promise<Video[]> => {
+  const url = `${process.env.BACKEND_URL}/api/videos/?limit=${limit}&subtopic__name__iexact=${subtopic}`;
+  console.log(url);
+  const response = await fetch(url, {
+    headers: {
+      "Content-Type": "application/json",
+      ...(authToken && { Authorization: `Token ${authToken}` }),
+    },
+    cache: "no-store",
+  });
+  const data = await response.json();
+  return data.results;
+};
+
 export const fetchTopics = async (): Promise<any> => {
-  const response = await fetch("https://www.mytorahtoday.com/api/topics/");
+  const response = await fetch(`/api/api/topics/`);
+  const data = await response.json();
+  return data.results;
+};
+
+export const fetchTopicsServer = async (): Promise<any> => {
+  const response = await fetch(`${process.env.BACKEND_URL}/api/topics/`);
   const data = await response.json();
   return data.results;
 };
 
 export const fetchSubtopics = async (topic: string): Promise<Subtopic[]> => {
-  const url = `https://www.mytorahtoday.com/api/subtopics/?topic__name__iexact=${topic}`;
+  const url = `/api/subtopics/?topic__name__iexact=${topic}`;
+  console.log(url);
+  const response = await fetch(url);
+  const data = await response.json();
+  return data.results;
+};
+
+export const fetchSubtopicsServer = async (
+  topic: string
+): Promise<Subtopic[]> => {
+  const url = `${process.env.BACKEND_URL}/api/subtopics/?topic__name__iexact=${topic}`;
   console.log(url);
   const response = await fetch(url);
   const data = await response.json();
