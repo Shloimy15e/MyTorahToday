@@ -61,7 +61,7 @@ export default function Header() {
   const [showSearchbar, setShowSearchbar] = useState(!isMobile);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const [navigation, setNavigation] = useState(() => {
+  const navigation = useMemo(() => {
     const defaultNavigation = [
       { name: "All Topics", href: "/topics", icon: RectangleStackIcon },
     ];
@@ -70,7 +70,7 @@ export default function Header() {
       ...(pathname === "/topics" ? [] : defaultNavigation),
     ];
     return pathname === "/" ? defaultNavigation : homeNavigation;
-  });
+  }, [pathname]);
 
   useEffect(() => {
     setMounted(true);
@@ -101,25 +101,20 @@ export default function Header() {
           href: `/topics/${topic.name.toLowerCase()}`,
           icon: RectangleGroupIcon,
         }));
-      setNavigation((prev) => {
-        // Filter out any existing nav objects to prevent duplicates
-        const existingNames = new Set(prev.map((item) => item.name));
-        const newNavObjects = navObjects.filter(
-          (item) => !existingNames.has(item.name)
+      if (pathname === "/topics") {
+        navigation.push(
+          ...navObjects.filter(
+            (item) => !navigation.some((navItem) => navItem.name === item.name)
+          )
         );
-        return pathname === "/topics"
-          ? [...prev, ...newNavObjects]
-          : [
-              ...prev.slice(0, prev.length - 1),
-              ...newNavObjects,
-              prev[prev.length - 1],
-            ];
-      });
+      } else {
+        navigation.splice(-1, 0, ...navObjects);
+      }
     };
     if (topics.length > 0) {
       addNavObjects();
     }
-  }, [topics, pathname]);
+  }, [topics, pathname, navigation]);
 
   const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
