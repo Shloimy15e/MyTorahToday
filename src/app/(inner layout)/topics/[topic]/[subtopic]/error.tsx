@@ -14,20 +14,52 @@ export default function Error({
     console.error(error);
   }, [error]);
 
+  const isProduction = process.env.NODE_ENV === "production";
+  const error404 = error.message.includes("404");
+  const error400 = error.message.includes("400");
+  const error500 = error.message.includes("500");
+  const error401 = error.message.includes("401");
+
   return (
     <div>
       <main className="h-96 w-full flex flex-col justify-start items-center">
         <h2 className="text-2xl text-center mx-auto mt-10 w-full">
           Something went wrong!
         </h2>
-        <h3 className="text-xl text-center mx-auto my-4 w-full">
+        {!isProduction ? (
+          <h3 className="text-xl text-center mx-auto my-4 w-full">
             {error.message}
-        </h3>
+          </h3>
+        ) : error404 ? (
+          <h3 className="text-xl text-center mx-auto my-4 w-full">
+            404 - We&apos;re sorry, no data was found.
+          </h3>
+        ) : error400 ? (
+          <h3 className="text-xl text-center mx-auto my-4 w-full">
+            400 - Bad Request – We&apos;re sorry, the request returned
+            undefined.
+          </h3>
+        ) : error401 ? (
+          <h3 className="text-xl text-center mx-auto my-4 w-full">
+            401 - Unauthorized – We&apos;re sorry, you need to be logged in to
+            view this content. <br /> If you are logged in, please try logging
+            out and logging back in.
+          </h3>
+        ) : error500 ? (
+          <h3 className="text-xl text-center mx-auto my-4 w-full">
+            500 - Internal Server Error
+          </h3>
+        ) : (
+          <h3 className="text-xl text-center mx-auto my-4 w-full">
+            We&apos;re sorry, an unknown error occurred.
+          </h3>
+        )}
         <p className="text-lg text-center mb-2">
-            Have you manually entered the topic name?
+          Have you manually entered the topic name?
         </p>
         <p className="text-base text-center text-gray-600 mb-4">
-            Please note that manually entering a topic name may result in errors, as it needs to match the data available in our application.
+          Please note that manually entering a topic name may result in errors,
+          as it needs to match the data available in our application.
         </p>
         <div className="flex gap-4 justify-center items-center">
           <button

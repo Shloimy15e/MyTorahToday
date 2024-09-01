@@ -39,7 +39,6 @@ async function getSubtopicText(subtopic: string) {
     if (!response.ok) {
       throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
     }
-
     let subtopicTextArray: string[] = [];
     data.versions[0].text.forEach((textSegment: string[]) => {
       const innerSubtopicText = textSegment.join(" ");
