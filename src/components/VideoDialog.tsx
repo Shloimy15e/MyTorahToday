@@ -10,7 +10,6 @@ import VideoEmbed from "./VideoEmbed";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
-  HandThumbUpIcon,
   EyeIcon,
 } from "@heroicons/react/24/solid";
 import Link from "next/link";

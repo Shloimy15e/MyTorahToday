@@ -1,7 +1,7 @@
 "use client";
 import Video from "@/types/Video";
 import { useState } from "react";
-import { useToast } from "../ToastProvider";
+import { useToast } from "../../context/ToastProvider";
 import { toggleSave as serverToggleSave } from "@/data/videoData";
 import { useSessionContext } from "@/context/SessionContext";
 import { IoBookmarkOutline } from "react-icons/io5";
@@ -20,7 +20,7 @@ export default function SaveButton({
 
   async function toggleSave() {
     if (!session) {
-      showToast("Please log in to save a video.", "error");
+      showToast("Please log in to save a video.", "warning");
       console.log("Please log in to save a video.");
       return;
     }
@@ -33,10 +33,10 @@ export default function SaveButton({
       }
       if (data.detail.includes("unsaved")) {
         console.log("Successfully unsaved video");
-        showToast("Video unsaved", "info");
+        showToast("Video unsaved", "success");
         setIsSavedState(false);
       } else if (data.detail.includes("saved")) {
-        showToast("Video saved", "info");
+        showToast("Video saved", "success");
         setIsSavedState(true);
       }
     } catch (error) {

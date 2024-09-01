@@ -7,27 +7,12 @@ import {
 } from "@headlessui/react";
 import { Fragment } from "react";
 import { LoginForm } from "./ui/LoginForm";
-import { useEffect } from "react";
-import { useSessionContext } from "@/context/SessionContext";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ToastProvider";
 
 export default function LoginDialog(props: {
   isOpen: boolean;
   onClose: () => void;
 }) {
   const closeModal = () => props.onClose();
-  const { session } = useSessionContext();
-  const router = useRouter();
-  const { showToast } = useToast();
-
-  useEffect(() => {
-    if (props.isOpen && session) {
-      showToast("You are already logged in", "error");
-      props.onClose();
-      router.refresh();
-    }
-  }, [props, session, router, showToast]);
 
   return (
     <>
@@ -64,7 +49,7 @@ export default function LoginDialog(props: {
                     Log in to your account
                   </DialogTitle>
 
-                  <LoginForm />
+                  <LoginForm onClose={closeModal} />
                 </DialogPanel>
               </TransitionChild>
             </div>

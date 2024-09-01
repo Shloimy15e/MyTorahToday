@@ -1,10 +1,10 @@
 "use client";
 import Video from "@/types/Video";
-import { HandThumbUpIcon } from "@heroicons/react/24/solid";
-import { useEffect, useState } from "react";
-import { useToast } from "../ToastProvider";
+import { useState } from "react";
+import { useToast } from "../../context/ToastProvider";
 import { toggleLike as serverToggleLike } from "@/data/videoData";
 import { useSessionContext } from "@/context/SessionContext";
+import { MdOutlineThumbUp } from "react-icons/md";
 
 export default function LikeButtonAndCount({
   videoId,
@@ -23,7 +23,7 @@ export default function LikeButtonAndCount({
 
   async function toggleLike() {
     if (!session) {
-      showToast("Please log in to like a video.", "error");
+      showToast("Please log in to like a video.", "warning");
       console.log("Please log in to like a video.");
       return;
     }
@@ -36,11 +36,11 @@ export default function LikeButtonAndCount({
       }
       if (data.detail.includes("unliked")) {
         console.log("Successfully unliked video");
-        showToast("Video unliked", "info");
+        showToast("Video unliked", "success");
         setIsLikedState(false);
         setLikesCount(likesCount - 1);
       } else if (data.detail.includes("liked")) {
-        showToast("Video liked", "info");
+        showToast("Video liked", "success");
         setIsLikedState(true);
         setLikesCount(likesCount + 1);
       }
@@ -60,7 +60,7 @@ export default function LikeButtonAndCount({
           toggleLike();
         }}
         disabled={isLoading}
-        className={`text-xl h-9 flex items-center justify-center gap-2 border border-gray-700  ${
+        className={`text-xl h-9 flex items-center justify-center gap-2 border border-gray-700 font-semibold  ${
           isLikedState
             ? "bg-primary-blue text-white"
             : "bg-white"
@@ -72,10 +72,10 @@ export default function LikeButtonAndCount({
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
         ) : (
-          <HandThumbUpIcon
-            className={`w-6 h-5 ${
-              isLikedState ? "" : "stroke-gray-700 fill-none"
-            } stroke`}
+          <MdOutlineThumbUp
+            className={`w-6 h-6 ${
+              isLikedState ? "" : "fill-gray-700"
+            } `} strokeWidth={0} 
           />
         )}
         {" "}

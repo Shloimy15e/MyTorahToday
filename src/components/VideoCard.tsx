@@ -1,14 +1,13 @@
 import {
   EyeIcon,
-  HandThumbUpIcon,
   ClockIcon,
   CalendarIcon,
   PlayIcon,
 } from "@heroicons/react/24/outline";
-import { HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import formatDuration from "@/utils/formatDuration";
 import Video from "@/types/Video";
+import { MdOutlineThumbUp, MdThumbUp } from "react-icons/md";
 
 // A card that has the videoEmbed in it and takes a video from a video list by a parent
 function VideoCard(props: {
@@ -56,9 +55,9 @@ function VideoCard(props: {
           }`}
         >
           {props.video.is_liked_by_user ? (
-            <HandThumbUpIconSolid className="h-5 w-5 text-primary-blue" />
+            <MdThumbUp className="h-4 w-3 text-primary-blue" />
           ) : (
-            <HandThumbUpIcon className="h-5 w-5 text-gray-600" />
+            <MdOutlineThumbUp className="h-4 w-3 text-gray-600" />
           )}
           <p className="text-sm pr-2 border-r border-gray-300">
             {props.video.likes + props.video.userLikes}

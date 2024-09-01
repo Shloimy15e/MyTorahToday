@@ -10,17 +10,17 @@ import {
   MenuItem,
   Transition,
   TransitionChild,
-  MenuHeading,
 } from "@headlessui/react";
 import {
   Bars3Icon,
   XMarkIcon,
   UserCircleIcon,
-  UserIcon,
   ArrowLeftStartOnRectangleIcon,
   ArrowRightEndOnRectangleIcon,
   PencilSquareIcon,
-  BookmarkIcon,
+  HomeIcon,
+  RectangleGroupIcon,
+  RectangleStackIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,32 +28,21 @@ import LoginDialog from "./LoginDialog";
 import SignupDialog from "./SignupDialog";
 import LogoutDialog from "./LogoutDialog";
 import {
-  IoBookmarkOutline,
   IoBookmarksOutline,
-  IoSaveOutline,
   IoSearchOutline,
   IoSettingsOutline,
-  IoThumbsUpOutline,
 } from "react-icons/io5";
 import { MdManageAccounts } from "react-icons/md";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Topic from "@/types/Topic";
 import { useMediaQuery } from "react-responsive";
 import { BiLike } from "react-icons/bi";
-
-const navigation = [
-  { name: "Parshah", href: "/topics/parshah" },
-  { name: "Neviim", href: "/topics/neviim" },
-  { name: "Chassidus", href: "/topics/chassidus" },
-  { name: "Life's ways", href: "/topics/life's-ways" },
-];
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
   const [isSignupDialogOpen, setIsSignupDialogOpen] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState(null);
   const searchParams = useSearchParams();
   const { queryParams, topicParams, subtopicParams } = useMemo(() => {
     return {
@@ -71,6 +60,17 @@ export default function Header() {
   const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
   const [showSearchbar, setShowSearchbar] = useState(!isMobile);
   const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
+  const [navigation, setNavigation] = useState(() => {
+    const defaultNavigation = [
+      { name: "All Topics", href: "/topics", icon: RectangleStackIcon },
+    ];
+    const homeNavigation = [
+      { name: "Home", href: "/", icon: HomeIcon },
+      ...(pathname === "/topics" ? [] : defaultNavigation),
+    ];
+    return pathname === "/" ? defaultNavigation : homeNavigation;
+  });
 
   useEffect(() => {
     setMounted(true);
@@ -87,6 +87,39 @@ export default function Header() {
       fetchTopics();
     }
   }, [topics]);
+
+  useEffect(() => {
+    const addNavObjects = () => {
+      const navObjects = topics
+        .filter(
+          (topic) => !pathname.includes(`/topics/${topic.name.toLowerCase()}`)
+        )
+        .sort((a, b) => b.subtopics.length - a.subtopics.length)
+        .slice(0, 4)
+        .map((topic) => ({
+          name: topic.name,
+          href: `/topics/${topic.name.toLowerCase()}`,
+          icon: RectangleGroupIcon,
+        }));
+      setNavigation((prev) => {
+        // Filter out any existing nav objects to prevent duplicates
+        const existingNames = new Set(prev.map((item) => item.name));
+        const newNavObjects = navObjects.filter(
+          (item) => !existingNames.has(item.name)
+        );
+        return pathname === "/topics"
+          ? [...prev, ...newNavObjects]
+          : [
+              ...prev.slice(0, prev.length - 1),
+              ...newNavObjects,
+              prev[prev.length - 1],
+            ];
+      });
+    };
+    if (topics.length > 0) {
+      addNavObjects();
+    }
+  }, [topics, pathname]);
 
   const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -111,7 +144,6 @@ export default function Header() {
     setIsLoginDialogOpen(false);
     setIsSignupDialogOpen(false);
     setIsLogoutDialogOpen(false);
-    setSelectedVideo(null);
   };
 
   return (
@@ -432,11 +464,47 @@ export default function Header() {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                        className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
                       >
+                        <item.icon className="h-6 w-6" />
                         {item.name}
                       </Link>
                     ))}
+                    {session ? (
+                      <>
+                        <Link
+                          href={`/videos/saved`}
+                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                        >
+                          <IoBookmarksOutline className="h-6 w-6" />
+                          Saved videos
+                        </Link>
+                        <Link
+                          href={`/videos/liked`}
+                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                        >
+                          <BiLike className="h-6 w-6" />
+                          Liked videos
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => setIsLoginDialogOpen(true)}
+                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                        >
+                          <ArrowRightEndOnRectangleIcon className="h-6 w-6" />
+                          Log in
+                        </button>
+                        <button
+                          onClick={() => setIsSignupDialogOpen(true)}
+                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                        >
+                          <PencilSquareIcon className="h-6 w-6" />
+                          Sign up
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
