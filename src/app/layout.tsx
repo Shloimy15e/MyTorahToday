@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "../styles/globals.css";
-import { ToastProvider } from "@/components/ToastProvider";
+import { ToastProvider } from "@/context/ToastProvider";
 import ClientWrapper from "./ClientWrapper";
 import { SessionProvider as NextAuthSessionProvider } from "next-auth/react";
 import { SessionProvider } from "@/context/SessionContext";

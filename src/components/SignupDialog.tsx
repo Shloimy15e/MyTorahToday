@@ -6,7 +6,7 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
-import { useToast } from "./ToastProvider";
+import { useToast } from "../context/ToastProvider";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { set } from "zod";
@@ -53,7 +53,7 @@ export default function SignupDialog(props: {
         showToast("Failed to log in. Please reload and try again.", "error");
       } else {
         console.log("log in successful:", result);
-        showToast("Log in successful", "info");
+        showToast("Log in successful", "success");
       }
     } else {
       const errorData = await response.json();

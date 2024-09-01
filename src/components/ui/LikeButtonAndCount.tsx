@@ -2,7 +2,7 @@
 import Video from "@/types/Video";
 import { HandThumbUpIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
-import { useToast } from "../ToastProvider";
+import { useToast } from "../../context/ToastProvider";
 import { toggleLike as serverToggleLike } from "@/data/videoData";
 import { useSessionContext } from "@/context/SessionContext";
 
@@ -23,7 +23,7 @@ export default function LikeButtonAndCount({
 
   async function toggleLike() {
     if (!session) {
-      showToast("Please log in to like a video.", "error");
+      showToast("Please log in to like a video.", "warning");
       console.log("Please log in to like a video.");
       return;
     }
@@ -36,11 +36,11 @@ export default function LikeButtonAndCount({
       }
       if (data.detail.includes("unliked")) {
         console.log("Successfully unliked video");
-        showToast("Video unliked", "info");
+        showToast("Video unliked", "success");
         setIsLikedState(false);
         setLikesCount(likesCount - 1);
       } else if (data.detail.includes("liked")) {
-        showToast("Video liked", "info");
+        showToast("Video liked", "success");
         setIsLikedState(true);
         setLikesCount(likesCount + 1);
       }

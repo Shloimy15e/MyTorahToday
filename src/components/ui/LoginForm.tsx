@@ -1,6 +1,6 @@
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/components/ToastProvider";
+import { useToast } from "@/context/ToastProvider";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "../LoadingAnimation";
 import { useState } from "react";
@@ -32,7 +32,7 @@ export function LoginForm() {
       setIsLoading(false);
     } else {
       console.log("Sign in successful:", result);
-      showToast("Logged in successfully", "info");
+      showToast("Logged in successfully", "success");
       setIsLoading(false);
       router.refresh();
     }

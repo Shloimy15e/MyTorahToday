@@ -8,7 +8,7 @@ import {
 import { Fragment } from "react";
 import { useState } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import { useToast } from "./ToastProvider";
+import { useToast } from "../context/ToastProvider";
 import { signOut } from "next-auth/react";
 import { useSessionContext } from "@/context/SessionContext";
 import LoadingAnimation from "./LoadingAnimation";
@@ -41,7 +41,7 @@ export default function LogoutDialog(props: {
     await signOut({ redirect: false })
       .then(() => {
         document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        showToast("Logged out successfully", "info");
+        showToast("Logged out successfully", "success");
         setIsLoading(false);
         props.onClose();
       })
