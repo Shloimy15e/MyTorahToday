@@ -4,12 +4,13 @@ import Video from "@/types/Video";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import {
-  fetchTopics,
-  getVideosBySubtopicName,
-  getVideosByTopicName,
+  fetchTopicsServer,
+  getVideosBySubtopicNameServer,
+  getVideosByTopicNameServer,
 } from "@/data/videoData";
 import { get } from "http";
 import SefariaText from "@/components/SefariaText";
+import { cookies } from "next/headers";
 
 const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
   ssr: false, // Prevent server-side rendering
@@ -21,7 +22,7 @@ const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
 async function getParshahThisWeek() {
   try {
     const apiUrl = `https://www.sefaria.org/api/calendars`;
-    const response = await fetch(apiUrl);
+    const response = await fetch(apiUrl, { cache: "no-cache" });
     const data = await response.json();
     if (!response.ok) {
       throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
@@ -35,16 +36,17 @@ async function getParshahThisWeek() {
 
 export default async function Home() {
   try {
+    const authToken = cookies().get("auth_token")?.value || null;
     const parshahThisWeek = await getParshahThisWeek();
     let videosThisParshah = null;
     console.log("Parshah this week: ", parshahThisWeek);
     if (parshahThisWeek) {
-      videosThisParshah = await getVideosBySubtopicName(parshahThisWeek);
+      videosThisParshah = await getVideosBySubtopicNameServer(parshahThisWeek, authToken);
     }
-    const topics = await fetchTopics();
+    const topics = await fetchTopicsServer();
     const videosByTopic = await Promise.all(
       topics.slice(0, 4).map(async (topic: any) => {
-        return await getVideosByTopicName(topic.name, 9);
+        return await getVideosByTopicNameServer(topic.name, authToken, 9);
       })
     );
     if (!videosThisParshah && !topics) {
@@ -72,7 +74,7 @@ export default async function Home() {
               showAll={false}
               topicVideos={false}
               showLinkAlways={true}
-              />
+            />
           )}{" "}
           {/* List of topics */}
           {topics && topics.length > 0 && (

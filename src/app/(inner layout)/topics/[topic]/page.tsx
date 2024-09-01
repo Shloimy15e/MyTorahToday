@@ -1,8 +1,9 @@
 import { Metadata } from "next";
-import { getVideosBySubtopicName, fetchSubtopics } from "@/data/videoData";
+import { getVideosBySubtopicNameServer, fetchSubtopicsServer } from "@/data/videoData";
 import HeroWithTitle from "@/components/ui/HeroWithTitle";
 import dynamic from "next/dynamic";
 import Subtopic from "@/types/Subtopic";
+import { cookies } from "next/headers";
 
 const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
   ssr: false, // Prevent server-side rendering
@@ -28,12 +29,13 @@ export const generateMetadata = ({ params }: Props): Metadata => {
 
 export default async function TopicPage({ params }: Props) {
   try {
+    const authToken = cookies().get("auth_token")?.value || null;
     const { topic } = params;
     const displayTopic = topic.replace("-", " ");
-    const subtopics = await fetchSubtopics(displayTopic);
+    const subtopics = await fetchSubtopicsServer(displayTopic);
     const videosBySubtopics = await Promise.all(
       subtopics.map(async (subtopic: Subtopic) => {
-        const videos = await getVideosBySubtopicName(subtopic.name);
+        const videos = await getVideosBySubtopicNameServer(subtopic.name, authToken);
         return { subtopicName: subtopic.name, videos };
       })
     );
