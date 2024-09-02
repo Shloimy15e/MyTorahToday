@@ -15,10 +15,7 @@ export default function Error({
   }, [error]);
 
   const isProduction = process.env.NODE_ENV === "production";
-  const error404 = error.message.includes("404");
-  const error400 = error.message.includes("400");
-  const error500 = error.message.includes("500");
-  const error401 = error.message.includes("401");
+  
 
   return (
     <>
