@@ -39,7 +39,6 @@ export default async function TopicPage({ params }: Props) {
         return { subtopicName: subtopic.name, videos };
       })
     );
-
     if(!subtopics){
       throw new Error("400 - Bad Request – The request returned undefined");
     }

@@ -41,9 +41,10 @@ export default function Error({
           </h3>
         ) : error401 ? (
           <h3 className="text-xl text-center mx-auto my-4 w-full">
-            401 - Unauthorized – We&apos;re sorry, you need to be logged in to
-            view this content. <br /> If you are logged in, please try logging
-            out and logging back in.
+            401 - Unauthorized – We&apos;re sorry, your login credentials seem to be
+            invalid.
+            <br />
+            Please try logging out and logging back in.
           </h3>
         ) : error500 ? (
           <h3 className="text-xl text-center mx-auto my-4 w-full">

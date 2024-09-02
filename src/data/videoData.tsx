@@ -18,11 +18,16 @@ export const fetchRelatedVideosServer = async (
         cache: "no-store",
       }
     );
-    const data = await response.json();
     if (!response.ok) {
-      console.error("Error fetching related videos:", data.error);
+      let errorMessage = `HTTP error ${response.status}`;
+      const contentType = response.headers.get("Content-Type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        errorMessage += " " + JSON.stringify(errorData);
+      }
+      throw new Error(errorMessage);
     }
-
+    const data = await response.json();
     let receivedVideos = null;
     if (data.results) {
       receivedVideos = data.results;
@@ -49,22 +54,25 @@ export const fetchRelatedVideosServer = async (
             cache: "no-store",
           }
         );
+        if (!response.ok) {
+          let errorMessage = `HTTP error ${response.status}`;
+          const contentType = response.headers.get("Content-Type");
+          if (contentType && contentType.includes("application/json")) {
+            const errorData = await response.json();
+            errorMessage += " " + JSON.stringify(errorData);
+          }
+          throw new Error(errorMessage);
+        }
         console.log(
           `Related videos inner received response with status: ${response.status}`
         );
         const data = await response.json();
-        if (!response.ok) {
-          throw new Error(
-            `HTTP error ${response.status}` + JSON.stringify(data)
-          );
-        }
-
         // Extract videosfrom results and add to receivedVideos
         if (!receivedVideos) {
           if (data.results) {
             receivedVideos = data.results;
           } else {
-            throw new Error("No results found in the response");
+            throw new Error("404 - No results found in the response");
           }
         } else {
           receivedVideos = [...receivedVideos, ...data.results];
@@ -157,6 +165,15 @@ export const getVideoByVideoId = async (
     },
     cache: "no-store",
   });
+  if (!response.ok) {
+    let errorMessage = `HTTP error ${response.status}`;
+    const contentType = response.headers.get("Content-Type");
+    if (contentType && contentType.includes("application/json")) {
+      const errorData = await response.json();
+      errorMessage += " " + JSON.stringify(errorData);
+    }
+    throw new Error(errorMessage);
+  }
   const data = await response.json();
   console.log("data", JSON.stringify(data));
   return data;
@@ -189,6 +206,15 @@ export const getVideosByTopicNameServer = async (
       cache: "no-store",
     }
   );
+  if (!response.ok) {
+    let errorMessage = `HTTP error ${response.status}`;
+    const contentType = response.headers.get("Content-Type");
+    if (contentType && contentType.includes("application/json")) {
+      const errorData = await response.json();
+      errorMessage += " " + JSON.stringify(errorData);
+    }
+    throw new Error(errorMessage);
+  }
   const data = await response.json();
   return { topicName: topic, videos: data.results };
 };
@@ -217,6 +243,15 @@ export const getVideosBySubtopicNameServer = async (
     },
     cache: "no-store",
   });
+  if (!response.ok) {
+    let errorMessage = `HTTP error ${response.status}`;
+    const contentType = response.headers.get("Content-Type");
+    if (contentType && contentType.includes("application/json")) {
+      const errorData = await response.json();
+      errorMessage += " " + JSON.stringify(errorData);
+    }
+    throw new Error(errorMessage);
+  }
   const data = await response.json();
   return data.results;
 };
