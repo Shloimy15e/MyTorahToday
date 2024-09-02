@@ -40,7 +40,7 @@ export default async function VideoPage({ params }: Props) {
     console.log(`Response status: ${response.status}`);
     if (!response.ok) {
       if (typeof response === "object") {
-        throw new Error(`${response.status} ${response.statusText}`);
+        throw new Error(`${response.status} ${response.statusText} - ${JSON.stringify(await response.json())}`);
       }
       throw new Error("404 - Video not found");
     }
