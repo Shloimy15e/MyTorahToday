@@ -1,8 +1,6 @@
 "use client";
 import { useEffect } from "react";
 import Link from "next/link";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 export default function Error({
   error,
@@ -17,10 +15,7 @@ export default function Error({
   }, [error]);
 
   const isProduction = process.env.NODE_ENV === "production";
-  const error404 = error.message.includes("404");
-  const error400 = error.message.includes("400");
-  const error500 = error.message.includes("500");
-  const error401 = error.message.includes("401");
+  
 
   return (
     <>
@@ -29,40 +24,17 @@ export default function Error({
           <h2 className="text-2xl text-center mx-auto mt-10 w-full">
             Something went wrong!
           </h2>
-          {!isProduction ? (
-          <h3 className="text-xl text-center mx-auto my-4 w-full">
-            {error.message}
-          </h3>
-        ) : error404 ? (
-          <h3 className="text-xl text-center mx-auto my-4 w-full">
-            404 - We&apos;re sorry, no data was found.
-          </h3>
-        ) : error400 ? (
-          <h3 className="text-xl text-center mx-auto my-4 w-full">
-            400 - Bad Request – We&apos;re sorry, the request returned
-            undefined.
-          </h3>
-        ) : error401 ? (
-          <h3 className="text-xl text-center mx-auto my-4 w-full">
-            401 - Unauthorized – We&apos;re sorry, your login credentials seem to be
-            invalid.
-            <br />
-            Please try logging out and logging back in.
-          </h3>
-        ) : error500 ? (
-          <h3 className="text-xl text-center mx-auto my-4 w-full">
-            500 - Internal Server Error
-          </h3>
-        ) : (
-          <h3 className="text-xl text-center mx-auto my-4 w-full">
-            We&apos;re sorry, an unknown error occurred.
-          </h3>
-        )}
-          <p className="text-center mx-auto mt-4 w-full">
-            Unfortunately we couldn&apos;t retrieve any data.
-          </p>
-          <p className="text-center mx-auto mt-4 w-full">
-            Please reach out to me at{" "}
+          {isProduction ? (
+            <h3 className="text-xl text-center mx-auto my-4 w-full">
+              {error.message}
+            </h3>
+          ) : (
+            <h3 className="text-xl text-center mx-auto my-4 w-full">
+              We&apos;re sorry, an error occurred. Please try again later.
+            </h3>
+          )}
+          <p className="text-center mx-auto my-4 w-full">
+            Please reach out to Shloimy at{" "}
             <a
               href="mailto:shloimyelbaum@gmail.com"
               className="text-blue-600 hover:underline"
@@ -70,7 +42,7 @@ export default function Error({
               shloimyelbaum@gmail.com
             </a>
           </p>
-          <div className="flex gap-4 justify-center items-center">
+          <div className="flex gap-4 justify-center items-center mx-3">
             <button
               className="bg-primary-blue hover:bg-blue-700 active:scale-90 text-white font-bold py-2 px-4 rounded"
               onClick={

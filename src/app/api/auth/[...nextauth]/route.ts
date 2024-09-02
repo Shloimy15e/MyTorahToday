@@ -77,6 +77,17 @@ const { handlers, auth } = NextAuth({
       };
     },
   },
+  events:{
+    async signOut({ }) {
+      cookies().set("auth_token", "", {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        expires: new Date(0),
+      });
+    }
+  },
   debug: process.env.NODE_ENV === "development",
   secret: process.env.NEXTAUTH_SECRET,
   trustHost: true,

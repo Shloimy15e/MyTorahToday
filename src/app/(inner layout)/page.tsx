@@ -11,6 +11,7 @@ import {
 import { get } from "http";
 import SefariaText from "@/components/SefariaText";
 import { cookies } from "next/headers";
+import { Error401 } from "@/components/Error401";
 
 const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
   ssr: false, // Prevent server-side rendering
@@ -41,7 +42,10 @@ export default async function Home() {
     let videosThisParshah = null;
     console.log("Parshah this week: ", parshahThisWeek);
     if (parshahThisWeek) {
-      videosThisParshah = await getVideosBySubtopicNameServer(parshahThisWeek, authToken);
+      videosThisParshah = await getVideosBySubtopicNameServer(
+        parshahThisWeek,
+        authToken
+      );
     }
     const topics = await fetchTopicsServer();
     const videosByTopic = await Promise.all(
@@ -96,7 +100,16 @@ export default async function Home() {
         </main>
       </>
     );
-  } catch (error) {
-    throw error;
+  } catch (error: any) {
+    if (error.message.includes("401")) {
+      console.log(error.message);
+      return (
+        <>
+          <Error401 />
+        </>
+      );
+    } else {
+      throw error;
+    }
   }
 }
