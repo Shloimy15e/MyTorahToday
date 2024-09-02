@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import { Suspense, lazy } from "react";
 import LoadingVideoCardAnimation from "@/components/LoadingVideoCardAnimation";
 import SaveButton from "@/components/ui/SaveButton";
+import { Error401 } from "@/components/Error401";
 
 type Props = {
   params: {
@@ -40,7 +41,11 @@ export default async function VideoPage({ params }: Props) {
     console.log(`Response status: ${response.status}`);
     if (!response.ok) {
       if (typeof response === "object") {
-        throw new Error(`${response.status} ${response.statusText} - ${JSON.stringify(await response.json())}`);
+        throw new Error(
+          `${response.status} ${response.statusText} - ${JSON.stringify(
+            await response.json()
+          )}`
+        );
       }
       throw new Error("404 - Video not found");
     }
@@ -122,8 +127,16 @@ export default async function VideoPage({ params }: Props) {
         </Suspense>
       </main>
     );
-  } catch (error) {
-    throw error;
+  } catch (error: any) {
+    if (error.message.includes("401")) {
+      return (
+        <>
+          <Error401 />
+        </>
+      );
+    } else {
+      throw error;
+    }
   }
 }
 
@@ -136,7 +149,11 @@ async function RelatedVideosSection({
   subtopic: string;
   authToken: string | null;
 }) {
-  const relatedVideos = await fetchRelatedVideosServer(topic, subtopic, authToken);
+  const relatedVideos = await fetchRelatedVideosServer(
+    topic,
+    subtopic,
+    authToken
+  );
 
   return (
     <>

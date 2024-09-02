@@ -4,6 +4,7 @@ import HeroWithTitle from "@/components/ui/HeroWithTitle";
 import dynamic from "next/dynamic";
 import Subtopic from "@/types/Subtopic";
 import { cookies } from "next/headers";
+import { Error401 } from "@/components/Error401";
 
 const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
   ssr: false, // Prevent server-side rendering
@@ -70,7 +71,15 @@ export default async function TopicPage({ params }: Props) {
         </main>
       </>
     );
-  } catch (error) {
-    throw error;
+  } catch (error: any) {
+    if (error.message.includes("401")) {
+      return (
+        <>
+          <Error401 />
+        </>
+      );
+    } else {
+      throw error;
+    }
   }
 }
