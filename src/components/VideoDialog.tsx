@@ -55,7 +55,7 @@ export default function VideoDialog(props: {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <DialogPanel className="w-full max-w-4xl md:max-w-2xl lg:max-w-3xl 2xl:max-w-5xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <DialogPanel className="w-full max-w-4xl md:max-w-2xl lg:max-w-3xl 2xl:max-w-5xl transform overflow-hidden rounded-2xl bg-white p-4 md:p-6 text-left align-middle shadow-xl transition-all">
                   <div className="mt-2">
                     <VideoEmbed
                       src={props.video.video_id}
@@ -66,7 +66,7 @@ export default function VideoDialog(props: {
                   {/* Likes and other info */}
                   <DialogTitle
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 my-2"
+                    className="text-lg text-start overflow-hidden font-medium leading-6 text-gray-900 my-2"
                   >
                     {props.video.title}
                   </DialogTitle>
@@ -86,31 +86,45 @@ export default function VideoDialog(props: {
                     </span>
                   </div>
                   <div className="mt-2 flex flex-col items-center justify-between w-full bg-neutral-200 p-2 rounded-lg">
-                    <div className="px-4 my-2 flex items-center justify-between w-full">
+                    <div className="md:px-4 my-2 flex flex-col gap-2 md:flex-row items-start justify-between w-full">
                       <span className="text-gray-500">
-                        {props.video.topic_name} - {props.video.subtopic_name}
+                        <Link
+                          href={`/topics/${lowerCaseTopicName}`}
+                          className=" hover:underline"
+                        >
+                          {props.video.topic_name}
+                        </Link>{" "}
+                        -{" "}
+                        <Link
+                          href={`/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}`}
+                          className=" hover:underline"
+                        >
+                          {props.video.subtopic_name}
+                        </Link>
                       </span>
-                      <span className="text-gray-500 flex items-center justify-center gap-2">
-                        <CalendarDaysIcon className="h-5 w-5 text-gray-400" />
-                        {props.video.publishedAt &&
-                          new Date(props.video.publishedAt).toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            }
-                          )}
-                      </span>
-                      <span className="text-gray-500 ml-4 flex items-center justify-center gap-2">
-                        {props.video.views + props.video.userViews}
-                        <EyeIcon
-                          className="inline h-5 w-5 text-gray-400"
-                          aria-hidden="true"
-                        />
-                      </span>
+                      <div className="flex justify-between w-full md:w-auto">
+                        <span className="text-gray-500 flex items-center justify-start gap-2">
+                          <CalendarDaysIcon className="h-5 w-5 text-gray-400" />
+                          {props.video.publishedAt
+                            ? new Intl.DateTimeFormat("en-US", {
+                                year: "numeric",
+                                month: "2-digit",
+                                day: "2-digit",
+                              }).format(new Date(props.video.publishedAt))
+                            : "N/A"}
+                        </span>
+                        <span className="text-gray-500 ml-4 flex items-center justify-center gap-2">
+                          {props.video.views + props.video.userViews}
+                          <EyeIcon
+                            className="inline h-5 w-5 text-gray-400"
+                            aria-hidden="true"
+                          />
+                        </span>
+                      </div>
                     </div>
-                    <p>{props.video.description}</p>
+                    <p className="text-start w-full overflow-clip">
+                      {props.video.description}
+                    </p>
                   </div>
                   <div className="mt-4 flex justify-between items-center">
                     <button

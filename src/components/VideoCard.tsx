@@ -18,9 +18,9 @@ function VideoCard(props: {
   return (
     <div
       onClick={props.onClick}
-      className="group relative bg-white w-full h-full rounded-2xl shadow-md transition hover:scale-105 hover:cursor-pointer duration-300 grid grid-rows-[auto_auto_1fr_auto] overflow-hidden gap-3"
+      className="group bg-white box-border w-full h-full rounded-2xl shadow-md transition hover:scale-105 hover:cursor-pointer duration-300 flex flex-col overflow-hidden gap-3"
     >
-      <div className="w-full aspect-video relative">
+      <div className="w-full box-border h-auto max-w-full aspect-video relative">
         <Image
           width={400}
           height={300}
@@ -37,8 +37,8 @@ function VideoCard(props: {
       </h1>
       {/* description */}
       {props.showDescription && (
-        <div className="flex flex-wrap justify-center items-center px-2 w-full">
-          <p className="text-sm text-gray-700 px-2 rounded-lg mx-1">
+        <div className="px-4 w-full">
+          <p className="text-sm text-gray-700 w-full overflow-hidden">
             {props.video.description.toLowerCase().startsWith("subscribe")
               ? props.video.description
               : `${props.video.description.slice(0, 250)}...`}
@@ -46,36 +46,32 @@ function VideoCard(props: {
         </div>
       )}
       {/* likes and views */}
-      <div className="flex flex-wrap justify-center items-center mx-4 gap-2 mt-auto pt-2 border-t border-gray-200 mb-2">
+      <div className="flex justify-center items-center px-6 gap-1 md:gap-2 mt-auto pt-2 border-t border-gray-200 mb-2">
         <div
-          className={`flex flex-wrap justify-start items-center gap-1 ${
-            props.video.likes + props.video.userLikes > 0
-              ? "text-gray-600 font-semibold"
-              : "text-gray-400"
-          }`}
+          className="flex justify-start items-center gap-1 text-gray-600"
         >
           {props.video.is_liked_by_user ? (
-            <MdThumbUp className="h-4 w-3 text-primary-blue" />
+            <MdThumbUp className="h-4 w-4 text-primary-blue" />
           ) : (
-            <MdOutlineThumbUp className="h-4 w-3 text-gray-600" />
+            <MdOutlineThumbUp className="h-4 w-4 text-gray-600" />
           )}
-          <p className="text-sm pr-2 border-r border-gray-300">
+          <p className=" pr-1 md:pr-2 border-r border-gray-300">
             {props.video.likes + props.video.userLikes}
           </p>
         </div>
-        <div className="flex flex-wrap justify-start items-center text-gray-600">
-          <EyeIcon className="h-5 w-5 mr-1" />
-          <p className="text-sm pr-2 border-r border-gray-300">
+        <div className="flex justify-start items-center text-gray-600 gap-1">
+          <EyeIcon className="h-5 w-5" />
+          <p className="text-sm pr-1 md:pr-2 border-r border-gray-300">
             {props.video.views}
           </p>
         </div>
-        <div className="flex flex-wrap gap-1 justify-start items-center text-gray-600">
+        <div className="flex gap-1 justify-start items-center text-gray-600">
           <ClockIcon className="h-5 w-5" />
-          <p className="text-sm pr-2 border-r border-gray-300">
+          <p className="text-sm pr-1 md:pr-2 border-r border-gray-300">
             {formatDuration(props.video.duration)}
           </p>
         </div>
-        <div className="flex flex-wrap justify-start items-center gap-1 text-gray-600">
+        <div className="flex justify-start items-center gap-1 text-gray-600">
           <CalendarIcon className="h-5 w-5" />
           <p className="text-sm">
             {props.video.publishedAt

@@ -3,7 +3,12 @@ import { fetchRelatedVideosServer } from "@/data/videoData";
 import formatDuration from "@/utils/formatDuration";
 import VideoEmbed from "@/components/VideoEmbed";
 import VideoDescription from "./components/VideoDescription";
-import { CalendarIcon, ClockIcon, EyeIcon } from "@heroicons/react/24/outline";
+import {
+  CalendarDaysIcon,
+  CalendarIcon,
+  ClockIcon,
+  EyeIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Video from "@/types/Video";
 import LikeButtonAndCount from "@/components/ui/LikeButtonAndCount";
@@ -54,7 +59,7 @@ export default async function VideoPage({ params }: Props) {
       throw new Error("404 - Video not found");
     }
     return (
-      <main className="grid grid-cols-1 md:grid-cols-12 gap-8 2xl:gap-10 p-4 video-page-container w-full 2xl:max-w-screen-2xl mx-auto">
+      <main className="grid grid-cols-1 md:grid-cols-12 gap-8 2xl:gap-10 p-3 md:p-4 video-page-container w-full 2xl:max-w-screen-2xl mx-auto">
         {/* Main Video Section */}
         <div className="md:col-span-12 lg:col-span-9 row-span-2">
           <div className="aspect-video w-full">
@@ -76,25 +81,40 @@ export default async function VideoPage({ params }: Props) {
               <SaveButton videoId={video.id} isSaved={video.is_saved_by_user} />
             </div>
             <div className="flex flex-col gap-4 w-full overflow-clip max-h-full bg-neutral-200 rounded-xl p-4">
-              <div className="flex gap-4 justify-between">
-                <div className="flex gap-2">
-                  <EyeIcon className="w-5 h-5" />
-                  <p>{video.views}</p>
-                </div>
-                <div className="flex gap-2">
-                  <CalendarIcon className="w-5 h-5" />
-                  <p>
-                    {video.publishedAt &&
-                      new Date(video.publishedAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <ClockIcon className="w-5 h-5" />
-                  <p>{formatDuration(video.duration)}</p>
+              <div className="md:px-4 my-2 flex flex-col gap-2 md:flex-row items-start justify-between w-full">
+                <span className="text-gray-500">
+                  <Link
+                    href={`/topics/${video.topic_name.toLowerCase()}`}
+                    className=" hover:underline"
+                  >
+                    {video.topic_name}
+                  </Link>{" "}
+                  -{" "}
+                  <Link
+                    href={`/topics/${video.topic_name.toLowerCase()}/${video.subtopic_name.toLowerCase()}`}
+                    className=" hover:underline"
+                  >
+                    {video.subtopic_name}
+                  </Link>
+                </span>
+                <div className="flex justify-between w-full md:w-auto">
+                  <span className="text-gray-500 flex items-center justify-start gap-2">
+                    <CalendarDaysIcon className="h-5 w-5 text-gray-400" />
+                    {video.publishedAt
+                      ? new Intl.DateTimeFormat("en-US", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                        }).format(new Date(video.publishedAt))
+                      : "N/A"}
+                  </span>
+                  <span className="text-gray-500 ml-4 flex items-center justify-center gap-2">
+                    {video.views + video.userViews}
+                    <EyeIcon
+                      className="inline h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </span>
                 </div>
               </div>
               <VideoDescription description={video.description} />

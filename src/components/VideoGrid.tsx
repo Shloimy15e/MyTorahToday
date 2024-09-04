@@ -38,7 +38,7 @@ export default function VideoGrid(props: {
     <>
       <div>
         <div>
-          <h1 className="capitalize leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
+          <h1 className="capitalize leading-relaxed pb-4 relative text-4xl font-bold mx-10 my-6 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
             {props.title}
           </h1>
           {props.isThereText && (
@@ -53,7 +53,7 @@ export default function VideoGrid(props: {
               }}
               className="text-2xl font-semibold text-gray-800 ml-10 rounded-lg bg-white w-fit p-2 px-3 shadow-lg"
             >
-              See the full text of this parshah
+              See the full text for ${props.title}
             </button>
           )}
         </div>
