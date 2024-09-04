@@ -19,7 +19,15 @@ export async function POST(
   { params }: Props
 ): Promise<Response> {
   // Get video.id from the request
-  const { videoId } = sanitizeInput(params);
+  const { videoId } = params;
+  if (!videoId) {
+    // Return a 400 Bad Request if no video_id is provided
+    return NextResponse.json(
+      { error: "No video_id provided" },
+      { status: 400 }
+    );
+  }
+  const sanitizedVideoId = sanitizeInput(videoId);
   let authToken = cookies().get("auth_token")?.value || null;
   if (!authToken) {
     console.log("likeVideo: auth_token not found in cookies");
@@ -32,15 +40,7 @@ export async function POST(
       );
     }
   }
-
-  if (!videoId) {
-    // Return a 400 Bad Request if no video_id is provided
-    return NextResponse.json(
-      { error: "No video_id provided" },
-      { status: 400 }
-    );
-  }
-  const url = `${process.env.BACKEND_URL}/api/videos/${videoId}/like/`;
+  const url = `${process.env.BACKEND_URL}/api/videos/${sanitizedVideoId}/like/`;
   const response = await fetch(url, {
     method: "POST",
     headers: {

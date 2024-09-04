@@ -27,13 +27,7 @@ export async function GET(
     const session = await getSession();
     // Get /video_id from the request
     console.log("videoById: Request received for video_id:", params.videoId);
-    const { videoId } = sanitizeInput(params);
-    const authToken = session?.accessToken || null;
-    console.log("videoById: authToken", authToken);
-    if (!authToken) {
-      console.log("videoById: authToken was not found in cookies");
-    }
-
+    const { videoId } = params;
     if (!videoId) {
       // Return a 400 Bad Request if no video_id is provided
       return NextResponse.json(
@@ -41,9 +35,15 @@ export async function GET(
         { status: 400 }
       );
     }
+    const sanitizedVideoId = sanitizeInput(videoId);
+    const authToken = session?.accessToken || null;
+    console.log("videoById: authToken", authToken);
+    if (!authToken) {
+      console.log("videoById: authToken was not found in cookies");
+    }
 
     const response = await fetch(
-      `${process.env.BACKEND_URL}/api/videos/${videoId}/`,
+      `${process.env.BACKEND_URL}/api/videos/${sanitizedVideoId}/`,
       {
         method: "GET",
         headers: {

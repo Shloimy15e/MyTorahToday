@@ -19,12 +19,20 @@ export async function POST(
   { params }: Props
 ): Promise<Response> {
   // Get video.id from the request
-  const { videoId } = sanitizeInput(params);
-  let authToken = cookies().get('auth_token')?.value || null;
+  const { videoId } = params;
+  if (!videoId) {
+    // Return a 400 Bad Request if no video_id is provided
+    return NextResponse.json(
+      { error: "No video_id provided" },
+      { status: 400 }
+    );
+  }
+  const sanitizedVideoId = sanitizeInput(videoId);
+  let authToken = cookies().get("auth_token")?.value || null;
   console.log("authToken", authToken);
-  if(!authToken) {
+  if (!authToken) {
     console.log("saveVideo: auth_token not found in cookies");
-    authToken = request.headers.get('Authorization') || null;
+    authToken = request.headers.get("Authorization") || null;
     if (!authToken) {
       console.log("saveVideo: auth_token also not found in request headers");
       return NextResponse.json(
@@ -33,15 +41,7 @@ export async function POST(
       );
     }
   }
-
-  if (!videoId) {
-    // Return a 400 Bad Request if no video_id is provided
-    return NextResponse.json(
-      { error: "No video.id provided" },
-      { status: 400 }
-    );
-  }
-  const url = `${process.env.BACKEND_URL}/api/videos/${videoId}/save/`;
+  const url = `${process.env.BACKEND_URL}/api/videos/${sanitizedVideoId}/save/`;
   const response = await fetch(url, {
     method: "POST",
     headers: {
