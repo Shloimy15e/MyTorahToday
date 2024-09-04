@@ -19,6 +19,13 @@ export async function POST(
 ): Promise<Response> {
   // Get video.id from the request
   const { videoId } = params;
+  if (typeof videoId !== "number") {
+    // Return a 400 Bad Request if video_id is not a number
+    return NextResponse.json(
+      { error: "video id must be a number" },
+      { status: 400 }
+    );
+  }
   let authToken = cookies().get('auth_token')?.value || null;
   console.log("authToken", authToken);
   if(!authToken) {
@@ -40,7 +47,7 @@ export async function POST(
       { status: 400 }
     );
   }
-  const url = `https://mttbackend-production.up.railway.app/api/videos/${videoId}/save/`;
+  const url = `${process.env.BACKEND_URL}/api/videos/${videoId}/save/`;
   const response = await fetch(url, {
     method: "POST",
     headers: {

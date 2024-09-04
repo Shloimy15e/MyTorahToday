@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
+import { sanitizeInput } from "@/utils/sanitizeInput";
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -14,14 +15,14 @@ const agent = new https.Agent({
  */
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
-  const limit = searchParams.get("limit") || "";
-  const offset = searchParams.get("offset") || "";
-  const id = searchParams.get("id") || "";
-  const name = searchParams.get("name__iexact") || "";
-  const topic = searchParams.get("topic") || "";
-  const topic__name = searchParams.get("topic__name__iexact") || "";
-  const ordering = searchParams.get("ordering") || "";
-  const url = `https://mttbackend-production.up.railway.app/api/subtopics/?id=${id}&name__iexact=${name}&limit=${limit}&offset=${offset}&topic__name__iexact=${topic__name}&topic=${topic}&ordering=${ordering}`;
+  const limit = sanitizeInput(searchParams.get("limit") || "10");
+  const offset = sanitizeInput(searchParams.get("offset") || "0");
+  const id = sanitizeInput(searchParams.get("id") || "");
+  const name = sanitizeInput(searchParams.get("name") || "");
+  const topic = sanitizeInput(searchParams.get("topic") || "");
+  const topic__name = sanitizeInput(searchParams.get("topic__name__iexact") || "");
+  const ordering = sanitizeInput(searchParams.get("ordering") || "");
+  const url = `/api/subtopics/?id=${id}&name__iexact=${name}&limit=${limit}&offset=${offset}&topic__name__iexact=${topic__name}&topic=${topic}&ordering=${ordering}`;
 
   console.log(url);
   const response = await fetch(url, {

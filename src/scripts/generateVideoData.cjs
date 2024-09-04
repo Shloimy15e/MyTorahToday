@@ -176,7 +176,7 @@ const generateVideoData = async () => {
       const newVideoDataJSON = JSON.stringify({ videos: newVideoData });
       fs.writeFileSync(filePath, newVideoDataJSON);
       try {
-        const response = await fetch("https://mttbackend-production.up.railway.app/api/videos/", {
+        const response = await fetch("${process.env.BACKEND_URL}/api/videos/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -215,7 +215,7 @@ const generateVideoData = async () => {
     const newVideoDataJSON = fs.readFileSync(filepath, "utf8");
     console.log("newVideoDataJSON: ", newVideoDataJSON.slice(0, 1000));
     const response = await fetch(
-      "https://mttbackend-production.up.railway.app/api/videos/",
+      "${process.env.BACKEND_URL}/api/videos/",
       {
         method: "POST",
         headers: {

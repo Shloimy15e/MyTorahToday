@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
+import { sanitizeInput } from "@/utils/sanitizeInput";
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -14,12 +15,12 @@ const agent = new https.Agent({
  */
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
-  const limit = searchParams.get("limit") || "";
-  const offset = searchParams.get("offset") || "";
-  const name = searchParams.get("name__iexact") || "";
+  const limit = sanitizeInput(searchParams.get("limit") || "10");
+  const offset = sanitizeInput(searchParams.get("offset") || "0");
+  const name = sanitizeInput(searchParams.get("name") || "");
 
   const response = await fetch(
-    `https://mttbackend-production.up.railway.app/api/topics/?name__iexact=${name}&limit=${limit}&offset=${offset}`,
+    `${process.env.BACKEND_URL}/api/topics/?name__iexact=${name}&limit=${limit}&offset=${offset}`,
     {
       method: "GET",
       headers: {
