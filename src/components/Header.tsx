@@ -194,7 +194,15 @@ export default function Header() {
                     : "rounded-bl-2xl md:rounded-tl-full h-full md:h-1/2"
                 }`}
               >
+                <label
+                  htmlFor="topicSelect"
+                  className="sr-only"
+                  title="Select a topic"
+                >
+                  Select a topic
+                </label>
                 <select
+                  id="topicSelect"
                   value={selectedTopic}
                   onChange={(e) => setSelectedTopic(e.target.value)}
                   className={`w-full h-full px-1 text-left align-top placeholder-gray-500 bg-transparent cursor-pointer rounded-b-2xl focus:outline-none focus:ring-0 sm:text-sm ${
@@ -221,7 +229,15 @@ export default function Header() {
               </div>
               {selectedTopic != "all" && (
                 <div className="px-1 h-full md:h-1/2 w-full hover:bg-gray-100 active:bg-gray-200 rounded-br-2xl md:rounded-bl-full border-l md:border-l-0 md:border-t border-primary-blue">
+                  <label
+                    htmlFor="subtopicSelect"
+                    className="sr-only"
+                    title="Select a subtopic"
+                  >
+                    Select a subtopic
+                  </label>
                   <select
+                    id="subtopicSelect"
                     value={selectedSubtopic}
                     onChange={(e) => setSelectedSubtopic(e.target.value)}
                     className="w-full h-full px-1 align-top text-left placeholder-gray-500 bg-transparent cursor-pointer rounded-none focus:outline-none focus:ring-0 sm:text-sm"
