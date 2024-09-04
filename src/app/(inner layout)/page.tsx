@@ -1,6 +1,3 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import Video from "@/types/Video";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import {
@@ -8,8 +5,6 @@ import {
   getVideosBySubtopicNameServer,
   getVideosByTopicNameServer,
 } from "@/data/videoData";
-import { get } from "http";
-import SefariaText from "@/components/SefariaText";
 import { cookies } from "next/headers";
 import { Error401 } from "@/components/Error401";
 
@@ -61,11 +56,16 @@ export default async function Home() {
         <main className="bg-neutral-100 grid grid-cols-1">
           {/* Hero section */}
           <div className="min-w-screen">
-            <Image
-              src="/images/banner.jpg"
-              alt="banner"
-              className="object-cover"
-            />
+            <picture>
+              <source srcSet="/images/banner.webp" type="image/webp" />
+              <Image
+                src="/images/banner.jpg" // Fallback image
+                alt="banner"
+                width={1707}
+                height={282}
+                className="object-cover w-full"
+              />
+            </picture>
           </div>
           {/* Parshah of the week */}
           {videosThisParshah && videosThisParshah.length > 0 && (

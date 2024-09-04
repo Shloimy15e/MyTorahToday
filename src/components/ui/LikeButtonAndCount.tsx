@@ -56,6 +56,8 @@ export default function LikeButtonAndCount({
   return (
     <div className="flex gap-2">
       <button
+        title="Like video"
+        aria-label="Like video"
         onClick={() => {
           toggleLike();
         }}

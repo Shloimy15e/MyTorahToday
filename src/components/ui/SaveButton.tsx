@@ -51,6 +51,8 @@ export default function SaveButton({
   return (
     <div className="flex gap-2">
       <button
+        title="Save video"
+        aria-label="Save video"
         onClick={() => {
           toggleSave();
         }}
