@@ -60,13 +60,11 @@ export default async function Home() {
       <>
         <main className="bg-neutral-100 grid grid-cols-1">
           {/* Hero section */}
-          <div>
+          <div className="min-w-screen">
             <Image
               src="/images/banner.jpg"
               alt="banner"
-              width={30000}
-              height={1080}
-              className=" object-cover"
+              className="object-cover"
             />
           </div>
           {/* Parshah of the week */}
