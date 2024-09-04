@@ -22,7 +22,7 @@ export default function Error({
       <h2 className="text-2xl text-center mx-auto mt-10 w-full">
         Something went wrong!
       </h2>
-      {isProduction ? (
+      {!isProduction ? (
         <h3 className="text-xl text-center mx-auto my-4 w-full">
           {error.message}
         </h3>
