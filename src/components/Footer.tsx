@@ -66,12 +66,11 @@ export default function Footer() {
   return (
     <footer className="bg-white">
       <div className="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8">
-        <div className="flex justify-center space-x-6 md:order-3">
+        <div className="flex justify-center space-x-6 md:order-3 text-sm leading-5 text-gray-600">
           {navigation.map((item) => (
             <a
               key={item.name}
               href={item.href}
-              className="text-gray-400 hover:text-gray-500"
             >
               <span className="sr-only">{item.name}</span>
               <item.icon aria-hidden="true" className="h-7 w-7" />
@@ -79,12 +78,12 @@ export default function Footer() {
           ))}
         </div>
         <div className="mt-8 md:mt-0 md:order-1">
-        <p className="text-center text-sm leading-5 text-gray-400">
-            Built and designed by Shloimy Elbaum Be&quot;h.
+        <p className="text-center">
+            Built and designed by Shloimy Elbaum Be&apos;ezrat Hashem.
           </p>
         </div>
         <div className="mt-8 md:order-1 md:mt-0">
-          <p className="text-center text-sm leading-5 text-gray-500">
+          <p className="text-center">
             &copy; 2024 MyTorahToday. All rights reserved to Hashem.
           </p>
         </div>
