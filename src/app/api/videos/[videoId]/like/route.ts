@@ -19,10 +19,17 @@ export async function POST(
 ): Promise<Response> {
   // Get video.id from the request
   const { videoId } = params;
-  let authToken = cookies().get('auth_token')?.value || null;
-  if(!authToken) {
+  if (typeof videoId !== "number") {
+    // Return a 400 Bad Request if video_id is not a number
+    return NextResponse.json(
+      { error: "video id must be a number" },
+      { status: 400 }
+    );
+  }
+  let authToken = cookies().get("auth_token")?.value || null;
+  if (!authToken) {
     console.log("likeVideo: auth_token not found in cookies");
-    authToken = request.headers.get('Authorization') || null;
+    authToken = request.headers.get("Authorization") || null;
     if (!authToken) {
       console.log("likeVideo: auth_token also not found in request headers");
       return NextResponse.json(
@@ -39,7 +46,7 @@ export async function POST(
       { status: 400 }
     );
   }
-  const url = `https://mttbackend-production.up.railway.app/api/videos/${videoId}/like/`;
+  const url = `${process.env.BACKEND_URL}/api/videos/${videoId}/like/`;
   const response = await fetch(url, {
     method: "POST",
     headers: {

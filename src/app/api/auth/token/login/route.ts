@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   }
 
   const response = await fetch(
-    "https://mttbackend-production.up.railway.app/api/auth/token/login/",
+    "${process.env.BACKEND_URL}/api/auth/token/login/",
     {
       method: "POST",
       headers: {

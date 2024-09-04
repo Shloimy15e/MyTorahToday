@@ -5,7 +5,7 @@ import Video from "@/types/Video";
 export async function fetchUpdatedData() {
   try {
     const response = await fetch(
-      "https://mttbackend-production.up.railway.app/api/videos/"
+      "${process.env.BACKEND_URL}/api/videos/"
     );
     const data = await response.json();
     if (!response.ok) {

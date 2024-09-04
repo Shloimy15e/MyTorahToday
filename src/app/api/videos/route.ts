@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
 import { cookies } from "next/headers";
+import {sanitizeInput} from "@/utils/sanitizeInput";
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -15,12 +16,12 @@ const agent = new https.Agent({
  */
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
-  const limit = searchParams.get("limit") || "10";
-  const offset = searchParams.get("offset") || "0";
-  const topic = searchParams.get("topic") || "";
-  const subtopic = searchParams.get("subtopic") || "";
-  const topic__name = searchParams.get("topic__name__iexact") || "";
-  const subtopic__name = searchParams.get("subtopic__name__iexact") || "";
+  const limit = sanitizeInput(searchParams.get("limit") || "10");
+  const offset = sanitizeInput(searchParams.get("offset") || "0");
+  const topic = sanitizeInput(searchParams.get("topic") || "");
+  const subtopic = sanitizeInput(searchParams.get("subtopic") || "");
+  const topic__name = sanitizeInput(searchParams.get("topic__name__iexact") || "");
+  const subtopic__name = sanitizeInput(searchParams.get("subtopic__name__iexact") || "");
   const url = `${process.env.BACKEND_URL}/api/videos/?limit=${limit}&offset=${offset}&topic=${topic}&subtopic=${subtopic}&topic__name__iexact=${topic__name}&subtopic__name__iexact=${subtopic__name}`
   let authToken = cookies().get('auth_token')?.value || null;
 
@@ -58,7 +59,7 @@ export async function GET(request: Request): Promise<Response> {
  */
 export async function POST(request: Request): Promise<Response> {
   const response = await fetch(
-    "https://mttbackend-production.up.railway.app/api/videos/",
+    "${process.env.BACKEND_URL}/api/videos/",
     {
       method: "POST",
       headers: {

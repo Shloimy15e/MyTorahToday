@@ -19,7 +19,7 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json({ error: 'Username, and password are required' }, { status: 400 });
   }
 
-  const response = await fetch('https://mttbackend-production.up.railway.app/api/auth/users/', {
+  const response = await fetch('${process.env.BACKEND_URL}/api/auth/users/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

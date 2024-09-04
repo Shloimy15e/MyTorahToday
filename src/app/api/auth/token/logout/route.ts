@@ -20,7 +20,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const response = await fetch(
-    "https://mttbackend-production.up.railway.app/api/auth/token/logout/",
+    "${process.env.BACKEND_URL}/api/auth/token/logout/",
     {
       method: "POST",
       headers: {

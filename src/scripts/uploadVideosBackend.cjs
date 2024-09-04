@@ -16,7 +16,7 @@ const Video = require("../types/Video");
 async function uploadVideoData(videoData) {
   console.log("Uploading video data...");
 
-  const backendUrl = "https://mttbackend-production.up.railway.app/api/videos/";
+  const backendUrl = "${process.env.BACKEND_URL}/api/videos/";
 
   /** The API expects an object with "videos": array of objects of type Video with the following properties:
    *  title

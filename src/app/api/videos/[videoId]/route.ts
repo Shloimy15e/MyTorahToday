@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
 import { getSession } from "next-auth/react";
+import { sanitizeInput } from "@/utils/sanitizeInput";
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -26,7 +27,7 @@ export async function GET(
     const session = await getSession();
     // Get /video_id from the request
     console.log("videoById: Request received for video_id:", params.videoId);
-    const { videoId } = params;
+    const { videoId } = sanitizeInput(params);
     const authToken = session?.accessToken || null;
     console.log("videoById: authToken", authToken);
     if (!authToken) {
