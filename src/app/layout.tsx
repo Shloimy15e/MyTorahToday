@@ -5,7 +5,6 @@ import { ToastProvider } from "@/context/ToastProvider";
 import ClientWrapper from "./ClientWrapper";
 import { SessionProvider as NextAuthSessionProvider } from "next-auth/react";
 import { SessionProvider } from "@/context/SessionContext";
-import { GoogleTagManager } from '@next/third-parties/google'
 
 export const metadata: Metadata = {
   title: "My Torah Today",
@@ -161,7 +160,6 @@ export default function RootLayout({
           }}
         />
       </head>
-      <GoogleTagManager gtmId="G-GECPXF5SDS" />
       <body>
         <NextAuthSessionProvider>
           <SessionProvider>
