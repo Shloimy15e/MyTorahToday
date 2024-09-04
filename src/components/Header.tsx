@@ -108,7 +108,13 @@ export default function Header() {
           )
         );
       } else {
-        navigation.splice(-1, 0, ...navObjects.filter((item) => !navigation.some((navItem) => navItem.name === item.name)));
+        navigation.splice(
+          -1,
+          0,
+          ...navObjects.filter(
+            (item) => !navigation.some((navItem) => navItem.name === item.name)
+          )
+        );
       }
     };
     if (topics.length > 0) {
@@ -153,20 +159,25 @@ export default function Header() {
             className="md:px-1.5 justify-center items-center text-gray-800 flex flex-col"
           >
             <span className="sr-only">My Torah Today</span>
-            <Image
-              alt="The Rosh Yeshiva Reb Shimon Semp"
-              src="/images/rosh-yeshiva.png"
-              className="h-16 md:h-20 w-auto aspect-square rounded-full"
-              width={80}
-              height={80}
-              loading="eager"
-            />
+            <picture>
+              <source srcSet="/images/rosh-yeshiva.webp" type="image/webp" />
+              <Image
+                alt="The Rosh Yeshiva Reb Shimon Semp"
+                src="/images/rosh-yeshiva.jpg"
+                className="h-16 md:h-20 w-auto aspect-square rounded-full"
+                width={563}
+                height={551}
+                loading="eager"
+              />
+            </picture>
             MyTorahToday
           </Link>
         </div>
         {mounted && !showSearchbar && (
           <button
             onClick={() => setShowSearchbar(true)}
+            aria-label="Open search bar"
+            title="Open search bar"
             className="col-span-1 col-end-10 flex items-center justify-center gap-1.5 p-2.5 rounded-full border border-primary-blue text-gray-700 hover:bg-gray-100 active:bg-gray-200"
           >
             <IoSearchOutline className="h-6 w-6" />
@@ -245,6 +256,8 @@ export default function Header() {
             <button
               type="submit"
               onClick={(e) => handleSearch(e)}
+              aria-label="Search"
+              title="Search"
               className="w-full h-full gap-1 md:gap-2 col-end-auto text-center col-span-4 md:col-span-3 inline-flex items-center justify-center rounded-tr-2xl md:rounded-r-full bg-primary-blue hover:bg-blue-950 text-white"
             >
               <IoSearchOutline className="h-6 w-6 flex-shrink-0" />
@@ -433,18 +446,22 @@ export default function Header() {
           >
             <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-white/10 duration-200">
               <div className="flex items-center justify-between">
-                <Link href="#" className="-m-1.5 p-1.5">
+                <Link href="/" className="-m-1.5 p-1.5">
                   <span className="sr-only">Your Company</span>
-                  <Image
-                    alt="Torah Today icon"
-                    src="/images/icon.jpg"
-                    className="h-10 w-auto rounded-xl"
-                    width={180}
-                    height={48}
-                  />
+                  <picture>
+                    <source srcSet="/images/icon.webp" type="image/webp" />
+                    <Image
+                      alt="Torah Today icon"
+                      src="/images/icon.jpg"
+                      className="h-16 w-auto rounded-xl"
+                      width={160}
+                      height={160}
+                    />
+                  </picture>
                 </Link>
                 <button
                   type="button"
+                  title="Close menu"
                   onClick={() => setMobileMenuOpen(false)}
                   className="-m-2.5 rounded-md p-2.5 text-gray-800 font-bold flex items-center justify-center"
                 >
@@ -486,6 +503,7 @@ export default function Header() {
                       <>
                         <button
                           onClick={() => setIsLoginDialogOpen(true)}
+                          title="Log in"
                           className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
                         >
                           <ArrowRightEndOnRectangleIcon className="h-6 w-6" />
@@ -493,6 +511,7 @@ export default function Header() {
                         </button>
                         <button
                           onClick={() => setIsSignupDialogOpen(true)}
+                          title="Sign up"
                           className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
                         >
                           <PencilSquareIcon className="h-6 w-6" />

@@ -256,6 +256,8 @@ export default function MainVideo({ params }: Props) {
               <div className="flex gap-4">
                 <div className="flex gap-2">
                   <button
+                    aria-label="Like video"
+                    title="Like video"
                     onClick={() => likeAndUnlikeVideo(video.id)}
                     className={`text-xl flex flex-wrap items-center gap-2 ${
                       videoIsLiked
@@ -273,6 +275,8 @@ export default function MainVideo({ params }: Props) {
                 </div>
                 <div className="flex gap-2">
                   <button 
+                    aria-label="Save video"
+                    title="Save video"
                     onClick={() => saveAndUnsaveVideo(video.id)}
                     className={`text-xl flex flex-wrap items-center gap-2 ${
                       videoIsSaved

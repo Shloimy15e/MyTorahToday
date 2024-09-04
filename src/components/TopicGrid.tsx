@@ -65,6 +65,7 @@ export default function TopicGrid(props: {
         !showMore && (
           <div className="flex justify-center mt-6">
             <button
+              title={`Load More ${props.areSubtopics ? "Subtopics" : "Topics" }`}
               onClick={() => setShowMore(true)}
               className="text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-24 my-6 w-4/5"
             >

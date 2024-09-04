@@ -93,6 +93,7 @@ export default function LogoutDialog(props: {
                         <div className="mt-3">
                           <button
                             type="submit"
+                            title="Log out"
                             className="w-full flex-nowrap flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             onClick={(e) => {
                               e.preventDefault();
@@ -105,6 +106,7 @@ export default function LogoutDialog(props: {
                         <div className="mt-3">
                           <button
                             type="button"
+                            title="Cancel"
                             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             onClick={(e) => {
                               e.preventDefault();

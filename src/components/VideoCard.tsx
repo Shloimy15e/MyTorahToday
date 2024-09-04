@@ -23,7 +23,7 @@ function VideoCard(props: {
       <div className="w-full aspect-video relative">
         <Image
           width={400}
-          height={400}
+          height={300}
           src={`https://i.ytimg.com/vi/${props.video.video_id}/hqdefault.jpg`}
           alt="Video Thumbnail"
           className="rounded-t-2xl w-full h-full object-cover"
