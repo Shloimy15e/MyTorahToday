@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import fetch from "node-fetch";
 import https from "https";
 import { cookies } from "next/headers";
+import { sanitizeInput } from "@/utils/sanitizeInput";
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -18,14 +19,7 @@ export async function POST(
   { params }: Props
 ): Promise<Response> {
   // Get video.id from the request
-  const { videoId } = params;
-  if (typeof videoId !== "number") {
-    // Return a 400 Bad Request if video_id is not a number
-    return NextResponse.json(
-      { error: "video id must be a number" },
-      { status: 400 }
-    );
-  }
+  const { videoId } = sanitizeInput(params);
   let authToken = cookies().get('auth_token')?.value || null;
   console.log("authToken", authToken);
   if(!authToken) {
