@@ -40,7 +40,7 @@ export default function VideoGrid(props: {
     <>
       <div>
         <div>
-          <h1 className="capitalize mb-0 leading-relaxed pb-4 relative text-4xl font-bold mx-10 my-6 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
+          <h1 className={`capitalize leading-relaxed pb-4 relative text-4xl font-bold mx-10 my-6 ${props.isThereText ? 'mb-0' : ''} text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900`}>
             {props.title}
           </h1>
           {props.isThereText && (
@@ -99,7 +99,7 @@ export default function VideoGrid(props: {
                     .toLowerCase()
                     .replace(" ", "-")}`
             }
-            className="text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-24 my-6 w-4/5"
+            className="md:text-lg bg-primary-blue text-gray-100 text-center font-semibold md:px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-14 md:mx-24 my-6 w-4/5"
           >
             See more from {props.topicName}
           </Link>

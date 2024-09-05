@@ -2,6 +2,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useSearchParams } from "next/navigation";
+import BackToTopButton from "@/components/ui/BackToTopButton";
 
 export default function InnerLayout({
   children,
@@ -18,6 +19,7 @@ export default function InnerLayout({
         <Header />
       </section>
       {children}
+      <BackToTopButton />
       <section>
         <Footer />
       </section>

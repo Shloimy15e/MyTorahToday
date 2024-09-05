@@ -156,7 +156,7 @@ export default function Header() {
         <div className="grid grid-rows-1 col-span-3 lg:flex-1 items-center">
           <Link
             href="/"
-            className="md:px-1.5 justify-center items-center text-gray-800 flex flex-col"
+            className="md:px-1.5 justify-center items-center text-gray-800 flex flex-col my-2 md:my-0"
           >
             <span className="sr-only">My Torah Today</span>
             <picture>
@@ -170,7 +170,7 @@ export default function Header() {
                 loading="eager"
               />
             </picture>
-            MyTorahToday
+            <span className="hidden md:inline">MyTorahToday</span>
           </Link>
         </div>
         {mounted && !showSearchbar && (
@@ -290,7 +290,7 @@ export default function Header() {
               >
                 <span className="sr-only">Open profile menu</span>
                 {session && session.user.username ? (
-                  <span className="capitalize w-8 flex items-center justify-center text-xl font-semibold bg-primary-blue text-white rounded-full aspect-square border border-gray-700">
+                  <span className="capitalize w-10 flex items-center justify-center text-xl font-semibold bg-primary-blue md:bg-inherit text-white md:text-primary-blue rounded-full aspect-square border border-gray-700 md:border-primary-blue">
                     {session.user.username.slice(0, 1)}
                   </span>
                 ) : (
