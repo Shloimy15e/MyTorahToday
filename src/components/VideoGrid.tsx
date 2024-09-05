@@ -53,7 +53,7 @@ export default function VideoGrid(props: {
               }}
               className="text-2xl font-semibold text-gray-800 ml-10 rounded-lg bg-white w-fit p-2 px-3 shadow-lg"
             >
-              See the full text for ${props.title}
+              See the full text for {props.title}
             </button>
           )}
         </div>
