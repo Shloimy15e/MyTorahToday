@@ -4,7 +4,7 @@ import { useToast } from "@/context/ToastProvider";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "../LoadingAnimation";
 import { useState } from "react";
-
+import { BiHide, BiShow } from "react-icons/bi";
 
 export function LoginForm({ onClose }: { onClose: () => void }) {
   const {
@@ -12,27 +12,26 @@ export function LoginForm({ onClose }: { onClose: () => void }) {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const { showToast } = useToast();
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log("Submitting form data for user:", data.username);
     const result = await signIn("credentials", {
       username: data.username,
       password: data.password,
       redirect: false,
     });
 
-    console.log("Sign in result:", result);
     if (result?.error) {
-      console.error("Failed to sign in:", result.error);
       showToast("Invalid username or password", "error");
       setIsLoading(false);
     } else {
       onClose();
-      showToast(`Logged in successfully as`, "success");
+      showToast("Logged in successfully", "success");
       setIsLoading(false);
       router.refresh();
     }
@@ -45,7 +44,6 @@ export function LoginForm({ onClose }: { onClose: () => void }) {
           <input
             id="username"
             type="text"
-            autoComplete="username"
             required
             className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             placeholder="Username or Email"
@@ -72,7 +70,7 @@ export function LoginForm({ onClose }: { onClose: () => void }) {
         <div className="relative">
           <input
             id="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             autoComplete="current-password"
             placeholder="Password"
             required
@@ -94,6 +92,17 @@ export function LoginForm({ onClose }: { onClose: () => void }) {
           >
             Password
           </label>
+          <button
+            type="button"
+            className="absolute top-2 right-2 text-gray-600"
+            onClick={togglePasswordVisibility}
+          >
+            {showPassword ? (
+              <BiHide className="h-5 w-5" />
+            ) : (
+              <BiShow className="h-5 w-5" />
+            )}
+          </button>
         </div>
       </div>
       <div className="mt-3">

@@ -67,7 +67,7 @@ export default function TopicGrid(props: {
             <button
               title={`Load More ${props.areSubtopics ? "Subtopics" : "Topics" }`}
               onClick={() => setShowMore(true)}
-              className="text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-24 my-6 w-4/5"
+              className="md:text-lg bg-primary-blue text-gray-100 text-center font-semibold md:px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-14 md:mx-24 my-6 w-4/5"
             >
               Load More {props.areSubtopics ? "Subtopics" : "Topics"}
             </button>

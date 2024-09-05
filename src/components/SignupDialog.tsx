@@ -9,9 +9,8 @@ import React, { Fragment, useState } from "react";
 import { useToast } from "../context/ToastProvider";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
-import { set } from "zod";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import LoadingAnimation from "./LoadingAnimation";
+import { BiHide, BiShow } from "react-icons/bi";
 
 // Remove the import statement for 'fs' module
 export default function SignupDialog(props: {
@@ -22,6 +21,8 @@ export default function SignupDialog(props: {
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const {
     register,
     handleSubmit,
@@ -42,22 +43,18 @@ export default function SignupDialog(props: {
       // Automatically log in the user after successful signup
       showToast("Signup successful. Automatically logging in...", "info");
       setIsLoggingIn(true);
-      console.log("Signup successful. Automatically logging in...");
       const result = await signIn("credentials", {
         redirect: false,
         username: data.username,
         password: data.password,
       });
       if (result?.error) {
-        console.error("Failed to sign in:", result.error);
         showToast("Failed to log in. Please reload and try again.", "error");
       } else {
-        console.log("log in successful:", result);
         showToast("Log in successful", "success");
       }
     } else {
       const errorData = await response.json();
-      console.error("Signup failed:", errorData);
       showToast("Signup failed. Please try again later.", "error");
     }
     setIsLoading(false);
@@ -101,40 +98,36 @@ export default function SignupDialog(props: {
                   </DialogTitle>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <form className="mt-3" onSubmit={handleSubmit(onSubmit)}>
-                      <div>
-                        <label
-                          htmlFor="username"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          username
-                        </label>
-                        <div className="mt-1">
+                      <div className="mt-1">
+                        <div className=" relative">
                           <input
                             id="username"
+                            type="text"
+                            required
+                            placeholder="Username"
+                            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             {...register("username", {
                               required: true,
                               validate: (value: string) =>
                                 value.trim() !== "" || "Username is required",
                             })}
-                            type="text"
-                            autoComplete="username"
-                            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                           />
+
                           {errors.username && (
-                            <p className="mt-2 text-sm text-red-600">
+                            <p className="mt-2 text-left text-sm text-red-600">
                               {errors.username.message as React.ReactNode}
                             </p>
                           )}
+                          <label
+                            htmlFor="username"
+                            className="absolute tracking-wide text-sm font-semibold text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-indigo-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+                          >
+                            Username
+                          </label>
                         </div>
                       </div>
-                      <div>
-                        <label
-                          htmlFor="email"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Email address
-                        </label>
-                        <div className="mt-1">
+                      <div className="mt-3">
+                        <div className="relative">
                           <input
                             id="email"
                             {...register("email", {
@@ -146,26 +139,26 @@ export default function SignupDialog(props: {
                               },
                             })}
                             type="email"
-                            autoComplete="email"
+                            placeholder="Email"
                             className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                           />
                           {errors.email && (
-                            <p className="text-red-500 text-sm mt-1">
+                            <p className="text-red-500 text-left text-sm mt-1">
                               {errors.email.message as React.ReactNode}
                             </p>
                           )}
+                          <label
+                            htmlFor="email"
+                            className="absolute tracking-wide text-sm font-semibold text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-indigo-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+                          >
+                            Email
+                          </label>
                         </div>
                       </div>
                       <div className="mt-3">
-                        <label
-                          htmlFor="password"
-                          className="block text-sm font-medium text-gray-700"
-                          aria-describedby="password-description"
-                        >
-                          Password
-                        </label>
-                        <div className="mt-1">
+                        <div className="relative">
                           <input
+                            placeholder="Password"
                             id="password"
                             {...register("password", {
                               required: "Password is required",
@@ -183,8 +176,8 @@ export default function SignupDialog(props: {
                                   "Password cannot contain your username",
                               },
                             })}
-                            type="password"
-                            autoComplete="current-password"
+                            autoComplete="new-password"
+                            type={showPassword ? "text" : "password"}
                             className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                           />
                           {errors.password && (
@@ -192,16 +185,72 @@ export default function SignupDialog(props: {
                               {errors.password.message as React.ReactNode}
                             </p>
                           )}
-                        </div>
-                        <div className="mt-3">
-                          <button
-                            type="submit"
-                            title="Sign up"
-                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          <label
+                            htmlFor="password"
+                            className="absolute tracking-wide text-sm font-semibold text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-indigo-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
                           >
-                            Sign up
+                            Password
+                          </label>
+                          <button
+                            type="button"
+                            className="absolute top-2 right-2 text-gray-600"
+                            onClick={togglePasswordVisibility}
+                          >
+                            {showPassword ? (
+                              <BiHide className="h-5 w-5" />
+                            ) : (
+                              <BiShow className="h-5 w-5" />
+                            )}
                           </button>
                         </div>
+                      </div>
+                      <div className="mt-3">
+                        <div className="relative">
+                          <input
+                            placeholder="Confirm Password"
+                            id="confirmPassword"
+                            {...register("confirmPassword", {
+                              required: "Confirm Password is required",
+                              validate: (value, formValues) =>
+                                value === formValues.password ||
+                                "Passwords do not match",
+                            })}
+                            autoComplete="new-password"
+                            type={showPassword ? "text" : "password"}
+                            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          />
+                          {errors.confirmPassword && (
+                            <p className="mt-2 text-left text-sm text-red-600">
+                              {errors.confirmPassword.message as React.ReactNode}
+                            </p>
+                          )}
+                          <label
+                            htmlFor="confirmPassword"
+                            className="absolute tracking-wide text-sm font-semibold text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-indigo-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+                          >
+                            Confirm Password
+                          </label>
+                          <button
+                            type="button"
+                            className="absolute top-2 right-2 text-gray-600"
+                            onClick={togglePasswordVisibility}
+                          >
+                            {showPassword ? (
+                              <BiHide className="h-5 w-5" />
+                            ) : (
+                              <BiShow className="h-5 w-5" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                      <div className="mt-3">
+                        <button
+                          type="submit"
+                          title="Sign up"
+                          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-blue active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                          Sign up
+                        </button>
                       </div>
                     </form>
                   </div>
@@ -215,7 +264,9 @@ export default function SignupDialog(props: {
         <div className="fixed inset-0 bg-black bg-opacity-65 flex items-center justify-center z-50">
           <div className="text-white text-2xl flex flex-col gap-1 items-center">
             <LoadingAnimation />
-            <span>Please wait while we {isLoggingIn ? ("log you in") : ("sign you up")}</span>
+            <span>
+              Please wait while we {isLoggingIn ? "log you in" : "sign you up"}
+            </span>
           </div>
         </div>
       )}

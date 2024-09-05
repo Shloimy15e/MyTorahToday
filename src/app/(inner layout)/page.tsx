@@ -55,8 +55,8 @@ export default async function Home() {
       <>
         <main className="bg-neutral-100 grid grid-cols-1">
           {/* Hero section */}
-          <div className="min-w-screen">
-            <picture>
+          <div className="min-w-screen w-full">
+            <picture className="w-full">
               <source srcSet="/images/banner.webp" type="image/webp" />
               <Image
                 src="/images/banner.jpg" // Fallback image

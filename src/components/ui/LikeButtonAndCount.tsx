@@ -24,7 +24,6 @@ export default function LikeButtonAndCount({
   async function toggleLike() {
     if (!session) {
       showToast("Please log in to like a video.", "warning");
-      console.log("Please log in to like a video.");
       return;
     }
     setIsLoading(true);
@@ -35,7 +34,6 @@ export default function LikeButtonAndCount({
         throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
       }
       if (data.detail.includes("unliked")) {
-        console.log("Successfully unliked video");
         showToast("Video unliked", "success");
         setIsLikedState(false);
         setLikesCount(likesCount - 1);
@@ -45,7 +43,6 @@ export default function LikeButtonAndCount({
         setLikesCount(likesCount + 1);
       }
     } catch (error) {
-      console.error("Error liking video:", error);
       showToast("Error liking video", "error");
       return error;
     } finally {

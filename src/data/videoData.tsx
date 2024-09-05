@@ -91,7 +91,6 @@ export const fetchRelatedVideosServer = async (
 };
 
 export async function toggleLike(id: Video["id"]): Promise<Response> {
-  console.log("toggleLike called with id:", id);
   try {
     const response = await fetch(`/api/videos/${id}/like`, {
       method: "POST",
@@ -100,19 +99,11 @@ export async function toggleLike(id: Video["id"]): Promise<Response> {
     if (!response.ok) {
       throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
     }
-    if (data.detail.includes("unliked")) {
-      console.log("Successfully unliked video");
-    } else if (data.detail.includes("liked")) {
-      // Add one like to props.video.likes
-      console.log("Successfully liked video");
-    }
     return new Response(JSON.stringify(data), {
       status: response.status,
       statusText: response.statusText,
     });
   } catch (error) {
-    console.error("Error liking video:", error);
-
     return new Response(JSON.stringify({ error: JSON.stringify(error) }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -121,29 +112,19 @@ export async function toggleLike(id: Video["id"]): Promise<Response> {
 }
 
 export async function toggleSave(id: Video["id"]): Promise<Response> {
-  console.log("toggleSave called with id:", id);
   try {
     const response = await fetch(`/api/videos/${id}/save`, {
       method: "POST",
     });
     const data = await response.json();
-    console.log("data", JSON.stringify(data));
     if (!response.ok) {
       throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
-    }
-    if (data.detail.includes("unsaved")) {
-      console.log("Successfully unsaved video");
-    } else if (data.detail.includes("saved")) {
-      // Add one like to props.video.likes
-      console.log("Successfully saved video");
     }
     return new Response(JSON.stringify(data), {
       status: response.status,
       statusText: response.statusText,
     });
   } catch (error) {
-    console.error("Error saving video:", error);
-
     return new Response(JSON.stringify({ error: JSON.stringify(error) }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -155,9 +136,6 @@ export const getVideoByVideoId = async (
   videoId: string,
   authToken: string | null
 ): Promise<Video> => {
-  if (authToken) {
-    console.log("token is true");
-  }
   const response = await fetch(`/api/videos/${videoId}/`, {
     headers: {
       "Content-Type": "application/json",
@@ -175,7 +153,6 @@ export const getVideoByVideoId = async (
     throw new Error(errorMessage);
   }
   const data = await response.json();
-  console.log("data", JSON.stringify(data));
   return data;
 };
 
@@ -270,7 +247,6 @@ export const fetchTopicsServer = async (): Promise<any> => {
 
 export const fetchSubtopics = async (topic: string): Promise<Subtopic[]> => {
   const url = `/api/subtopics/?topic__name__iexact=${topic}`;
-  console.log(url);
   const response = await fetch(url);
   const data = await response.json();
   return data.results;

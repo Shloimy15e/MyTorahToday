@@ -21,7 +21,6 @@ export default function SaveButton({
   async function toggleSave() {
     if (!session) {
       showToast("Please log in to save a video.", "warning");
-      console.log("Please log in to save a video.");
       return;
     }
     setIsLoading(true);
@@ -32,7 +31,6 @@ export default function SaveButton({
         throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
       }
       if (data.detail.includes("unsaved")) {
-        console.log("Successfully unsaved video");
         showToast("Video unsaved", "success");
         setIsSavedState(false);
       } else if (data.detail.includes("saved")) {
@@ -40,7 +38,6 @@ export default function SaveButton({
         setIsSavedState(true);
       }
     } catch (error) {
-      console.error("Error saving video:", error);
       showToast("Error saving video", "error");
       return error;
     } finally {
@@ -51,8 +48,8 @@ export default function SaveButton({
   return (
     <div className="flex gap-2">
       <button
-        title="Save video"
-        aria-label="Save video"
+        title={`${isSavedState ? "Unsave" : "Save"} video`}
+        aria-label={`${isSavedState ? "Unsave" : "Save"} video`}
         onClick={() => {
           toggleSave();
         }}
