@@ -32,7 +32,7 @@ export function LoginForm({ onClose }: { onClose: () => void }) {
       setIsLoading(false);
     } else {
       onClose();
-      showToast(`Logged in successfully as`, "success");
+      showToast('Logged in successfully', "success");
       setIsLoading(false);
       router.refresh();
     }

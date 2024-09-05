@@ -28,16 +28,6 @@ export default function LogoutDialog(props: {
       closeModal();
       return;
     }
-    console.log("handleOnSubmit called");
-    setIsLoading(true);
-    const response = await fetch("/api/auth/token/logout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${""}`,
-      },
-    });
-    const data = await response.json();
     await signOut({ redirect: false })
       .then(() => {
         document.cookie =
