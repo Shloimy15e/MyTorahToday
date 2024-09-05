@@ -37,7 +37,6 @@ export default function LogoutDialog(props: {
         props.onClose();
       })
       .catch((error) => {
-        console.error("Failed to log out:", error);
         showToast("Failed to log out", "error");
         setIsLoading(false);
       });

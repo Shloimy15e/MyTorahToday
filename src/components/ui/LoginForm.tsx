@@ -18,16 +18,13 @@ export function LoginForm({ onClose }: { onClose: () => void }) {
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log("Submitting form data for user:", data.username);
     const result = await signIn("credentials", {
       username: data.username,
       password: data.password,
       redirect: false,
     });
 
-    console.log("Sign in result:", result);
     if (result?.error) {
-      console.error("Failed to sign in:", result.error);
       showToast("Invalid username or password", "error");
       setIsLoading(false);
     } else {

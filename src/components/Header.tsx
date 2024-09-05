@@ -80,7 +80,6 @@ export default function Header() {
     const fetchTopics = async () => {
       const res = await fetch(`/api/topics/`);
       const data = await res.json();
-      console.log(data.results);
       setTopics(data.results);
     };
     if (topics.length === 0) {
@@ -354,30 +353,6 @@ export default function Header() {
                         </Link>
                       </MenuItem>
                       <MenuItem>
-                        <Link
-                          href="#"
-                          className="active:bg-gray-100 active:text-primary-blue text-gray-800 group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
-                        >
-                          <MdManageAccounts
-                            className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500"
-                            aria-hidden="true"
-                          />
-                          <span>My account</span>
-                        </Link>
-                      </MenuItem>
-                      <MenuItem>
-                        <Link
-                          href="#"
-                          className="active:bg-gray-100 active:text-primary-blue text-gray-800 group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
-                        >
-                          <IoSettingsOutline
-                            className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500"
-                            aria-hidden="true"
-                          />
-                          <span>Settings</span>
-                        </Link>
-                      </MenuItem>
-                      <MenuItem>
                         <button
                           onClick={() => setIsLogoutDialogOpen(true)}
                           className="active:bg-gray-100 active:text-red-600 text-gray-800  group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-red-50 border-t border-gray-200"
@@ -442,12 +417,6 @@ export default function Header() {
           </button>
         </div>
       </nav>
-      {/* Banner that says - Site in construction - with black and yellow striped construction bg */}
-      <div className="flex bg-constructionStripes text-white font-bold justify-center row-span-1">
-        <p className="bg-black/45 w-fit px-2 my-1 text-lg rounded">
-          Site under construction
-        </p>
-      </div>
       <Transition show={mobileMenuOpen} as={Fragment}>
         <Dialog onClose={setMobileMenuOpen}>
           <div className="fixed inset-0 z-10 bg-gray-800 bg-opacity-50" />
@@ -463,7 +432,7 @@ export default function Header() {
             <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-white/10 duration-200">
               <div className="flex items-center justify-between">
                 <Link href="/" className="-m-1.5 p-1.5">
-                  <span className="sr-only">Your Company</span>
+                  <span className="sr-only">My Torah Today</span>
                   <picture>
                     <source srcSet="/images/icon.webp" type="image/webp" />
                     <Image

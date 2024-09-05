@@ -42,22 +42,18 @@ export default function SignupDialog(props: {
       // Automatically log in the user after successful signup
       showToast("Signup successful. Automatically logging in...", "info");
       setIsLoggingIn(true);
-      console.log("Signup successful. Automatically logging in...");
       const result = await signIn("credentials", {
         redirect: false,
         username: data.username,
         password: data.password,
       });
       if (result?.error) {
-        console.error("Failed to sign in:", result.error);
         showToast("Failed to log in. Please reload and try again.", "error");
       } else {
-        console.log("log in successful:", result);
         showToast("Log in successful", "success");
       }
     } else {
       const errorData = await response.json();
-      console.error("Signup failed:", errorData);
       showToast("Signup failed. Please try again later.", "error");
     }
     setIsLoading(false);
@@ -106,7 +102,7 @@ export default function SignupDialog(props: {
                           htmlFor="username"
                           className="block text-sm font-medium text-gray-700"
                         >
-                          username
+                          Username
                         </label>
                         <div className="mt-1">
                           <input
