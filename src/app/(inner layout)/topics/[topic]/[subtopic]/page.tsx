@@ -28,12 +28,18 @@ export const generateMetadata = ({ params }: Props): Metadata => {
   };
 };
 
-async function getSubtopicText(subtopic: string) {
+async function getSubtopicText(subtopic: string, { params }: Props) {
   try {
     const options = { method: "GET", headers: { accept: "application/json" } };
-
-    const response = await fetch(
-      `https://www.sefaria.org/api/v3/texts/${subtopic}?return_format=strip_only_footnotes`,
+    const url = new URL(`https://www.sefaria.org/api/v3/texts/`);
+    if (params.topic == "parshah"){
+      url.pathname = url.pathname.concat(`Parashat%20${subtopic.charAt(0).toUpperCase() + subtopic.slice(1)}`);
+    } else {
+      url.pathname = url.pathname.concat(`${subtopic}`);
+    }
+    url.searchParams.append("return_format", "strip_only_footnotes");
+    console.log(url.toString());
+    const response = await fetch(url.toString(),
       options
     );
     const data = await response.json();
@@ -66,8 +72,12 @@ export default async function SubtopicPage({ params }: Props) {
     const { topic, subtopic } = params;
     const displayTopic = topic.replace(/-/g, " ").replace(/%20/g, " ");
     const displaySubtopic = subtopic.replace(/-/g, " ").replace(/%20/g, " ");
-    const videos = await getVideosBySubtopicNameServer(displaySubtopic, authToken, 100);
-    const subtopicText = await getSubtopicText(displaySubtopic);
+    const videos = await getVideosBySubtopicNameServer(
+      displaySubtopic,
+      authToken,
+      100
+    );
+    const subtopicText = await getSubtopicText(displaySubtopic, { params });
 
     if (!videos) {
       throw new Error("400 - Bad Request – The request returned undefined");
@@ -91,7 +101,12 @@ export default async function SubtopicPage({ params }: Props) {
               isThereText={subtopicText ? true : false}
             />
           )}
-          {subtopicText && <SefariaText text={subtopicText.subtopicTextArray} title={subtopicText.title} />}
+          {subtopicText && (
+            <SefariaText
+              text={subtopicText.subtopicTextArray}
+              title={subtopicText.title}
+            />
+          )}
           <div className="flex justify-center items-center mb-6">
             <Link
               href={`/topics/${topic}`}
