@@ -19,6 +19,7 @@ import { Suspense, lazy } from "react";
 import LoadingVideoCardAnimation from "@/components/LoadingVideoCardAnimation";
 import SaveButton from "@/components/ui/SaveButton";
 import { Error401 } from "@/components/Error401";
+import ShareButtons from "./components/ShareButtons";
 
 type Props = {
   params: {
@@ -79,6 +80,7 @@ export default async function VideoPage({ params }: Props) {
                 videoId={video.id}
               />
               <SaveButton videoId={video.id} isSaved={video.is_saved_by_user} />
+              <ShareButtons video={video} topic={topic} subtopic={subtopic} />
             </div>
             <div className="flex flex-col gap-4 w-full overflow-clip max-h-full bg-neutral-200 rounded-xl p-4">
               <div className="md:px-4 my-2 flex flex-col gap-2 md:flex-row items-start justify-between w-full">
