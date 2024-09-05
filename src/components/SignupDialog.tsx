@@ -58,7 +58,7 @@ export default function SignupDialog(props: {
       try {
         const data = await response.json();
         if (data.error) {
-          if (data.error.includes("already exists")) {
+          if (data.error.includes("already exists") || (data.error.username && data.error.username.includes("already exists"))) {
             showToast("Username or email already exists", "error");
           } else {
             showToast("Failed to sign up. Please try again", "error");
