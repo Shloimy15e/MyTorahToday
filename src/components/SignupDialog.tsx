@@ -41,7 +41,8 @@ export default function SignupDialog(props: {
 
     if (response.ok) {
       // Automatically log in the user after successful signup
-      showToast("Signup successful. Automatically logging in...", "info");
+      showToast("Signup successful.", "info");
+      showToast("Automatically logging in...", "info");
       setIsLoggingIn(true);
       const result = await signIn("credentials", {
         redirect: false,
