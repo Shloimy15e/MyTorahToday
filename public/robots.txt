@@ -10,4 +10,4 @@ Disallow: /admin/
 Host: https://www.mytorahtoday.com
 
 # Sitemaps
-Sitemap: https://www.mytorahtoday.com/sitemap.xml
+Sitemap: https://www.mytorahtoday.com/api/sitemap

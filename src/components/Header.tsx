@@ -151,7 +151,7 @@ export default function Header() {
     <header className="bg-white shadow-md grid grid-cols-1 grid-rows-2">
       <nav
         aria-label="Global"
-        className="grid grid-rows-1 gap-2 w-full min-w-96 p-3 md:p-4 lg:px-10 row-span-6 place-items-center"
+        className="grid grid-rows-1 gap-2 w-full p-3 md:p-4 lg:px-10 row-span-6 place-items-center"
       >
         <div className="grid grid-rows-1 col-span-3 lg:flex-1 items-center">
           <Link
