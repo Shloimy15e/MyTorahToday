@@ -17,6 +17,12 @@ import Video from "@/types/Video";
 import LikeButtonAndCount from "./ui/LikeButtonAndCount";
 import SaveButton from "./ui/SaveButton";
 import { CalendarDaysIcon, ClockIcon } from "@heroicons/react/24/outline";
+import {
+  EmailShareButton,
+  EmailIcon,
+  WhatsappShareButton,
+  WhatsappIcon,
+} from "next-share";
 
 export default function VideoDialog(props: {
   isOpen: boolean;
@@ -82,6 +88,38 @@ export default function VideoDialog(props: {
                         videoId={props.video.id}
                         isSaved={props.video.is_saved_by_user}
                       />
+                    </span>
+                    <span
+                      title="Share via Email"
+                      className="flex items-center justify-center"
+                    >
+                      <EmailShareButton
+                        url={`${window.location}/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}/${props.video.video_id}`}
+                        subject={`R' Shimon Semp - ${props.video.title?.slice(
+                          0,
+                          50
+                        )}`}
+                        body={`Check out this video by R' Shimon Semp: ${window.location}/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}/${props.video.video_id}`}
+                        blankTarget={true}
+                      >
+                        <EmailIcon className="w-9 h-9" round />
+                      </EmailShareButton>
+                    </span>
+                    <span
+                      title="Share on Whatsapp"
+                      className="flex items-center justify-center"
+                    >
+                      <WhatsappShareButton
+                        url={`${process.env.NEXT_PUBLIC_BASE_URL}/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}/${props.video.video_id}`}
+                        title={`R' Shimon Semp - ${props.video.title?.slice(
+                          0,
+                          50
+                        )}`}
+                        separator=":: "
+                        blankTarget={true}
+                      >
+                        <WhatsappIcon className="w-9 h-9" round />
+                      </WhatsappShareButton>
                     </span>
                   </div>
                   <div className="mt-2 flex flex-col items-center justify-between w-full bg-neutral-200 p-2 rounded-lg">
