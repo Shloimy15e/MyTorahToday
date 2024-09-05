@@ -1,6 +1,6 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
+import { useState, useRef } from "react";
+import { ChevronUpIcon, ChevronDoubleDownIcon } from "@heroicons/react/24/outline";
 import { Transition } from "@headlessui/react";
 import DOMPurify from "dompurify";
 
@@ -67,13 +67,13 @@ export default function SefariaText({
 
   return (
     <div
-      className="bg-white rounded-lg shadow-lg p-6 m-6 transition-all duration-500 font-serif text-2xl leading-relaxed tracking-wide"
+      className="bg-white rounded-lg text-right shadow-lg p-6 m-6 transition-all duration-500 font-serif text-lg md:text-2xl md:leading-relaxed md:tracking-wide"
       id="sefaria-text-component"
     >
-      <h2 className="text-4xl font-bold mb-4 text-right">{title}</h2>
+      <h2 className="text-4xl font-bold mb-4 ">{title}</h2>
       <p
         ref={textRef}
-        className="mb-4 text-right overflow-hidden transition-all duration-1000 ease-in-out"
+        className="mb-4  overflow-hidden transition-all duration-1000 ease-in-out"
         dangerouslySetInnerHTML={{ __html: sanitizedTextArray[0] }}
       />
       <Transition
@@ -88,7 +88,7 @@ export default function SefariaText({
       >
         <p
           ref={showMoreRef}
-          className="mb-4 text-right overflow-hidden transition-all duration-1000 ease-in-out"
+          className="mb-4  overflow-hidden transition-all duration-1000 ease-in-out"
           dangerouslySetInnerHTML={{
             __html: sanitizedTextArray.slice(1, 3).join(" "),
           }}
@@ -105,13 +105,13 @@ export default function SefariaText({
       >
         <p
           ref={showEverythingRef}
-          className="mb-4 text-right overflow-hidden transition-all duration-1000 ease-in-out"
+          className="mb-4  overflow-hidden transition-all duration-1000 ease-in-out"
           dangerouslySetInnerHTML={{
             __html: sanitizedTextArray.slice(3).join(" "),
           }}
         ></p>
       </Transition>
-      <div className="flex justify-center text-lg font-mono leading-normal tracking-normal">
+      <div className="flex flex-col md:text-lg text-base lg:flex-row justify-center items-center font-sans leading-normal tracking-normal">
         <button
           onClick={() => {
             if (showMore && !showEverything) {
@@ -123,21 +123,15 @@ export default function SefariaText({
               handleSetShowEverything(true);
             }
           }}
-          className="flex text-lg items-center justify-center gap-5 bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-5 my-1 w-4/5"
+          className="flex order-2 lg:order-1 items-center justify-center gap-5 bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-0 md:mx-5 my-1 w-4/5"
         >
-          <ChevronDownIcon
+          <ChevronDoubleDownIcon
             strokeWidth={3}
             className={`w-7 h-7 transition ${
               !showMore && showEverything ? "rotate-180" : ""
             }`}
           />
-          <span>{showEverything ? "Show Least" : "Show Everything"}</span>
-          <ChevronDownIcon
-            strokeWidth={3}
-            className={`w-7 h-7 transition ${
-              !showMore && showEverything ? "rotate-180" : ""
-            }`}
-          />
+          <span className="text-nowrap">{showEverything ? "Show Least" : "Show Everything"}</span>
         </button>
         <button
           onClick={() => {
@@ -146,7 +140,7 @@ export default function SefariaText({
               component.scrollIntoView({ behavior: "smooth" });
             }
           }}
-          className="flex text-lg items-center justify-center gap-5 bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-5 my-1 w-4/5"
+          className="flex order-3 lg:order-2 items-center justify-center gap-5 bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-0 md:mx-5 my-1 w-4/5"
         >
           Return to Start
         </button>
@@ -158,7 +152,7 @@ export default function SefariaText({
               ? handleSetShowMore(false)
               : handleSetShowMore(true);
           }}
-          className="flex text-lg items-center justify-center gap-5 bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-5 my-1 w-4/5"
+          className="flex order-1 lg:order-3 items-center justify-center gap-5 bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-0 md:mx-5 my-1 w-4/5"
         >
           <ChevronUpIcon
             strokeWidth={3}

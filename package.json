@@ -21,6 +21,7 @@
     "ioredis": "^5.4.1",
     "next": "^14.2.7",
     "next-auth": "^5.0.0-beta.20",
+    "next-share": "^0.27.0",
     "node-fetch": "^2.7.0",
     "nookies": "^2.5.2",
     "react": "^18",

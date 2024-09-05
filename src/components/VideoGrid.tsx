@@ -25,7 +25,9 @@ export default function VideoGrid(props: {
 
   const closeDialog = () => {
     setIsDialogOpen(false);
-    setSelectedVideo({} as Video);
+    setTimeout(() => {
+      setSelectedVideo({} as Video);
+    }, 500);
   };
 
   const isMobile = useMediaQuery({ maxWidth: 639 });
@@ -38,7 +40,7 @@ export default function VideoGrid(props: {
     <>
       <div>
         <div>
-          <h1 className="capitalize leading-relaxed pb-4 relative text-4xl font-bold mx-10 my-6 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
+          <h1 className="capitalize mb-0 leading-relaxed pb-4 relative text-4xl font-bold mx-10 my-6 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
             {props.title}
           </h1>
           {props.isThereText && (
@@ -51,13 +53,13 @@ export default function VideoGrid(props: {
                   component.scrollIntoView({ behavior: "smooth" });
                 }
               }}
-              className="text-2xl font-semibold text-gray-800 ml-10 rounded-lg bg-white w-fit p-2 px-3 shadow-lg"
+              className="md:text-2xl my-5 md:my-7 font-semibold text-gray-800 mx-10 rounded-lg bg-white w-fit p-2 px-3 shadow-lg"
             >
-              See the full text for {props.title}
+              See the full script for {props.title.charAt(0).toUpperCase() + props.title.slice(1)}
             </button>
           )}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full pt-0 auto-rows-max p-10">
           {props.showAll
             ? props.videos.map((video) => (
                 <VideoCard

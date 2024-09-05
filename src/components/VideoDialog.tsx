@@ -17,7 +17,6 @@ import Video from "@/types/Video";
 import LikeButtonAndCount from "./ui/LikeButtonAndCount";
 import SaveButton from "./ui/SaveButton";
 import { CalendarDaysIcon, ClockIcon } from "@heroicons/react/24/outline";
-import formatDuration from "@/utils/formatDuration";
 
 export default function VideoDialog(props: {
   isOpen: boolean;
