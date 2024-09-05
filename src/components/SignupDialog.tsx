@@ -54,8 +54,11 @@ export default function SignupDialog(props: {
         showToast("Log in successful", "success");
       }
     } else {
-      const errorData = await response.json();
-      showToast("Signup failed. Please try again later.", "error");
+      if (response.status === 409) {
+        showToast("Username or email already exists", "error");
+      } else {
+        showToast("Failed to sign up. Please try again", "error");
+      }
     }
     setIsLoading(false);
     setIsLoggingIn(false);

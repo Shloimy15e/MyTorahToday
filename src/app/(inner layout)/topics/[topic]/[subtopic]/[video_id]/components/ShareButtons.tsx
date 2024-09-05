@@ -21,14 +21,14 @@ export default function ShareButtons({
       <span title="Share via Email">
         <EmailShareButton
           url={`${
-            window.location
+            process.env.NEXT_PUBLIC_BASE_URL
           }/topics/${topic.toLowerCase()}/${subtopic.toLowerCase()}/${
             video.video_id
           }`}
           subject={`R' Shimon Semp - ${video.title?.slice(0, 50)}`}
           body={`Check out this video by R' Shimon Semp:
                   ${video.title} ${
-            window.location
+            process.env.NEXT_PUBLIC_BASE_URL
           }/topics/${topic.toLowerCase()}/${subtopic.toLowerCase()}/${
             video.video_id
           }`}
