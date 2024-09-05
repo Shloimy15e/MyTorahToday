@@ -32,16 +32,16 @@ async function getSubtopicText(subtopic: string, { params }: Props) {
   try {
     const options = { method: "GET", headers: { accept: "application/json" } };
     const url = new URL(`https://www.sefaria.org/api/v3/texts/`);
-    if (params.topic == "parshah"){
-      url.pathname = url.pathname.concat(`Parashat%20${subtopic.charAt(0).toUpperCase() + subtopic.slice(1)}`);
+    if (params.topic == "parshah") {
+      url.pathname = url.pathname.concat(
+        `Parashat%20${subtopic.charAt(0).toUpperCase() + subtopic.slice(1)}`
+      );
     } else {
       url.pathname = url.pathname.concat(`${subtopic}`);
     }
     url.searchParams.append("return_format", "strip_only_footnotes");
     console.log(url.toString());
-    const response = await fetch(url.toString(),
-      options
-    );
+    const response = await fetch(url.toString(), options);
     const data = await response.json();
     if (!response.ok) {
       throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
@@ -83,10 +83,6 @@ export default async function SubtopicPage({ params }: Props) {
       throw new Error("400 - Bad Request – The request returned undefined");
     }
 
-    if (videos.length === 0) {
-      throw new Error("404 - No data was found");
-    }
-
     return (
       <>
         <main className="bg-neutral-100 grid grid-cols-1">
@@ -106,6 +102,13 @@ export default async function SubtopicPage({ params }: Props) {
               text={subtopicText.subtopicTextArray}
               title={subtopicText.title}
             />
+          )}
+          {videos && videos.length === 0 && !subtopicText && (
+            <div className="flex justify-center items-center">
+              <p className="text-lg text-gray-700">
+                There are no videos or text for this subtopic yet.
+              </p>
+            </div>
           )}
           <div className="flex justify-center items-center mb-6">
             <Link
