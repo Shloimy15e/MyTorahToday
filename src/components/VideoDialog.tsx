@@ -94,12 +94,12 @@ export default function VideoDialog(props: {
                       className="flex items-center justify-center"
                     >
                       <EmailShareButton
-                        url={`${window.location}/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}/${props.video.video_id}`}
+                        url={`${process.env.NEXT_PUBLIC_BASE_URL}/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}/${props.video.video_id}`}
                         subject={`R' Shimon Semp - ${props.video.title?.slice(
                           0,
                           50
                         )}`}
-                        body={`Check out this video by R' Shimon Semp: ${window.location}/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}/${props.video.video_id}`}
+                        body={`Check out this video by R' Shimon Semp: ${process.env.NEXT_PUBLIC_BASE_URL}/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}/${props.video.video_id}`}
                         blankTarget={true}
                       >
                         <EmailIcon className="w-9 h-9" round />
