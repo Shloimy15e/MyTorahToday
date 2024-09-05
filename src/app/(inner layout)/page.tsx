@@ -18,7 +18,7 @@ const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
 async function getParshahThisWeek() {
   try {
     const apiUrl = `https://www.sefaria.org/api/calendars`;
-    const response = await fetch(apiUrl, { cache: "no-cache" });
+    const response = await fetch(apiUrl, { cache: "no-store" });
     const data = await response.json();
     if (!response.ok) {
       throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
@@ -53,9 +53,9 @@ export default async function Home() {
     }
     return (
       <>
-        <main className="bg-neutral-100 grid grid-cols-1">
+        <main className="bg-neutral-100 grid grid-cols-1 shadow-inner">
           {/* Hero section */}
-          <div className="min-w-screen w-full">
+          <div className="min-w-screen w-full bg-gray-950">
             <picture className="w-full">
               <source srcSet="/images/banner.webp" type="image/webp" />
               <Image
@@ -63,7 +63,7 @@ export default async function Home() {
                 alt="banner"
                 width={1707}
                 height={282}
-                className="object-cover w-full"
+                className="object-cover w-full opacity-85"
               />
             </picture>
           </div>

@@ -147,7 +147,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-md grid grid-cols-1 grid-rows-2">
+    <header className="bg-white shadow-md grid grid-cols-1">
       <nav
         aria-label="Global"
         className="grid grid-rows-1 gap-2 w-full p-3 md:p-4 lg:px-10 row-span-6 place-items-center"
