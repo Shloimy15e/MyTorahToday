@@ -41,8 +41,8 @@ export default function SignupDialog(props: {
 
     if (response.ok) {
       // Automatically log in the user after successful signup
-      showToast("Signup successful.", "info");
-      showToast("Automatically logging in...", "info");
+      showToast("Signup successful.", "success");
+      showToast("Automatically logging you in...", "info");
       setIsLoggingIn(true);
       const result = await signIn("credentials", {
         redirect: false,
@@ -58,10 +58,10 @@ export default function SignupDialog(props: {
       try {
         const data = await response.json();
         if (data.error) {
-          if (data.error.username[0].includes("already exists.")) {
+          if (data.error.username && data.error.username[0].includes("already exists.")) {
             showToast("Username or email already exists", "error");
-          } else {
-            showToast("Failed to sign up. Please try again", "error");
+          } else if (data.error.password && data.error.password[0].includes("too similar")) {
+            showToast("Password is too similar to username", "error");
           }
         }
       } catch (error) {
