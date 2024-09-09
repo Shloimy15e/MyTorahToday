@@ -20,6 +20,7 @@ import LoadingVideoCardAnimation from "@/components/LoadingVideoCardAnimation";
 import SaveButton from "@/components/ui/SaveButton";
 import { Error401 } from "@/components/Error401";
 import ShareButtons from "./components/ShareButtons";
+import ViewCount from "./components/ViewCount";
 
 type Props = {
   params: {
@@ -111,11 +112,7 @@ export default async function VideoPage({ params }: Props) {
                       : "N/A"}
                   </span>
                   <span className="text-gray-500 ml-4 flex items-center justify-center gap-2">
-                    {video.views + video.userViews}
-                    <EyeIcon
-                      className="inline h-5 w-5 text-gray-400"
-                      aria-hidden="true"
-                    />
+                    <ViewCount views={video.views + video.userViews} isViewed={video.is_viewed_by_user} videoId={video.id} />
                   </span>
                 </div>
               </div>

@@ -5,7 +5,7 @@ import {
   DialogTitle,
   TransitionChild,
 } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import VideoEmbed from "./VideoEmbed";
 import {
   ArrowLeftIcon,
@@ -16,13 +16,17 @@ import Link from "next/link";
 import Video from "@/types/Video";
 import LikeButtonAndCount from "./ui/LikeButtonAndCount";
 import SaveButton from "./ui/SaveButton";
-import { CalendarDaysIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { incrementViewCount } from "@/lib/incrementViewCount";
+import { CalendarDaysIcon } from "@heroicons/react/24/outline";
+import { useSessionContext } from "@/context/SessionContext";
 import {
   EmailShareButton,
   EmailIcon,
   WhatsappShareButton,
   WhatsappIcon,
 } from "next-share";
+import { set } from "zod";
+import { IoMdEye } from "react-icons/io";
 
 export default function VideoDialog(props: {
   isOpen: boolean;
@@ -33,6 +37,33 @@ export default function VideoDialog(props: {
   const lowerCaseTopicName = props.video?.topic_name?.toLowerCase() ?? "";
   const lowerCaseSubtopicName = props.video?.subtopic_name?.toLowerCase() ?? "";
   const lowercaseTitle = props.video?.title?.toLowerCase() ?? "";
+  const [isViewed, setIsViewed] = useState(props.video.is_viewed_by_user);
+  const [viewCount, setViewCount] = useState(0);
+  const { session } = useSessionContext();
+
+  useEffect(() => {
+    setIsViewed(props.video.is_viewed_by_user);
+    setViewCount(props.video.views + props.video.userViews);
+  }, [props.video.is_viewed_by_user, props.video.userViews, props.video.views]);
+
+  const timeoutRef = useRef<NodeJS.Timeout>();
+  
+  useEffect(() => {
+    timeoutRef.current = setTimeout(async () => {
+      if (session && !props.video.is_viewed_by_user && props.video.id) {
+        const response = await incrementViewCount(props.video.id);
+        if (!response.ok) {
+          console.error("Failed to increment view count");
+        }
+        console.log(await response.json());
+        setIsViewed(true);
+        setViewCount((prev) => prev + 1);
+      }
+    }, 5000);
+  
+    return () => clearTimeout(timeoutRef.current);
+  }, [props.video.id, session, props.video.is_viewed_by_user]);
+
   return (
     <>
       <Transition show={props.isOpen} as={Fragment}>
@@ -151,9 +182,11 @@ export default function VideoDialog(props: {
                             : "N/A"}
                         </span>
                         <span className="text-gray-500 ml-4 flex items-center justify-center gap-2">
-                          {props.video.views + props.video.userViews}
-                          <EyeIcon
-                            className="inline h-5 w-5 text-gray-400"
+                          {viewCount}
+                          <IoMdEye
+                            className={`inline h-5 w-5 ${
+                              isViewed ? "text-primary-blue" : "text-gray-400"
+                            }`}
                             aria-hidden="true"
                           />
                         </span>
