@@ -4,11 +4,13 @@ import {
   CalendarIcon,
   PlayIcon,
 } from "@heroicons/react/24/outline";
+import { EyeIcon as EyeIconSolid } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import formatDuration from "@/utils/formatDuration";
 import Video from "@/types/Video";
 import { MdOutlineThumbUp, MdThumbUp } from "react-icons/md";
 import SaveButton from "./ui/SaveButton";
+import { IoMdEye } from "react-icons/io";
 
 // A card that has the videoEmbed in it and takes a video from a video list by a parent
 function VideoCard(props: {
@@ -62,10 +64,14 @@ function VideoCard(props: {
               {props.video.likes + props.video.userLikes}
             </p>
           </div>
-          <div className="flex justify-start items-center text-gray-600 gap-1">
-            <EyeIcon className="h-5 w-5" />
+          <div className="flex justify-start items-center gap-1">
+            {props.video.is_viewed_by_user ? (
+              <IoMdEye className="h-5 w-5 text-primary-blue" />
+            ) : (
+              <EyeIcon className="h-5 w-5 text-gray-600" />
+            )}
             <p className="text-sm pr-1 md:pr-2 lg:pr-1 xl:pr-2 border-r border-gray-300">
-              {props.video.views}
+              {props.video.views + props.video.userViews}
             </p>
           </div>
           <div className="flex gap-1 justify-start items-center text-gray-600">
