@@ -29,6 +29,8 @@ import SignupDialog from "./SignupDialog";
 import LogoutDialog from "./LogoutDialog";
 import {
   IoBookmarksOutline,
+  IoEye,
+  IoEyeOutline,
   IoSearchOutline,
   IoSettingsOutline,
 } from "react-icons/io5";
@@ -357,7 +359,7 @@ export default function Header() {
                           href="/videos/watched"
                           className="active:bg-gray-100 active:text-primary-blue text-gray-800 group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
                         >
-                          <IoBookmarksOutline
+                          <IoEyeOutline
                             className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500"
                             aria-hidden="true"
                           />
@@ -499,7 +501,7 @@ export default function Header() {
                           href={`/videos/watched`}
                           className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
                         >
-                          <BiLike className="h-6 w-6" />
+                          <IoEyeOutline className="h-6 w-6" />
                           Watched videos
                         </Link>
                       </>
