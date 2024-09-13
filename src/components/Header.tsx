@@ -495,6 +495,13 @@ export default function Header() {
                           <BiLike className="h-6 w-6" />
                           Liked videos
                         </Link>
+                        <Link
+                          href={`/videos/watched`}
+                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                        >
+                          <BiLike className="h-6 w-6" />
+                          Watched videos
+                        </Link>
                       </>
                     ) : (
                       <>
