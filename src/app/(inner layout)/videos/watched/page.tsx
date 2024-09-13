@@ -4,14 +4,14 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 
-export default async function SavedVideos() {
+export default async function WatchdVideos() {
   const authToken = cookies().get("auth_token")?.value || null;
   try {
     if (!authToken) {
-      console.log("You must be logged in to have saved videos");
+      console.log("You must be logged in to have watched videos");
       throw new Error("You must be logged in to have saved videos");
     }
-    const url = `${process.env.BACKEND_URL}/api/videos/?is_saved_by_user=true`;
+    const url = `${process.env.BACKEND_URL}/api/videos/?is_viewed_by_user=true`;
     console.log(url);
     const res = await fetch(url, {
       headers: {
@@ -31,7 +31,7 @@ export default async function SavedVideos() {
             <VideoGrid
               videos={videos}
               title={"Videos you saved"}
-              topicName={"saved videos"}
+              topicName={"watched videos"}
               showAll={true}
               topicVideos={false}
               isThereText={false}
