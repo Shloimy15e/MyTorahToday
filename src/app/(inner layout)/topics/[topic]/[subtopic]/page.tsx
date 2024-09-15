@@ -33,9 +33,12 @@ async function getSubtopicText(subtopic: string, { params }: Props) {
     const options = { method: "GET", headers: { accept: "application/json" } };
     const url = new URL(`https://www.sefaria.org/api/v3/texts/`);
     if (params.topic == "parshah") {
-      url.pathname = url.pathname.concat(
-        `Parashat%20${subtopic.charAt(0).toUpperCase() + subtopic.slice(1)}`
-      );
+      const subtopicWords = subtopic.split(" ");
+      const capitalizedSubtopic = subtopicWords
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(" ");
+      console.log(capitalizedSubtopic);
+      url.pathname = url.pathname.concat(`Parashat%20${capitalizedSubtopic}`);
     } else {
       url.pathname = url.pathname.concat(`${subtopic}`);
     }
