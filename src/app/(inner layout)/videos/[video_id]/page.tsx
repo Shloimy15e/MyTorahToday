@@ -65,7 +65,7 @@ export default async function VideoPage({ params }: Props) {
         <div className="md:col-span-12 lg:col-span-9 row-span-2">
           <div className="aspect-video w-full">
             <VideoEmbed
-              src={video_id}
+              src={video.video_id}
               className="w-full h-full rounded-xl"
               autoplay={false}
             />

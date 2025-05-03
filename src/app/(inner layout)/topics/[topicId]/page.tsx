@@ -1,4 +1,9 @@
-import { fetchSubtopicsServer, fetchTopicServer, getVideosBySubtopicNameServer, getVideosBySubtopicsServer } from "@/data/videoData";
+import {
+  fetchSubtopicsServer,
+  fetchTopicServer,
+  getVideosBySubtopicNameServer,
+  getVideosBySubtopicsServer,
+} from "@/data/videoData";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Error401 } from "@/components/Error401";
@@ -25,7 +30,8 @@ type Props = {
 export const generateMetadata = ({ params }: Props): Metadata => {
   return {
     title: `${
-      params.topicId.charAt(0).toUpperCase() + params.topicId.slice(1).replace("-", " ")
+      params.topicId.charAt(0).toUpperCase() +
+      params.topicId.slice(1).replace("-", " ")
     } - My Torah Today`,
   };
 };
@@ -39,40 +45,51 @@ export default async function TopicPage({ params }: Props) {
     const subtopics = await fetchSubtopicsServer(topicId);
     const videosBySubtopics = await Promise.all(
       subtopics?.map(async (subtopic: Subtopic) => {
-        const videos = await getVideosBySubtopicsServer([subtopic.id], authToken, 9);
+        const videos = await getVideosBySubtopicsServer(
+          [subtopic.id],
+          authToken,
+          9
+        );
         return { subtopic, videos };
       })
     );
-    if(!subtopics){
+    if (!subtopics) {
       throw new Error("400 - Bad Request – The request returned undefined");
     }
 
     if (subtopics.length === 0) {
-      throw new Error("404 - No data was found");      
+      throw new Error("404 - No data was found");
     }
-
 
     return (
       <>
         <main className="bg-neutral-100 grid grid-cols-1">
           <HeroWithTitle title={displayTopic} />
-          <Breadcrumbs segments={[{href: "topics", label: "Topics"}, {href: `topics/${topicId}`, label: displayTopic}]} />
+          <Breadcrumbs
+            segments={[
+              { href: "topics", label: "Topics" },
+              { href: `topics/${topicId}`, label: displayTopic },
+            ]}
+          />
           {/* List of topics */}
           <TopicGrid topics={subtopics} areSubtopics={true} showAll={false} />
           {/* List of videos by topic */}
           {videosBySubtopics &&
             videosBySubtopics.length > 0 &&
-            videosBySubtopics?.map(({ subtopic, videos }) => (
-              <VideoGrid
-                key={subtopic.id}
-                videos={videos}
-                title={`${subtopic.name}`}
-                topic={subtopic.id}
-                topic_name={subtopic.name}
-                showAll={false}
-                topicVideos={false}
-              />
-            ))}
+            videosBySubtopics?.map(
+              ({ subtopic, videos }) =>
+                videos.length > 0 && (
+                  <VideoGrid
+                    key={subtopic.id}
+                    videos={videos}
+                    title={`${subtopic.name}`}
+                    topic={subtopic.id}
+                    topic_name={subtopic.name}
+                    showAll={false}
+                    topicVideos={false}
+                  />
+                )
+            )}
         </main>
       </>
     );
