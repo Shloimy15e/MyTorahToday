@@ -1,32 +1,33 @@
 import {
-  Dialog,
-  Transition,
-  DialogPanel,
-  DialogTitle,
-  TransitionChild,
-} from "@headlessui/react";
-import { Fragment, useEffect, useRef, useState } from "react";
-import VideoEmbed from "./VideoEmbed";
-import {
   ArrowLeftIcon,
   ArrowRightIcon,
   EyeIcon,
 } from "@heroicons/react/24/solid";
-import Link from "next/link";
-import Video from "@/types/Video";
-import LikeButtonAndCount from "./ui/LikeButtonAndCount";
-import SaveButton from "./ui/SaveButton";
-import { incrementViewCount } from "@/lib/incrementViewCount";
-import { CalendarDaysIcon } from "@heroicons/react/24/outline";
-import { useSessionContext } from "@/context/SessionContext";
 import {
-  EmailShareButton,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
+import {
   EmailIcon,
-  WhatsappShareButton,
+  EmailShareButton,
   WhatsappIcon,
+  WhatsappShareButton,
 } from "next-share";
-import { set } from "zod";
+import { Fragment, useEffect, useRef, useState } from "react";
+
+import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 import { IoMdEye } from "react-icons/io";
+import LikeButtonAndCount from "./ui/LikeButtonAndCount";
+import Link from "next/link";
+import SaveButton from "./ui/SaveButton";
+import Video from "@/types/Video";
+import VideoEmbed from "./VideoEmbed";
+import { incrementViewCount } from "@/lib/incrementViewCount";
+import { set } from "zod";
+import { useSessionContext } from "@/context/SessionContext";
 
 export default function VideoDialog(props: {
   isOpen: boolean;
@@ -34,8 +35,14 @@ export default function VideoDialog(props: {
   onClose: () => void;
 }) {
   const closeModal = () => props.onClose();
-  const lowerCaseTopicName = props.video?.topic_name?.toLowerCase() ?? "";
-  const lowerCaseSubtopicName = props.video?.subtopic_name?.toLowerCase() ?? "";
+  const lowerCaseTopicNames =
+    props.video?.topics_data
+      ?.map((topic) => topic.name.toLowerCase())
+      .join(", ") ?? "";
+  const lowerCaseSubtopicName =
+    props.video?.subtopics_data
+      ?.map((subtopic) => subtopic.name.toLowerCase())
+      .join(", ") ?? "";
   const lowercaseTitle = props.video?.title?.toLowerCase() ?? "";
   const [isViewed, setIsViewed] = useState(props.video.is_viewed_by_user);
   const [viewCount, setViewCount] = useState(0);
@@ -47,7 +54,7 @@ export default function VideoDialog(props: {
   }, [props.video.is_viewed_by_user, props.video.userViews, props.video.views]);
 
   const timeoutRef = useRef<NodeJS.Timeout>();
-  
+
   useEffect(() => {
     timeoutRef.current = setTimeout(async () => {
       if (session && !props.video.is_viewed_by_user && props.video.id) {
@@ -60,7 +67,7 @@ export default function VideoDialog(props: {
         setViewCount((prev) => prev + 1);
       }
     }, 5000);
-  
+
     return () => clearTimeout(timeoutRef.current);
   }, [props.video.id, session, props.video.is_viewed_by_user]);
 
@@ -125,12 +132,12 @@ export default function VideoDialog(props: {
                       className="flex items-center justify-center"
                     >
                       <EmailShareButton
-                        url={`${process.env.NEXT_PUBLIC_BASE_URL}/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}/${props.video.video_id}`}
+                        url={`${process.env.NEXT_PUBLIC_BASE_URL}/topics/${lowerCaseTopicNames}/${lowerCaseSubtopicName}/${props.video.video_id}`}
                         subject={`R' Shimon Semp - ${props.video.title?.slice(
                           0,
                           50
                         )}`}
-                        body={`Check out this video by R' Shimon Semp: ${process.env.NEXT_PUBLIC_BASE_URL}/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}/${props.video.video_id}`}
+                        body={`Check out this video by R' Shimon Semp: ${process.env.NEXT_PUBLIC_BASE_URL}/topics/${lowerCaseTopicNames}/${lowerCaseSubtopicName}/${props.video.video_id}`}
                         blankTarget={true}
                       >
                         <EmailIcon className="w-9 h-9" round />
@@ -141,7 +148,7 @@ export default function VideoDialog(props: {
                       className="flex items-center justify-center"
                     >
                       <WhatsappShareButton
-                        url={`${process.env.NEXT_PUBLIC_BASE_URL}/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}/${props.video.video_id}`}
+                        url={`${process.env.NEXT_PUBLIC_BASE_URL}/topics/${lowerCaseTopicNames}/${lowerCaseSubtopicName}/${props.video.video_id}`}
                         title={`R' Shimon Semp - ${props.video.title?.slice(
                           0,
                           50
@@ -156,19 +163,28 @@ export default function VideoDialog(props: {
                   <div className="mt-2 flex flex-col items-center justify-between w-full bg-neutral-200 p-2 rounded-lg">
                     <div className="md:px-4 my-2 flex flex-col gap-2 md:flex-row items-start justify-between w-full">
                       <span className="text-gray-500">
-                        <Link
-                          href={`/topics/${lowerCaseTopicName}`}
-                          className=" hover:underline"
-                        >
-                          {props.video.topic_name}
-                        </Link>{" "}
-                        -{" "}
-                        <Link
-                          href={`/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}`}
-                          className=" hover:underline"
-                        >
-                          {props.video.subtopic_name}
-                        </Link>
+                        {props.video.topics_data?.map((topic) => (
+                          <Link
+                            href={`/topics/${topic.id}`}
+                            className=" hover:underline"
+                          >
+                            {topic.name}
+                          </Link>
+                        ))}
+                        {" - "}
+                        {props.video.subtopics_data?.map((subtopic, index) => (
+                          <>
+                            <Link
+                              href={`/subtopics/${subtopic.id}`}
+                              className=" hover:underline"
+                            >
+                              {subtopic.name}
+                            </Link>{" "}
+                            {index === props.video.subtopics_data.length - 1
+                              ? ""
+                              : " • "}
+                          </>
+                        ))}
                       </span>
                       <div className="flex justify-between w-full md:w-auto">
                         <span className="text-gray-500 flex items-center justify-start gap-2">
@@ -206,7 +222,7 @@ export default function VideoDialog(props: {
                       Return to video list
                     </button>
                     <Link
-                      href={`/topics/${lowerCaseTopicName}/${lowerCaseSubtopicName}/${props.video.video_id}`}
+                      href={`/videos/${props.video.id}`}
                       className="inline-flex justify-center rounded-md border border-transparent bg-primary-blue px-4 py-2 text-sm font-medium text-white hover:bg-blue-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ml-4"
                       onClick={closeModal}
                       aria-label="Go to video page"

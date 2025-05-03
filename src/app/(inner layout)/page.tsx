@@ -1,12 +1,18 @@
-import Image from "next/image";
-import dynamic from "next/dynamic";
 import {
+  fetchTopicServer,
+  fetchTopicServerByName,
   fetchTopicsServer,
   getVideosBySubtopicNameServer,
   getVideosByTopicNameServer,
+  getVideosByTopicsServer,
 } from "@/data/videoData";
-import { cookies } from "next/headers";
+
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { Error401 } from "@/components/Error401";
+import Image from "next/image";
+import Topic from "@/types/Topic";
+import { cookies } from "next/headers";
+import dynamic from "next/dynamic";
 
 const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
   ssr: false, // Prevent server-side rendering
@@ -23,7 +29,9 @@ async function getParshahThisWeek() {
     if (!response.ok) {
       throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
     }
-    return data.calendar_items[0].displayValue.en;
+    const parshah = data.calendar_items[0].displayValue.en;
+    const topic = await fetchTopicServerByName(parshah);
+    return topic;
   } catch (error) {
     console.error("Error fetching parshah this week: ", error);
     return null;
@@ -38,14 +46,15 @@ export default async function Home() {
     console.log("Parshah this week: ", parshahThisWeek);
     if (parshahThisWeek) {
       videosThisParshah = await getVideosBySubtopicNameServer(
-        parshahThisWeek,
+        parshahThisWeek.name,
         authToken
       );
     }
     const topics = await fetchTopicsServer();
-    const videosByTopic = await Promise.all(
-      topics.slice(0, 4).map(async (topic: any) => {
-        return await getVideosByTopicNameServer(topic.name, authToken, 9);
+    const videosByTopic =  await Promise.all(
+      topics.slice(0, 4).map(async (topic: Topic) => {
+        const videos = await getVideosByTopicsServer([topic.id], authToken, 9);
+        return { videos, topic };
       })
     );
     if (!videosThisParshah && !topics) {
@@ -68,11 +77,12 @@ export default async function Home() {
             </picture>
           </div>
           {/* Parshah of the week */}
-          {videosThisParshah && videosThisParshah.length > 0 && (
+          {parshahThisWeek && videosThisParshah && videosThisParshah.length > 0 && (
             <VideoGrid
               videos={videosThisParshah}
               title={`This week's parshah · ${parshahThisWeek}`}
-              topicName={parshahThisWeek}
+              topic={parshahThisWeek.id}
+              topic_name={parshahThisWeek.name}
               showAll={false}
               topicVideos={false}
               showLinkAlways={true}
@@ -85,12 +95,13 @@ export default async function Home() {
           {/* List of videos by topic */}
           {videosByTopic &&
             videosByTopic.length > 0 &&
-            videosByTopic.map(({ topicName, videos }) => (
+            videosByTopic.map(({ videos, topic }) => (
               <VideoGrid
-                key={topicName}
+                key={topic.id}
                 videos={videos}
-                title={`${topicName}`}
-                topicName={topicName}
+                title={`${topic.name}`}
+                topic={topic.id}
+                topic_name={topic.name}
                 showAll={false}
                 topicVideos={true}
               />

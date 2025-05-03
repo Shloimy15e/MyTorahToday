@@ -2,11 +2,17 @@ export default interface Video {
   id: number;
   title: string;
   video_id: (string & { readonly [unique: symbol]: symbol }) | string;
-  topic: number;
-  topic_name: string;
+  topics: number[] | string[];
+  topics_data: {
+    id: number;
+    name: string;
+  }[];
   tags: string[];
-  subtopic: number;
-  subtopic_name: string;
+  subtopics: number[] | string[];
+  subtopics_data: {
+    id: number;
+    name: string;
+  }[];
   description: string;
   duration: string;
   publishedAt?: string;

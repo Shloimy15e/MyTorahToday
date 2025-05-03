@@ -1,15 +1,17 @@
 "use client";
+
+import Link from "next/link";
 import Video from "@/types/Video";
 import VideoCard from "./VideoCard";
 import VideoDialog from "./VideoDialog";
-import { useState } from "react";
 import { useMediaQuery } from "react-responsive";
-import Link from "next/link";
+import { useState } from "react";
 
 export default function VideoGrid(props: {
   videos: Video[];
   title: string;
-  topicName: string;
+  topic: string | number;
+  topic_name: string;
   showAll: boolean;
   topicVideos: boolean;
   showLinkAlways?: boolean;
@@ -69,8 +71,7 @@ export default function VideoGrid(props: {
                   showDescription={true}
                 />
               ))
-            : props.videos
-                .slice(
+            : props.videos.slice(
                   0,
                   isMobile ? 4 : isTablet || isLaptop || isDesktop ? 6 : 8
                 )
@@ -92,16 +93,12 @@ export default function VideoGrid(props: {
           <Link
             href={
               props.topicVideos
-                ? `/topics/${props.topicName.toLowerCase().replace(" ", "-")}`
-                : `/topics/${props.videos[0].topic_name
-                    .toLowerCase()
-                    .replace(" ", "-")}/${props.topicName
-                    .toLowerCase()
-                    .replace(" ", "-")}`
+                ? `/topics/${props.topic}`
+                : `/subtopics/${props.topic}`
             }
             className="md:text-lg bg-primary-blue text-gray-100 text-center font-semibold md:px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-14 md:mx-24 my-6 w-4/5"
           >
-            See more from {props.topicName}
+            See more from {props.topic_name}
           </Link>
         </div>
       ) : null}

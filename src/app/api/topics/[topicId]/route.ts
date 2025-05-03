@@ -7,20 +7,26 @@ const agent = new https.Agent({
   rejectUnauthorized: false,
 });
 
+type Props = {
+  params: {
+    topicId: string;
+  };
+};
+
 /**
  * @param {Request} request
  * @returns {Promise<Response>}
  * @description This function handles the GET request to retrieve all videos.
  * It can take pagination, filtering, and sorting parameters.
  */
-export async function GET(request: Request): Promise<Response> {
-  const { searchParams } = new URL(request.url);
-  const limit = sanitizeInput(searchParams.get("limit") || "10");
-  const offset = sanitizeInput(searchParams.get("offset") || "0");
-  const name = sanitizeInput(searchParams.get("name__iexact") || "");
-
+export async function GET(request: Request, { params }: Props): Promise<Response> {
+  const { topicId } = params;
+  if (!topicId) {
+    return NextResponse.json({ error: "No topicId provided" }, { status: 400 });
+  }
+  const sanitizedTopicId = sanitizeInput(topicId);
   const response = await fetch(
-    `${process.env.BACKEND_URL}/api/topics/?name__iexact=${name}&limit=${limit}&offset=${offset}`,
+    `${process.env.BACKEND_URL}/api/topics/${sanitizedTopicId}/`,
     {
       method: "GET",
       headers: {

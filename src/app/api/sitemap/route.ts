@@ -1,13 +1,15 @@
 // src/app/api/sitemap/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { SitemapStream, streamToPromise } from "sitemap";
-import { Readable } from "stream";
 import {
   fetchTopicsServer,
   getVideosBySubtopicNameServer,
 } from "@/data/videoData";
-import Topic from "@/types/Topic";
+
+import { Readable } from "stream";
 import Subtopic from "@/types/Subtopic";
+import Topic from "@/types/Topic";
 import Video from "@/types/Video";
 
 export async function GET(req: NextRequest) {
@@ -15,9 +17,9 @@ export async function GET(req: NextRequest) {
   const topics = await fetchTopicsServer();
 
   const videosBySubtopics = await Promise.all(
-    topics.map(async (topic: Topic) => {
+    topics?.map(async (topic: Topic) => {
       return Promise.all(
-        topic.subtopics.map(async (subtopic: Subtopic) => {
+        topic.subtopics?.map(async (subtopic: Subtopic) => {
           const videos = await getVideosBySubtopicNameServer(
             subtopic.name,
             null,

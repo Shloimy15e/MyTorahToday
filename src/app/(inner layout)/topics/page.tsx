@@ -1,7 +1,9 @@
-import { Metadata } from "next";
-import { fetchTopicsServer } from "@/data/videoData";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import HeroWithTitle from "@/components/ui/HeroWithTitle";
+import { Metadata } from "next";
 import dynamic from "next/dynamic";
+import { fetchTopicsServer } from "@/data/videoData";
+
 const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
   ssr: false, // Prevent server-side rendering
 });
@@ -25,6 +27,7 @@ export default async function Topics() {
       <>
         <main>
           <HeroWithTitle title="Topics" />
+          <Breadcrumbs segments={[{href: "topics", label: "Topics"}]} />
           <TopicGrid topics={topics} areSubtopics={false} showAll={true} />
         </main>
       </>

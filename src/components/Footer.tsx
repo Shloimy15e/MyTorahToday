@@ -65,8 +65,8 @@ const navigation = [
 export default function Footer() {
   return (
     <footer className="bg-white">
-      <div className="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8">
-        <div className="flex justify-center space-x-6 md:order-3 text-sm leading-5 text-gray-600">
+      <div className="mx-auto max-w-7xl px-6 py-12 flex flex-col lg:flex-row md:items-center md:justify-between lg:px-8 gap-4">
+        <div className="flex justify-center space-x-6 lg:order-3 text-sm leading-5 text-gray-600">
           {navigation.map((item) => (
             <a
               key={item.name}
@@ -77,12 +77,20 @@ export default function Footer() {
             </a>
           ))}
         </div>
-        <div className="mt-8 md:mt-0 md:order-1">
-        <p className="text-center">
-            Built and designed by Shloimy Elbaum Be&apos;ezrat Hashem.
+        <div className="mt-8 lg:mt-0 lg:order-1">
+          <p className="text-center">
+            Built and designed by{" "}
+            <a
+              href="https://www.dynamiq.dev"
+              target="_blank"
+              className="underline font-semibold text-[#1d223f]"
+            >
+              Dynamiq Developers
+            </a>{" "}
+            Be&apos;ezrat Hashem.
           </p>
         </div>
-        <div className="mt-8 md:order-1 md:mt-0">
+        <div className="mt-8 lg:order-1 lg:mt-0">
           <p className="text-center">
             &copy; 2024 MyTorahToday. All rights reserved to Hashem.
           </p>

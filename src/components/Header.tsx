@@ -1,32 +1,27 @@
 "use client";
-import { Fragment, useEffect, useState, useMemo } from "react";
-import { useSessionContext } from "@/context/SessionContext";
+
+import {
+  ArrowLeftStartOnRectangleIcon,
+  ArrowRightEndOnRectangleIcon,
+  Bars3Icon,
+  HomeIcon,
+  PencilSquareIcon,
+  RectangleGroupIcon,
+  RectangleStackIcon,
+  UserCircleIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import {
   Dialog,
   DialogPanel,
   Menu,
   MenuButton,
-  MenuItems,
   MenuItem,
+  MenuItems,
   Transition,
   TransitionChild,
 } from "@headlessui/react";
-import {
-  Bars3Icon,
-  XMarkIcon,
-  UserCircleIcon,
-  ArrowLeftStartOnRectangleIcon,
-  ArrowRightEndOnRectangleIcon,
-  PencilSquareIcon,
-  HomeIcon,
-  RectangleGroupIcon,
-  RectangleStackIcon,
-} from "@heroicons/react/24/outline";
-import Image from "next/image";
-import Link from "next/link";
-import LoginDialog from "./LoginDialog";
-import SignupDialog from "./SignupDialog";
-import LogoutDialog from "./LogoutDialog";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import {
   IoBookmarksOutline,
   IoEye,
@@ -34,11 +29,18 @@ import {
   IoSearchOutline,
   IoSettingsOutline,
 } from "react-icons/io5";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
+import { BiLike } from "react-icons/bi";
+import Image from "next/image";
+import Link from "next/link";
+import LoginDialog from "./LoginDialog";
+import LogoutDialog from "./LogoutDialog";
 import { MdManageAccounts } from "react-icons/md";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import SignupDialog from "./SignupDialog";
 import Topic from "@/types/Topic";
 import { useMediaQuery } from "react-responsive";
-import { BiLike } from "react-icons/bi";
+import { useSessionContext } from "@/context/SessionContext";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -80,9 +82,16 @@ export default function Header() {
 
   useEffect(() => {
     const fetchTopics = async () => {
-      const res = await fetch(`/api/topics/`);
-      const data = await res.json();
-      setTopics(data.results);
+      try {
+        const res = await fetch(`/api/topics/`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch topics");
+        }
+        const data = await res.json();
+        setTopics(data.results);
+      } catch (error) {
+        console.error("Error fetching topics:", error);
+      }
     };
     if (topics.length === 0) {
       fetchTopics();
@@ -248,7 +257,7 @@ export default function Header() {
                     </option>
                     {topics
                       .find((topic) => topic.name === selectedTopic)
-                      ?.subtopics.map((subtopic) => (
+                      ?.subtopics?.map((subtopic) => (
                         <option
                           className="text-gray-800"
                           key={subtopic.id}

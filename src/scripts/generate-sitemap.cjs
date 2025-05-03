@@ -13,7 +13,7 @@ const siteUrl = 'https://www.mytorahtoday.com';
   'lifes-ways'
 ]*/
 
-const topicNames = topics.map(topic => topic.name);
+const topicNames = topics?.map(topic => topic.name);
 
 const urls = [
   { loc: siteUrl, lastmod: new Date().toISOString(), changefreq: 'weekly', priority: 1.0 },
@@ -25,7 +25,7 @@ const urls = [
   })),
   // Add more URLs for subtopics and video pages
   //: /{topic}/{subtopic(where subtopic.topic = topic)}
-  ...subtopics.map(subtopic => ({
+  ...subtopics?.map(subtopic => ({
     loc: `${siteUrl}/topics/${subtopic.topic}/${subtopic.name}`,
     lastmod: new Date().toISOString(),
     changefreq: 'weekly',

@@ -1,8 +1,9 @@
 "use client"
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { useSearchParams } from "next/navigation";
+
 import BackToTopButton from "@/components/ui/BackToTopButton";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import { useSearchParams } from "next/navigation";
 
 export default function InnerLayout({
   children,

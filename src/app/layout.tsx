@@ -111,7 +111,7 @@ export const metadata: Metadata = {
   verification: {
     google: "AafcWLwSlqXAUwCFlyKLSnMg7WLhA2Ngc5kr6GuE68A",
   },
-  creator: "Shloimy Elbaum",
+  creator: "Dynamiq Developers",
   authors: [
     {
       name: "Shloimy Elbaum",
