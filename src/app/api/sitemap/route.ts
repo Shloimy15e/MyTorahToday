@@ -5,6 +5,7 @@ import { SitemapStream, streamToPromise } from "sitemap";
 import {
   fetchTopicsServer,
   getVideosBySubtopicNameServer,
+  getVideosBySubtopicsServer,
 } from "@/data/videoData";
 
 import { Readable } from "stream";
@@ -20,8 +21,8 @@ export async function GET(req: NextRequest) {
     topics?.map(async (topic: Topic) => {
       return Promise.all(
         topic.subtopics?.map(async (subtopic: Subtopic) => {
-          const videos = await getVideosBySubtopicNameServer(
-            subtopic.name,
+          const videos = await getVideosBySubtopicsServer(
+            [subtopic.id],
             null,
             100
           );
@@ -46,17 +47,13 @@ export async function GET(req: NextRequest) {
     .filter((topic: Topic) => topic.subtopics.length > 0)
     .forEach((topic: Topic) => {
       smStream.write({
-        url: `/topics/${topic.name.toLowerCase().replace(/\s/g, "-")}`,
+        url: `/topics/${topic.id}`,
         changefreq: "weekly",
         priority: 0.9,
       });
       topic.subtopics.forEach((subtopic: Subtopic) => {
         smStream.write({
-          url: `/topics/${topic.name
-            .toLowerCase()
-            .replace(/\s/g, "-")}/${subtopic.name
-            .toLowerCase()
-            .replace(/\s/g, "-")}`,
+          url: `/subtopics/${subtopic.id}`,
           changefreq: "weekly",
           priority: 0.8,
         });
@@ -65,11 +62,7 @@ export async function GET(req: NextRequest) {
             console.log("videos added " + video.videos.length);
             video.videos.forEach((video: Video) => {
                 smStream.write({
-                url: `/topics/${topic.name
-                  .toLowerCase()
-                  .replace(/\s/g, "-")}/${subtopic.name
-                  .toLowerCase()
-                  .replace(/\s/g, "-")}/${video.video_id}`,
+                url: `/videos/${video.video_id}`,
                 changefreq: "daily",
                 priority: 0.8,
                 });
