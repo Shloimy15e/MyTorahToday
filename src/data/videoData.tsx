@@ -207,6 +207,7 @@ export const getVideosByTopicsServer = async (
 ): Promise<Video[]> => {
   const topicsParams = topics?.map((t) => `topics=${t}`).join("&");
   const url = `${process.env.BACKEND_URL}/api/videos/?limit=${limit}&${topicsParams}`;  
+  console.log("url: ", url);
   const response = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
@@ -332,7 +333,8 @@ export const fetchSubtopics = async (topic: string): Promise<Subtopic[]> => {
 export const fetchSubtopicsServer = async (
   topicId: string
 ): Promise<Subtopic[]> => {
-  const url = `${process.env.BACKEND_URL}/api/subtopics/?topic__id=${topicId}`;
+  const url = `${process.env.BACKEND_URL}/api/subtopics/?topic=${topicId}`;
+  console.log("url 66: ", url);
   console.log(url);
   const response = await fetch(url);
   const data = await response.json();
