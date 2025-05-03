@@ -303,9 +303,23 @@ export const fetchTopics = async (): Promise<any> => {
 };
 
 export const fetchTopicsServer = async (): Promise<any> => {
-  const response = await fetch(`${process.env.BACKEND_URL}/api/topics/`);
-  const data = await response.json();
-  return data.results;
+  try {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/topics/`);
+    if (!response.ok) {
+      let errorMessage = `HTTP error ${response.status}`;
+      const contentType = response.headers.get("Content-Type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        errorMessage += " " + JSON.stringify(errorData);
+      }
+      throw new Error(errorMessage);
+    }
+    const data = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error("Error fetching topics: ", error);
+    throw error;
+  }
 };
 
 export const fetchSubtopics = async (topic: string): Promise<Subtopic[]> => {
