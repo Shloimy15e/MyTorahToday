@@ -165,6 +165,7 @@ export default function VideoDialog(props: {
                       <span className="text-gray-500">
                         {props.video.topics_data?.map((topic) => (
                           <Link
+                            key={topic.id}
                             href={`/topics/${topic.id}`}
                             className=" hover:underline"
                           >
@@ -175,6 +176,7 @@ export default function VideoDialog(props: {
                         {props.video.subtopics_data?.map((subtopic, index) => (
                           <>
                             <Link
+                              key={subtopic.id}
                               href={`/subtopics/${subtopic.id}`}
                               className=" hover:underline"
                             >
