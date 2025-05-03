@@ -1,8 +1,8 @@
-import VideoGrid from "@/components/VideoGrid";
 import Head from "next/head";
 import Link from "next/link";
-import NoResults from "./NoResults";
 import { Metadata } from "next";
+import NoResults from "./NoResults";
+import VideoGrid from "@/components/VideoGrid";
 
 export async function generateMetadata({ searchParams }: { searchParams: any }): Promise<Metadata> {
   const query = searchParams["query"] || "";
@@ -37,7 +37,8 @@ export default async function Search({ searchParams }: { searchParams: any }) {
             : topic
             ? " in " + topic
             : subtopic && " in " + subtopic}`}
-            topicName={"Results for"}
+            topic_name={"Results for"}
+            topic={0}
             showAll={true}
             topicVideos={false}
             isThereText={false}

@@ -1,4 +1,5 @@
 import Video from "@/types/Video";
+
 // get updated data from backend
 
 // Check for updated title, topic, subtopic, and likes data in the backend
@@ -51,8 +52,8 @@ export async function updateVideoData(
         return {
           ...video,
           title: updatedVideo.title,
-          topic: updatedVideo.topic,
-          subtopic: updatedVideo.subtopic,
+          topics_data: updatedVideo.topics_data,
+          subtopics_data: updatedVideo.subtopics_data,
           likes: updatedVideo.likes,
         };
       } else {

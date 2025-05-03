@@ -1,15 +1,16 @@
-import { fetchRelatedVideosServer } from "@/data/videoData";
-import VerticalVideoGrid from "./VerticalVideoGrid";
 import HorizontalVideoGrid from "./HorizontalVideoGrid";
+import VerticalVideoGrid from "./VerticalVideoGrid";
+import { fetchRelatedVideosServer } from "@/data/videoData";
 
 type Props = {
+  videoId: number;
   topic: string;
   subtopic: string;
   authToken: string | null;
 };
 
-export default async function RelatedVideosSection({ topic, subtopic, authToken }: Props) {
-  const relatedVideos = await fetchRelatedVideosServer(topic, subtopic, authToken);
+export default async function RelatedVideosSection({ videoId, topic, subtopic, authToken }: Props) {
+  const relatedVideos = await fetchRelatedVideosServer( videoId, [topic], [subtopic], authToken);
 
   return (
     <>

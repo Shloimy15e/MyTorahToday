@@ -25,8 +25,6 @@ import formatDuration from "@/utils/formatDuration";
 
 type Props = {
   params: {
-    topic: string;
-    subtopic: string;
     video_id: string;
   };
 };
@@ -34,7 +32,7 @@ type Props = {
 //Get the topic name from the params and pass it to the getVideosByTopic function
 export default async function VideoPage({ params }: Props) {
   try {
-    const { topic, subtopic, video_id } = params;
+    const { video_id } = params;
     const authToken = cookies().get("auth_token")?.value || null;
     const response = await fetch(
       `${process.env.BACKEND_URL}/api/videos/${video_id}/`,
@@ -82,7 +80,7 @@ export default async function VideoPage({ params }: Props) {
                 videoId={video.id}
               />
               <SaveButton videoId={video.id} isSaved={video.is_saved_by_user} />
-              <ShareButtons video={video} topic={topic} subtopic={subtopic} />
+              <ShareButtons video={video} />
             </div>
             <div className="flex flex-col gap-4 w-full overflow-clip max-h-full bg-neutral-200 rounded-xl p-4">
               <div className="md:px-4 my-2 flex flex-col gap-2 md:flex-row items-start justify-between w-full">

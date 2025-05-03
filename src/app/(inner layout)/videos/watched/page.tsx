@@ -1,7 +1,7 @@
-import VideoGrid from "@/components/VideoGrid";
 import Head from "next/head";
 import Link from "next/link";
 import { Metadata } from "next";
+import VideoGrid from "@/components/VideoGrid";
 import { cookies } from "next/headers";
 
 export default async function WatchedVideos() {
@@ -31,7 +31,8 @@ export default async function WatchedVideos() {
             <VideoGrid
               videos={videos}
               title={"Videos you watched"}
-              topicName={"watched videos"}
+              topic_name={"watched videos"}
+              topic={0}
               showAll={true}
               topicVideos={false}
               isThereText={false}
