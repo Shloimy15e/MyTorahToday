@@ -1,7 +1,6 @@
 import NextAuth, { Session } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { cookies } from "next/headers";
-import { signInSchema } from "@/lib/zod";
 
 const { handlers, auth } = NextAuth({
   providers: [

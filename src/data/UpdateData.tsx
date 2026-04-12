@@ -1,12 +1,9 @@
 import Video from "@/types/Video";
 
-// get updated data from backend
-
-// Check for updated title, topic, subtopic, and likes data in the backend
 export async function fetchUpdatedData() {
   try {
     const response = await fetch(
-      "${process.env.BACKEND_URL}/api/videos/"
+      `${process.env.BACKEND_URL}/api/videos/`
     );
     const data = await response.json();
     if (!response.ok) {
@@ -21,19 +18,18 @@ export async function fetchUpdatedData() {
 
 export async function getVideoData() {
   const allData = await fetchUpdatedData();
-  console.log(allData);
   return allData.map(
     (video: {
       title: string;
-      topic: string;
-      subtopic: string;
+      topics_data: { id: number; name: string }[];
+      subtopics_data: { id: number; name: string }[];
       likes: number;
       video_id: string;
     }) => ({
       video_id: video.video_id,
       title: video.title,
-      topic: video.topic,
-      subtopic: video.subtopic,
+      topics_data: video.topics_data,
+      subtopics_data: video.subtopics_data,
       likes: video.likes,
     })
   );
@@ -41,30 +37,25 @@ export async function getVideoData() {
 
 export async function updateVideoData(
   currentVideoData: Video[],
-  updateVideoData: Video[]
+  newData: Video[]
 ): Promise<Video[]> {
-  return currentVideoData.map(
-    (video: Video) => {
-      const updatedVideo = updateVideoData.find(
-        (updatedVideo: Video) => updatedVideo.video_id === video.video_id
-      );
-      if (updatedVideo) {
-        return {
+  return currentVideoData.map((video: Video) => {
+    const updatedVideo = newData.find(
+      (v: Video) => v.video_id === video.video_id
+    );
+    return updatedVideo
+      ? {
           ...video,
           title: updatedVideo.title,
           topics_data: updatedVideo.topics_data,
           subtopics_data: updatedVideo.subtopics_data,
           likes: updatedVideo.likes,
-        };
-      } else {
-        return video;
-      }
-    }
-  );
+        }
+      : video;
+  });
 }
 
 export async function fetchAndUpdateData(currentVideoData: Video[]): Promise<Video[]> {
-  console.log("Fetching updated data...");
   const updateData = await fetchUpdatedData();
   return updateVideoData(currentVideoData, updateData);
 }
