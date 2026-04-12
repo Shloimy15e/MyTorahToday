@@ -46,13 +46,10 @@ class SubtopicSerializer(serializers.ModelSerializer):
         dict: Serialized data for the subtopic model fields.
     """
     topic_name = serializers.CharField(source='topic.name', read_only=True)
-    
+
     class Meta:
-        """
-        Meta options for the SubtopicSerializer class.
-        """
         model = Subtopic
-        fields = ["id", "name", "description", "topic", "topic_name"] 
+        fields = ["id", "name", "description", "topic", "topic_name", "sefaria_text"] 
     
 
 class VideoSerializer(serializers.ModelSerializer):
@@ -63,6 +60,7 @@ class VideoSerializer(serializers.ModelSerializer):
         dict: Serialized data for the Video model fields.
     """
     
+    topics = serializers.SerializerMethodField()
     subtopics_data = serializers.SerializerMethodField()
     topics_data = serializers.SerializerMethodField()
     userLikes = serializers.SerializerMethodField()
@@ -71,17 +69,20 @@ class VideoSerializer(serializers.ModelSerializer):
     is_viewed_by_user = serializers.SerializerMethodField()
     is_saved_by_user = serializers.SerializerMethodField()
 
+    def get_topics(self, obj):
+        seen = set()
+        result = []
+        for subtopic in obj.subtopics.all():
+            if subtopic.topic_id not in seen:
+                seen.add(subtopic.topic_id)
+                result.append(subtopic.topic_id)
+        return result
+
     def get_subtopics_data(self, obj):
-        """
-        Get the subtopics data for the video.
-        """
-        return [{"id": subtopic.id, "name": subtopic.name, "topic": {"id": subtopic.topic.id, "name": subtopic.topic.name}} 
-                for subtopic in obj.subtopics.all()]
+        return [{"id": s.id, "name": s.name, "topic": {"id": s.topic.id, "name": s.topic.name}}
+                for s in obj.subtopics.all()]
 
     def get_topics_data(self, obj):
-        """
-        Get unique topics data from the video's subtopics.
-        """
         topics = {}
         for subtopic in obj.subtopics.all():
             topic = subtopic.topic
@@ -90,12 +91,10 @@ class VideoSerializer(serializers.ModelSerializer):
         return list(topics.values())
 
     class Meta:
-        """
-        Meta options for the VideoSerializer class.
-        """
         model = Video
-        fields = ["id", "video_id", "title", "subtopics", "subtopics_data", "topics_data", "description", 
-                 "tags", "duration", "publishedAt", "likes", "userLikes", "is_liked_by_user", 
+        fields = ["id", "video_id", "title", "topics", "subtopics", "subtopics_data",
+                 "topics_data", "description", "tags", "duration", "publishedAt",
+                 "likes", "userLikes", "is_liked_by_user",
                  "views", "is_viewed_by_user", "userViews", "is_saved_by_user"]
         
     def get_userLikes(self, obj):

@@ -60,19 +60,44 @@ class SubtopicViewSet(ModelViewSet):
     ordering_fields = ["id", "name", "topic"]
 
 
+class RepeatParamFilter(filters.Filter):
+    """Handles ?param=1&param=2 (repeated query params) as an OR filter.
+
+    `param_name` is the query string key (e.g. "topics").
+    `field_name` is the ORM lookup (e.g. "subtopics__topic").
+    """
+
+    def __init__(self, param_name=None, **kwargs):
+        self._param_name = param_name
+        super().__init__(**kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        param = self._param_name or self.field_name
+        values = self.parent.request.GET.getlist(param)
+        if not values:
+            return qs
+        return qs.filter(**{f"{self.field_name}__in": values}).distinct()
+
+
 class VideoFilter(filters.FilterSet):
     is_saved_by_user = filters.BooleanFilter(method="filter_is_saved_by_user")
     is_liked_by_user = filters.BooleanFilter(method="filter_is_liked_by_user")
     is_viewed_by_user = filters.BooleanFilter(method="filter_is_viewed_by_user")
-    topic = filters.NumberFilter(field_name="subtopics__topic", distinct=True)
-    topic_name = filters.CharFilter(field_name="subtopics__topic__name", lookup_expr="iexact", distinct=True)
+    # FE sends ?topics=1&topics=2
+    topics = RepeatParamFilter(param_name="topics", field_name="subtopics__topic")
+    # FE sends ?topic__name__iexact=parshah
+    topic__name__iexact = filters.CharFilter(field_name="subtopics__topic__name", lookup_expr="iexact", distinct=True)
+    # FE sends ?subtopics=1&subtopics=2
+    subtopics = RepeatParamFilter(param_name="subtopics", field_name="subtopics")
+    # FE sends ?subtopic__name__iexact=noach
+    subtopic__name__iexact = filters.CharFilter(field_name="subtopics__name", lookup_expr="iexact", distinct=True)
 
     class Meta:
         model = Video
         fields = {
             "video_id": ["exact"],
-            "subtopics": ["exact"],
-            "subtopics__name": ["iexact"],
             "likes": ["exact", "gte", "lte", "range"],
             "views": ["exact", "gte", "lte", "range"],
         }
