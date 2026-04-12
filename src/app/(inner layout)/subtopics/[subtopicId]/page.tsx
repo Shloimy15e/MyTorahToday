@@ -6,6 +6,7 @@ import {
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Error401 } from "@/components/Error401";
 import HeroWithTitle from "@/components/ui/HeroWithTitle";
+import JournalSection from "@/components/JournalSection";
 import Link from "next/link";
 import { Metadata } from "next";
 import SefariaText from "@/components/SefariaText";
@@ -102,13 +103,16 @@ export default async function SubtopicPage({ params }: Props) {
               isThereText={subtopicText ? true : false}
             />
           )}
+          {subtopic.journals && subtopic.journals.length > 0 && (
+            <JournalSection journals={subtopic.journals} />
+          )}
           {subtopicText && (
             <SefariaText
               text={subtopicText.subtopicTextArray}
               title={subtopicText.title}
             />
           )}
-          {videos && videos.length === 0 && !subtopicText && (
+          {videos && videos.length === 0 && !subtopicText && subtopic.journals?.length === 0 && (
             <div className="flex justify-center items-center">
               <p className="text-lg text-gray-700">
                 There are no videos or text for this subtopic yet.

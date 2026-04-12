@@ -3,8 +3,7 @@ from django.contrib.auth import get_user_model
 from users.models import UserSavedVideo
 from users.models import UserVideoList
 from videos.models import Video
-from topics.models import Topic
-from topics.models import Subtopic
+from topics.models import Topic, Subtopic, Journal
 
 User = get_user_model()
 
@@ -28,19 +27,20 @@ class TopicSerializer(serializers.ModelSerializer):
         model = Topic
         fields = ["id", "name", "description", "subtopics"]
         
-class SubtopicSerializer(serializers.ModelSerializer):
-    """
-    A serializer for the subtopic model
+class JournalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Journal
+        fields = ["id", "title", "pdf", "created_at"]
 
-    Returns:
-        dict: Serialized data for the subtopic model fields.
-    """
+
+class SubtopicSerializer(serializers.ModelSerializer):
     topic_name = serializers.CharField(source='topic.name', read_only=True)
+    journals = JournalSerializer(many=True, read_only=True)
 
     class Meta:
         model = Subtopic
-        fields = ["id", "name", "description", "topic", "topic_name", "sefaria_text"] 
-    
+        fields = ["id", "name", "description", "topic", "topic_name", "sefaria_text", "journals"]
+
 
 class VideoSerializer(serializers.ModelSerializer):
     """
