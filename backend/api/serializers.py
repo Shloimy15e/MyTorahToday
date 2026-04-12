@@ -35,7 +35,11 @@ class JournalSerializer(serializers.ModelSerializer):
             return None
         request = self.context.get("request")
         if request:
-            return request.build_absolute_uri(obj.pdf.url)
+            url = request.build_absolute_uri(obj.pdf.url)
+            # Railway proxies HTTPS -> HTTP internally, so force HTTPS in production
+            if url.startswith("http://") and not request.META.get("HTTP_HOST", "").startswith("localhost"):
+                url = url.replace("http://", "https://", 1)
+            return url
         return obj.pdf.url
 
     class Meta:

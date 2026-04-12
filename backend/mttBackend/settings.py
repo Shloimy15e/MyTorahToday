@@ -33,6 +33,9 @@ DEBUG = "True"
 
 ALLOWED_HOSTS = ["*"]
 
+# Trust X-Forwarded-Proto from Railway's reverse proxy
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 
 # Application definition
 
