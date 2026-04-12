@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "unfold",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -53,6 +54,26 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "djoser",
 ]
+
+UNFOLD = {
+    "SITE_TITLE": "My Torah Today",
+    "SITE_HEADER": "My Torah Today Admin",
+    "COLORS": {
+        "primary": {
+            "50": "oklch(95% .02 260)",
+            "100": "oklch(90% .04 260)",
+            "200": "oklch(82% .06 260)",
+            "300": "oklch(72% .09 260)",
+            "400": "oklch(60% .12 260)",
+            "500": "oklch(50% .14 260)",
+            "600": "oklch(44% .14 260)",
+            "700": "oklch(40% .13 260)",
+            "800": "oklch(35% .11 260)",
+            "900": "oklch(30% .09 260)",
+            "950": "oklch(22% .07 260)",
+        },
+    },
+}
 
 CORS_ALLOW_ORIGINS = [
     "http://localhost:3000",

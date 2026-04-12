@@ -28,6 +28,16 @@ class TopicSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "description", "subtopics"]
         
 class JournalSerializer(serializers.ModelSerializer):
+    pdf = serializers.SerializerMethodField()
+
+    def get_pdf(self, obj):
+        if not obj.pdf:
+            return None
+        request = self.context.get("request")
+        if request:
+            return request.build_absolute_uri(obj.pdf.url)
+        return obj.pdf.url
+
     class Meta:
         model = Journal
         fields = ["id", "title", "pdf", "created_at"]
@@ -35,7 +45,10 @@ class JournalSerializer(serializers.ModelSerializer):
 
 class SubtopicSerializer(serializers.ModelSerializer):
     topic_name = serializers.CharField(source='topic.name', read_only=True)
-    journals = JournalSerializer(many=True, read_only=True)
+    journals = serializers.SerializerMethodField()
+
+    def get_journals(self, obj):
+        return JournalSerializer(obj.journals.all(), many=True, context=self.context).data
 
     class Meta:
         model = Subtopic
