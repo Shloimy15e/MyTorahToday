@@ -19,10 +19,10 @@ export default function TopicGrid(props: {
 
   return (
     <div>
-      <h1 className=" leading-relaxed pb-4 relative text-4xl font-bold my-6 ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
+      <h1 className="leading-relaxed pb-4 relative text-2xl sm:text-3xl md:text-4xl font-bold my-4 md:my-6 ml-4 sm:ml-6 md:ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
         {props.areSubtopics ? "Subtopics" : "Topics"}
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max p-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-4 sm:gap-6 md:gap-8 lg:gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max px-4 sm:px-6 md:px-10 pb-4 sm:pb-6 md:pb-10">
         {props.showAll
           ? props.topics
               .filter(
@@ -67,7 +67,7 @@ export default function TopicGrid(props: {
             <button
               title={`Load More ${props.areSubtopics ? "Subtopics" : "Topics" }`}
               onClick={() => setShowMore(true)}
-              className="md:text-lg bg-primary-blue text-gray-100 text-center font-semibold md:px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-14 md:mx-24 my-6 w-4/5"
+              className="text-base md:text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:bg-blue-950 mx-4 sm:mx-14 md:mx-24 my-6 w-full sm:w-auto transition-card"
             >
               Load More {props.areSubtopics ? "Subtopics" : "Topics"}
             </button>

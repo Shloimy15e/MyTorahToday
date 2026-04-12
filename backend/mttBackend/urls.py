@@ -18,6 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.static import serve
 
 
@@ -28,11 +29,10 @@ urlpatterns = [
     path('api/auth/', include('djoser.urls.authtoken')),
 ]
 
-# Serve media files in all environments (PDFs need to be accessible)
+# Serve media files — exempt from X-Frame-Options so PDFs can be embedded in iframes
 urlpatterns += [
-    path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
+    path('media/<path:path>', xframe_options_exempt(serve), {'document_root': settings.MEDIA_ROOT}),
 ]
 
-# Also serve via static() for local dev convenience
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

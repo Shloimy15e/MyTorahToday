@@ -52,7 +52,7 @@ function VideoCard(props: {
           </div>
         )}
         {/* likes and views */}
-        <div className="flex justify-center items-center px-6 gap-1 md:gap-2 lg:gap-1 xl:gap-2 mt-auto pt-2 border-t border-gray-200 mb-2">
+        <div className="flex flex-wrap justify-center items-center px-3 sm:px-6 gap-1.5 sm:gap-2 mt-auto pt-2 border-t border-gray-200 mb-2 text-xs sm:text-sm">
           <div className="flex justify-start items-center gap-1 text-gray-600">
             {props.video.is_liked_by_user ? (
               <MdThumbUp className="h-4 w-4 text-primary-blue" />
