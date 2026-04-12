@@ -11,7 +11,6 @@ import { Metadata } from "next";
 import SefariaText from "@/components/SefariaText";
 import { cookies } from "next/headers";
 import dynamic from "next/dynamic";
-import { title } from "process";
 
 const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
   ssr: false, // Prevent server-side rendering
@@ -29,36 +28,35 @@ export const generateMetadata = ({ params }: Props): Metadata => {
   };
 };
 
-async function getSubtopicText(subtopic: string, { params }: Props) {
+async function getSubtopicText(subtopicId: string | number) {
   try {
-    const options = { method: "GET", headers: { accept: "application/json" } };
-    const subtopic = await fetchSubtopicServer(params.subtopicId);
-    const url = new URL(`https://www.sefaria.org/api/v3/texts/`);
+    const subtopic = await fetchSubtopicServer(subtopicId);
+    if (!subtopic.sefaria_text) return null;
 
-    url.pathname = url.pathname.concat(`${subtopic.sefaria_text}`);
+    const url = new URL(
+      `/api/v3/texts/${encodeURIComponent(subtopic.sefaria_text)}`,
+      "https://www.sefaria.org"
+    );
+    url.searchParams.set("return_format", "strip_only_footnotes");
 
-    url.searchParams.append("return_format", "strip_only_footnotes");
-    console.log(url.toString());
-    const response = await fetch(url.toString(), options);
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
-    }
-    let subtopicTextArray: string[] = [];
-    data.versions[0].text.forEach((textSegment: string[]) => {
-      const innerSubtopicText = textSegment.join(" ");
-      subtopicTextArray.push(innerSubtopicText);
+    const response = await fetch(url.toString(), {
+      headers: { accept: "application/json" },
     });
-    if (subtopicTextArray.length > 0) {
-      return {
-        subtopicTextArray,
-        title: data.heRef,
-      };
-    } else {
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching subtopic text: ", error);
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    const subtopicTextArray: string[] = [];
+    data.versions?.[0]?.text?.forEach((textSegment: string | string[]) => {
+      if (Array.isArray(textSegment)) {
+        subtopicTextArray.push(textSegment.join(" "));
+      } else {
+        subtopicTextArray.push(textSegment);
+      }
+    });
+
+    if (subtopicTextArray.length === 0) return null;
+    return { subtopicTextArray, title: data.heRef };
+  } catch {
     return null;
   }
 }
@@ -69,14 +67,13 @@ export default async function SubtopicPage({ params }: Props) {
     const authToken = cookies().get("auth_token")?.value || null;
     const { subtopicId } = params;
     const subtopic = await fetchSubtopicServer(subtopicId);
-    console.log("subtopic 4", subtopic);
     const displaySubtopic = subtopic.name;
     const videos = await getVideosBySubtopicsServer(
       [subtopicId],
       authToken,
       100
     );
-    const subtopicText = await getSubtopicText(displaySubtopic, { params });
+    const subtopicText = await getSubtopicText(subtopicId);
 
     if (!videos) {
       throw new Error("400 - Bad Request – The request returned undefined");
