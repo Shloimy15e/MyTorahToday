@@ -1,9 +1,11 @@
 import {
   fetchSubtopicServerByName,
   fetchTopicsServer,
-  getVideosBySubtopicNameServer,
+  getVideosBySubtopicsServer,
   getVideosByTopicsServer,
 } from "@/data/videoData";
+
+import Subtopic from "@/types/Subtopic";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Error401 } from "@/components/Error401";
@@ -19,7 +21,7 @@ const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
   ssr: false, // Prevent server-side rendering
 });
 
-async function getParshahThisWeek() {
+async function getParshahThisWeek(): Promise<Subtopic[] | null> {
   try {
     const url = new URL("/api/calendars", "https://www.sefaria.org");
     const response = await fetch(url.toString(), { cache: "no-store" });
@@ -31,10 +33,24 @@ async function getParshahThisWeek() {
     );
     if (!parashaItem) return null;
 
-    // Sefaria uses hyphens for combined parshiot (e.g. "Tazria-Metzora"),
-    // but the DB uses spaces (e.g. "Tazria Metzora"). Normalize to match.
-    const parshah = parashaItem.displayValue.en.replace(/-/g, " ");
-    return await fetchSubtopicServerByName(parshah);
+    const raw = parashaItem.displayValue.en; // e.g. "Tazria-Metzora" or "Lech-Lecha"
+
+    // First try the full name with hyphens replaced by spaces.
+    // This handles both two-word names ("Lech Lecha") and combined subtopics ("Tazria Metzora").
+    const fullName = raw.replace(/-/g, " ");
+    const exactMatch = await fetchSubtopicServerByName(fullName);
+    if (exactMatch) return [exactMatch];
+
+    // No exact match — likely two separate parshiot combined with a hyphen.
+    // Split and look up each individually.
+    const parts = raw.split("-");
+    if (parts.length < 2) return null;
+
+    const subtopics = (
+      await Promise.all(parts.map((p: string) => fetchSubtopicServerByName(p.trim())))
+    ).filter((s): s is Subtopic => s !== null);
+
+    return subtopics.length > 0 ? subtopics : null;
   } catch (error) {
     console.error("Error fetching parshah this week: ", error);
     return null;
@@ -46,10 +62,10 @@ export default async function Home() {
     const authToken = cookies().get("auth_token")?.value || null;
     const parshahThisWeek = await getParshahThisWeek();
     let videosThisParshah = null;
-    console.log("Parshah this week: ", parshahThisWeek);
-    if (parshahThisWeek) {
-      videosThisParshah = await getVideosBySubtopicNameServer(
-        parshahThisWeek.name,
+    if (parshahThisWeek && parshahThisWeek.length > 0) {
+      const subtopicIds = parshahThisWeek.map((s) => s.id);
+      videosThisParshah = await getVideosBySubtopicsServer(
+        subtopicIds,
         authToken
       );
     }
@@ -83,9 +99,9 @@ export default async function Home() {
           {parshahThisWeek && videosThisParshah && videosThisParshah.length > 0 && (
             <VideoGrid
               videos={videosThisParshah}
-              title={`This week's parshah · ${parshahThisWeek.name}`}
-              topic={parshahThisWeek.id}
-              topic_name={parshahThisWeek.name}
+              title={`This week's parshah · ${parshahThisWeek.map((s) => s.name).join(" / ")}`}
+              topic={parshahThisWeek[0].id}
+              topic_name={parshahThisWeek[0].name}
               showAll={false}
               topicVideos={false}
               showLinkAlways={true}
