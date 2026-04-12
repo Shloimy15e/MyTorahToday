@@ -150,37 +150,38 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-md grid grid-cols-1">
+    <header className="bg-white shadow-md sticky top-0 z-40">
       <nav
         aria-label="Global"
-        className="grid grid-rows-1 gap-2 w-full p-3 md:p-4 lg:px-10 row-span-6 place-items-center"
+        className="flex flex-wrap items-center gap-2 sm:gap-3 w-full px-3 py-2 md:px-4 md:py-3 lg:px-10"
       >
-        <div className="grid grid-rows-1 col-span-3 lg:flex-1 items-center">
-          <Link
-            href="/"
-            className="md:px-1.5 justify-center items-center text-gray-800 flex flex-col my-2 md:my-0"
-          >
-            <span className="sr-only">My Torah Today</span>
-            <picture>
-              <source srcSet="/images/rosh-yeshiva.webp" type="image/webp" />
-              <Image
-                alt="The Rosh Yeshiva Reb Shimon Semp"
-                src="/images/rosh-yeshiva.jpg"
-                className="h-16 md:h-20 w-auto aspect-square rounded-full"
-                width={563}
-                height={551}
-                loading="eager"
-              />
-            </picture>
-            <span className="hidden md:inline">MyTorahToday</span>
-          </Link>
-        </div>
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-gray-800 flex-shrink-0"
+        >
+          <span className="sr-only">My Torah Today</span>
+          <picture>
+            <source srcSet="/images/rosh-yeshiva.webp" type="image/webp" />
+            <Image
+              alt="The Rosh Yeshiva Reb Shimon Semp"
+              src="/images/rosh-yeshiva.jpg"
+              className="h-10 sm:h-12 md:h-16 w-auto aspect-square rounded-full"
+              width={563}
+              height={551}
+              loading="eager"
+            />
+          </picture>
+          <span className="hidden md:inline font-medium">MyTorahToday</span>
+        </Link>
+
+        <div className="flex-1 min-w-0" />
+
         {mounted && !showSearchbar && (
           <button
             onClick={() => setShowSearchbar(true)}
             aria-label="Open search bar"
             title="Open search bar"
-            className="col-span-1 col-end-10 flex items-center justify-center gap-1.5 p-2.5 rounded-full border border-gray-300 text-gray-600 hover:border-primary-blue hover:text-primary-blue active:bg-gray-100 transition-colors duration-200"
+            className="flex items-center justify-center p-2.5 min-h-[44px] min-w-[44px] rounded-full border border-gray-300 text-gray-600 hover:border-primary-blue hover:text-primary-blue active:bg-gray-100 transition-colors duration-200"
           >
             <IoSearchOutline className="h-5 w-5" />
           </button>
@@ -189,7 +190,7 @@ export default function Header() {
         <Transition as={Fragment} show={showSearchbar}>
           <form
             onSubmit={handleSearch}
-            className="flex flex-col md:flex-row items-stretch md:items-center md:h-11 border border-gray-300 rounded-xl md:rounded-full shadow-sm col-start-2 col-end-10 md:col-start-4 transition duration-200 ease-out data-[closed]:opacity-0 focus-within:border-primary-blue focus-within:shadow-md"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center sm:h-11 border border-gray-300 rounded-2xl sm:rounded-full shadow-sm w-full sm:w-auto sm:flex-1 order-last sm:order-none min-w-0 transition duration-200 ease-out data-[closed]:opacity-0 focus-within:border-primary-blue focus-within:shadow-md"
           >
             {/* Search input */}
             <div className="flex-1 flex items-center min-w-0">
@@ -201,7 +202,7 @@ export default function Header() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search for a video..."
-                className="w-full py-2.5 md:py-0 px-2.5 text-sm text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none"
+                className="w-full py-2.5 sm:py-0 px-2.5 text-sm text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none"
               />
               {query && (
                 <button
@@ -216,10 +217,10 @@ export default function Header() {
             </div>
 
             {/* Divider */}
-            <div className="hidden md:block w-px h-6 bg-gray-200" />
+            <div className="hidden sm:block w-px h-6 bg-gray-200" />
 
             {/* Topic filter */}
-            <div className="flex items-center border-t md:border-t-0">
+            <div className="flex items-center border-t sm:border-t-0">
               <label htmlFor="topicSelect" className="sr-only">Select a topic</label>
               <select
                 id="topicSelect"
@@ -228,7 +229,7 @@ export default function Header() {
                   setSelectedTopic(e.target.value);
                   setSelectedSubtopic("all");
                 }}
-                className="py-2 md:py-0 px-3 text-sm text-gray-600 bg-transparent cursor-pointer focus:outline-none hover:text-gray-800 transition-colors appearance-none"
+                className="py-2 sm:py-0 px-3 text-sm text-gray-600 bg-transparent cursor-pointer focus:outline-none hover:text-gray-800 transition-colors appearance-none"
                 style={{ backgroundImage: "none" }}
               >
                 <option value="all">All topics</option>
@@ -245,14 +246,14 @@ export default function Header() {
             {/* Subtopic filter — only shows when a topic is selected */}
             {selectedTopic !== "all" && (
               <>
-                <div className="hidden md:block w-px h-6 bg-gray-200" />
-                <div className="flex items-center border-t md:border-t-0">
+                <div className="hidden sm:block w-px h-6 bg-gray-200" />
+                <div className="flex items-center border-t sm:border-t-0">
                   <label htmlFor="subtopicSelect" className="sr-only">Select a subtopic</label>
                   <select
                     id="subtopicSelect"
                     value={selectedSubtopic}
                     onChange={(e) => setSelectedSubtopic(e.target.value)}
-                    className="py-2 md:py-0 px-3 text-sm text-gray-600 bg-transparent cursor-pointer focus:outline-none hover:text-gray-800 transition-colors appearance-none"
+                    className="py-2 sm:py-0 px-3 text-sm text-gray-600 bg-transparent cursor-pointer focus:outline-none hover:text-gray-800 transition-colors appearance-none"
                     style={{ backgroundImage: "none" }}
                   >
                     <option value="all">All subtopics</option>
@@ -273,14 +274,14 @@ export default function Header() {
               type="submit"
               aria-label="Search"
               title="Search"
-              className="flex items-center justify-center gap-2 px-5 py-2.5 md:py-0 md:h-full text-sm font-medium text-white bg-primary-blue hover:bg-blue-800 active:bg-blue-900 rounded-b-xl md:rounded-none md:rounded-r-full transition-colors duration-200"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 sm:py-0 sm:h-full text-sm font-medium text-white bg-primary-blue hover:bg-blue-800 active:bg-blue-900 rounded-b-2xl sm:rounded-none sm:rounded-r-full transition-colors duration-200 min-h-[44px]"
             >
               <IoSearchOutline className="h-4 w-4 flex-shrink-0" />
-              <span className="md:sr-only lg:not-sr-only">Search</span>
+              <span className="sm:sr-only lg:not-sr-only">Search</span>
             </button>
           </form>
         </Transition>
-        <div className="flex items-center justify-center col-span-1 col-end-11">
+        <div className="flex items-center justify-center flex-shrink-0">
           <Menu as="div" className="relative inline-block text-left">
             <div className="flex items-center justify-center">
               <MenuButton
@@ -416,16 +417,16 @@ export default function Header() {
             </Transition>
           </Menu>
         </div>
-        <div className="flex items-center justify-center col-span-1 col-end-12">
+        <div className="flex items-center justify-center flex-shrink-0">
           <button
             aria-label="Open main menu"
             title="Open main menu"
             type="button"
             onClick={() => setMobileMenuOpen(true)}
-            className="-m-2.5 inline-flex items-center justify-start rounded-md p-2.5 text-gray-600"
+            className="inline-flex items-center justify-center rounded-md p-2 min-h-[44px] min-w-[44px] text-gray-600 hover:bg-gray-100 active:bg-gray-200 transition-colors"
           >
             <span className="sr-only">Open main menu</span>
-            <Bars3Icon aria-hidden="true" className="h-9 w-8" />
+            <Bars3Icon aria-hidden="true" className="h-7 w-7" />
           </button>
         </div>
       </nav>
@@ -460,10 +461,10 @@ export default function Header() {
                   type="button"
                   title="Close menu"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="-m-2.5 rounded-md p-2.5 text-gray-800 font-bold flex items-center justify-center"
+                  className="rounded-full p-2.5 min-h-[44px] min-w-[44px] text-gray-800 font-bold flex items-center justify-center hover:bg-gray-100 active:bg-gray-200 transition-colors"
                 >
                   <span className="sr-only">Close menu</span>
-                  <XMarkIcon aria-hidden="true" className="h-6 w-6" />
+                  <XMarkIcon aria-hidden="true" className="h-7 w-7" />
                 </button>
               </div>
               <div className="mt-6 flow-root">
@@ -473,7 +474,7 @@ export default function Header() {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                        className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-3 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100 active:bg-gray-200 min-h-[44px] transition-colors"
                       >
                         <item.icon className="h-6 w-6" />
                         {item.name}
@@ -483,21 +484,21 @@ export default function Header() {
                       <>
                         <Link
                           href={`/videos/saved`}
-                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-3 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100 active:bg-gray-200 min-h-[44px] transition-colors"
                         >
                           <IoBookmarksOutline className="h-6 w-6" />
                           Saved videos
                         </Link>
                         <Link
                           href={`/videos/liked`}
-                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-3 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100 active:bg-gray-200 min-h-[44px] transition-colors"
                         >
                           <BiLike className="h-6 w-6" />
                           Liked videos
                         </Link>
                         <Link
                           href={`/videos/watched`}
-                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-3 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100 active:bg-gray-200 min-h-[44px] transition-colors"
                         >
                           <IoEyeOutline className="h-6 w-6" />
                           Watched videos
@@ -508,7 +509,7 @@ export default function Header() {
                         <button
                           onClick={() => setIsLoginDialogOpen(true)}
                           title="Log in"
-                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-3 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100 active:bg-gray-200 min-h-[44px] transition-colors"
                         >
                           <ArrowRightEndOnRectangleIcon className="h-6 w-6" />
                           Log in
@@ -516,7 +517,7 @@ export default function Header() {
                         <button
                           onClick={() => setIsSignupDialogOpen(true)}
                           title="Sign up"
-                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-3 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100 active:bg-gray-200 min-h-[44px] transition-colors"
                         >
                           <PencilSquareIcon className="h-6 w-6" />
                           Sign up
