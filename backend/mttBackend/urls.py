@@ -17,9 +17,18 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import path, include
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.static import serve
+
+
+def cors_media_serve(request, path, document_root=None):
+    """Serve media files with CORS and X-Frame-Options headers."""
+    response = serve(request, path, document_root=document_root)
+    response["Access-Control-Allow-Origin"] = "*"
+    response["X-Frame-Options"] = ""
+    return response
 
 
 urlpatterns = [
@@ -27,11 +36,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),
-]
-
-# Serve media files — exempt from X-Frame-Options so PDFs can be embedded in iframes
-urlpatterns += [
-    path('media/<path:path>', xframe_options_exempt(serve), {'document_root': settings.MEDIA_ROOT}),
+    path('media/<path:path>', cors_media_serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 
 if settings.DEBUG:
