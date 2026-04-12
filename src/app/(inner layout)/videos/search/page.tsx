@@ -27,13 +27,11 @@ export default async function Search({
     return <NoResults searchParams={searchParams} />;
   }
 
-  const params = new URLSearchParams();
-  params.set("search", query);
-  if (topic) params.set("topic__name__iexact", topic);
-  if (subtopic) params.set("subtopic__name__iexact", subtopic);
-
-  const url = `${process.env.BACKEND_URL}/api/videos/?${params.toString()}`;
-  const res = await fetch(url, { cache: "no-store" });
+  const url = new URL("/api/videos/", process.env.BACKEND_URL);
+  url.searchParams.set("search", query);
+  if (topic) url.searchParams.set("topic__name__iexact", topic);
+  if (subtopic) url.searchParams.set("subtopic__name__iexact", subtopic);
+  const res = await fetch(url.toString(), { cache: "no-store" });
   const data = await res.json();
 
   if (!data.results || data.results.length === 0) {

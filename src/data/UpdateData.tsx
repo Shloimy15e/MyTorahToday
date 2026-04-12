@@ -2,12 +2,11 @@ import Video from "@/types/Video";
 
 export async function fetchUpdatedData() {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/videos/`
-    );
+    const url = new URL("/api/videos/", process.env.BACKEND_URL);
+    const response = await fetch(url.toString());
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
+      throw new Error(`HTTP error ${response.status} ${JSON.stringify(data)}`);
     }
     return data;
   } catch (error) {

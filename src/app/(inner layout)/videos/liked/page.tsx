@@ -11,9 +11,9 @@ export default async function LikedVideos() {
       console.log("You must be logged in to have liked videos");
       throw new Error("You must be logged in to have saved videos");
     }
-    const url = `${process.env.BACKEND_URL}/api/videos/?is_liked_by_user=true`;
-    console.log(url);
-    const res = await fetch(url, {
+    const url = new URL("/api/videos/", process.env.BACKEND_URL);
+    url.searchParams.set("is_liked_by_user", "true");
+    const res = await fetch(url.toString(), {
       headers: {
         "Content-Type": "application/json",
         authorization: `Token ${authToken}`,
