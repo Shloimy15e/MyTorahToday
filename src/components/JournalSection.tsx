@@ -2,7 +2,7 @@
 
 import { Journal } from "@/types/Subtopic";
 import { useState, useEffect } from "react";
-import { IoDocumentTextOutline, IoDownloadOutline, IoChevronDown } from "react-icons/io5";
+import { IoDownloadOutline, IoChevronDown } from "react-icons/io5";
 import dynamic from "next/dynamic";
 
 const PdfViewer = dynamic(() => import("./PdfViewer"), { ssr: false });
@@ -25,55 +25,80 @@ export default function JournalSection({ journals }: { journals: Journal[] }) {
   if (journals.length === 0) return null;
 
   return (
-    <section className="mx-4 md:mx-8 lg:mx-16 my-8">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-        <IoDocumentTextOutline className="h-6 w-6 text-primary-blue" />
-        Parshah Journal{journals.length > 1 ? "s" : ""}
-      </h2>
+    <section className="mx-4 md:mx-8 lg:mx-16 my-10">
+      {/* Section header — editorial style */}
+      <div className="flex items-baseline gap-3 mb-6">
+        <h2 className="text-2xl font-bold text-stone-900 tracking-tight">
+          Parshah Journal
+        </h2>
+        {journals.length > 1 && (
+          <span className="text-sm text-stone-400">{journals.length} issues</span>
+        )}
+      </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-5">
         {journals.map((journal) => {
           const isExpanded = expandedId === journal.id;
           const isMounted = mountedId === journal.id;
 
           return (
-            <div
+            <article
               key={journal.id}
-              className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-card"
+              className={`rounded-2xl overflow-hidden transition-all duration-300 ${
+                isExpanded
+                  ? "shadow-xl ring-1 ring-stone-200"
+                  : "shadow-sm ring-1 ring-stone-100 hover:shadow-md hover:ring-stone-200"
+              }`}
+              style={{ background: isExpanded ? "#faf8f4" : "white" }}
             >
+              {/* Journal header */}
               <button
                 onClick={() => setExpandedId(isExpanded ? null : journal.id)}
-                className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50"
+                className="w-full flex items-center justify-between px-6 py-5 group"
               >
-                <span className="font-medium text-gray-800">{journal.title}</span>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-col items-start gap-0.5">
+                  <span className="font-semibold text-stone-800 text-left group-hover:text-primary-blue transition-colors">
+                    {journal.title}
+                  </span>
+                  <span className="text-xs text-stone-400">
+                    {new Date(journal.created_at).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
                   <a
                     href={journal.pdf}
                     download
                     onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-primary-blue border border-primary-blue rounded-lg hover:bg-primary-blue hover:text-white"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-stone-600 bg-stone-100 rounded-full hover:bg-primary-blue hover:text-white transition-colors"
                   >
-                    <IoDownloadOutline className="h-4 w-4" />
-                    Download
+                    <IoDownloadOutline className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Download PDF</span>
+                    <span className="sm:hidden">PDF</span>
                   </a>
-                  <IoChevronDown
-                    className={`h-5 w-5 text-gray-400 transition-transform duration-300 ${
-                      isExpanded ? "rotate-180" : ""
+                  <div
+                    className={`w-7 h-7 flex items-center justify-center rounded-full transition-all duration-300 ${
+                      isExpanded ? "bg-primary-blue text-white rotate-180" : "bg-stone-100 text-stone-400"
                     }`}
-                  />
+                  >
+                    <IoChevronDown className="h-3.5 w-3.5" />
+                  </div>
                 </div>
               </button>
 
+              {/* PDF viewer area */}
               <div
-                className={`overflow-hidden transition-all duration-300 ease-out ${
-                  isExpanded
-                    ? "max-h-[85vh] opacity-100 border-t border-gray-200"
-                    : "max-h-0 opacity-0"
+                className={`overflow-hidden transition-all duration-500 ease-out ${
+                  isExpanded ? "max-h-[90vh] opacity-100" : "max-h-0 opacity-0"
                 }`}
               >
                 {isMounted && <PdfViewer url={journal.pdf} />}
               </div>
-            </div>
+            </article>
           );
         })}
       </div>
