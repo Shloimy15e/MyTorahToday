@@ -20,6 +20,30 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+@layer base {
+  /* Smooth transitions on all interactive elements */
+  a, button, [role="button"], select, input {
+    transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* Cards and containers that need smooth hover effects */
+  .transition-card {
+    transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

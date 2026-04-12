@@ -71,6 +71,7 @@ export default function Footer() {
             <a
               key={item.name}
               href={item.href}
+              className="hover:scale-110 active:scale-95 inline-block"
             >
               <span className="sr-only">{item.name}</span>
               <item.icon aria-hidden="true" className="h-7 w-7" />

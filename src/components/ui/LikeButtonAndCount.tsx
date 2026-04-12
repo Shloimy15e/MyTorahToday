@@ -59,11 +59,11 @@ export default function LikeButtonAndCount({
           toggleLike();
         }}
         disabled={isLoading}
-        className={`text-xl h-9 bg-opacity-30 flex items-center justify-center gap-2 border font-semibold  ${
+        className={`text-xl h-9 flex items-center justify-center gap-2 border font-semibold ${
           isLikedState
-            ? "text-primary-blue border-primary-blue"
-            : "border-gray-600 text-gray-700"
-        } py-1.5 px-3 rounded-full ${
+            ? "text-primary-blue border-primary-blue hover:bg-blue-50"
+            : "border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50"
+        } py-1.5 px-3 rounded-full active:scale-95 ${
           isLoading ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >
@@ -90,11 +90,15 @@ export default function LikeButtonAndCount({
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             ></path>
           </svg>
-        ) : isLikedState ? (
-          <MdThumbUp className="h-5 w-5" />
         ) : (
-          <MdOutlineThumbUp className="h-5 w-5" />
-        )}{" "}
+          <span key={isLikedState ? "liked" : "unliked"} className="animate-[pop_200ms_ease-out]">
+            {isLikedState ? (
+              <MdThumbUp className="h-5 w-5" />
+            ) : (
+              <MdOutlineThumbUp className="h-5 w-5" />
+            )}
+          </span>
+        )}
         {likesCount}{" "}
       </button>{" "}
     </div>

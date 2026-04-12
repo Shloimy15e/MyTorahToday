@@ -16,6 +16,13 @@ const config: Config = {
       },
       colors: {
         "primary-blue": "#224395",
+      },
+      keyframes: {
+        pop: {
+          "0%": { transform: "scale(0.8)", opacity: "0.5" },
+          "50%": { transform: "scale(1.15)" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
       }
     },
   },

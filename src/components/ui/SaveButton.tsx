@@ -1,5 +1,4 @@
 "use client";
-import Video from "@/types/Video";
 import { useState } from "react";
 import { useToast } from "../../context/ToastProvider";
 import { toggleSave as serverToggleSave } from "@/data/videoData";
@@ -54,13 +53,11 @@ export default function SaveButton({
           toggleSave();
         }}
         disabled={isLoading}
-        className={`text-xl h-9 aspect-square flex items-center gap-2 border border-gray-700 ${
+        className={`text-xl h-9 aspect-square flex items-center justify-center border bg-transparent p-1.5 rounded-full active:scale-95 ${
           isSavedState
-            ? "text-primary-blue border-primary-blue"
-            : "border-gray-600 text-gray-700"
-        } p-1.5  rounded-full ${
-          isLoading ? "opacity-50 cursor-not-allowed" : ""
-        }`}
+            ? "text-primary-blue border-primary-blue hover:bg-blue-50"
+            : "text-gray-700 border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+        } ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
       >
         {isLoading ? (
           <svg
@@ -85,11 +82,15 @@ export default function SaveButton({
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             ></path>
           </svg>
-        ) : isSavedState ? (
-          <IoBookmark className="h-6 w-6" />
         ) : (
-          <IoBookmarkOutline className="h-6 w-6" />
-        )}{" "}
+          <span key={isSavedState ? "saved" : "unsaved"} className="animate-[pop_200ms_ease-out]">
+            {isSavedState ? (
+              <IoBookmark className="h-6 w-6" />
+            ) : (
+              <IoBookmarkOutline className="h-6 w-6" />
+            )}
+          </span>
+        )}
       </button>{" "}
     </div>
   );

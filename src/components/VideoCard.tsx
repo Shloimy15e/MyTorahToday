@@ -4,7 +4,6 @@ import {
   CalendarIcon,
   PlayIcon,
 } from "@heroicons/react/24/outline";
-import { EyeIcon as EyeIconSolid } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import formatDuration from "@/utils/formatDuration";
 import Video from "@/types/Video";
@@ -19,8 +18,8 @@ function VideoCard(props: {
   showDescription: boolean;
 }) {
   return (
-    <div className="group bg-white box-border w-full h-full rounded-2xl shadow-md transition hover:scale-105 hover:cursor-pointer duration-300 overflow-hidden ">
-      <div className="absolute p-0.5 m-1.5 rounded-full z-10 w-content bg-white bg-opacity-60 group-hover:bg-opacity-100 group-hover:shadow-2xl hover:bg-gray-100 hover:scale-105 active:scale-95 transform duration-200">
+    <div className="group bg-white box-border w-full h-full rounded-2xl shadow-md hover:shadow-xl hover:scale-[1.03] hover:cursor-pointer overflow-hidden transition-card">
+      <div className="absolute p-0.5 m-1.5 rounded-full z-10 w-content bg-white/60 group-hover:bg-white group-hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 ease-out">
         <SaveButton
           videoId={props.video.id}
           isSaved={props.video.is_saved_by_user}
