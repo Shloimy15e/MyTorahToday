@@ -183,6 +183,12 @@ export const fetchSubtopicServer = async (subtopicId: string | number): Promise<
   return fetchJson(url);
 };
 
+export const fetchSubtopicServerByName = async (name: string): Promise<Subtopic | null> => {
+  const url = backendUrl("/api/subtopics/", { "name__iexact": name });
+  const data = await fetchJson(url);
+  return data.results?.[0] ?? null;
+};
+
 // --- Client-side fetchers (go through Next.js proxy routes) ---
 
 export async function toggleLike(id: Video["id"]): Promise<Response> {

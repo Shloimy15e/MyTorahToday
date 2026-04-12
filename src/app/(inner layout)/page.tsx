@@ -1,9 +1,7 @@
 import {
-  fetchTopicServer,
-  fetchTopicServerByName,
+  fetchSubtopicServerByName,
   fetchTopicsServer,
   getVideosBySubtopicNameServer,
-  getVideosByTopicNameServer,
   getVideosByTopicsServer,
 } from "@/data/videoData";
 
@@ -23,15 +21,20 @@ const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
 
 async function getParshahThisWeek() {
   try {
-    const apiUrl = `https://www.sefaria.org/api/calendars`;
-    const response = await fetch(apiUrl, { cache: "no-store" });
+    const url = new URL("/api/calendars", "https://www.sefaria.org");
+    const response = await fetch(url.toString(), { cache: "no-store" });
+    if (!response.ok) return null;
+
     const data = await response.json();
-    if (!response.ok) {
-      throw new Error(`HTTP error ${response.status}` + JSON.stringify(data));
-    }
-    const parshah = data.calendar_items[0].displayValue.en;
-    const topic = await fetchTopicServerByName(parshah);
-    return topic;
+    const parashaItem = data.calendar_items?.find(
+      (item: { title: { en: string } }) => item.title.en === "Parashat Hashavua"
+    );
+    if (!parashaItem) return null;
+
+    // Sefaria uses hyphens for combined parshiot (e.g. "Tazria-Metzora"),
+    // but the DB uses spaces (e.g. "Tazria Metzora"). Normalize to match.
+    const parshah = parashaItem.displayValue.en.replace(/-/g, " ");
+    return await fetchSubtopicServerByName(parshah);
   } catch (error) {
     console.error("Error fetching parshah this week: ", error);
     return null;
@@ -80,7 +83,7 @@ export default async function Home() {
           {parshahThisWeek && videosThisParshah && videosThisParshah.length > 0 && (
             <VideoGrid
               videos={videosThisParshah}
-              title={`This week's parshah · ${parshahThisWeek}`}
+              title={`This week's parshah · ${parshahThisWeek.name}`}
               topic={parshahThisWeek.id}
               topic_name={parshahThisWeek.name}
               showAll={false}
