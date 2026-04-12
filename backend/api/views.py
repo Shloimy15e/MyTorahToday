@@ -157,7 +157,7 @@ class VideoViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = VideoFilter
     ordering_fields = ["likes", "views", "publishedAt"]
-    search_fields = ["title", "topic__name", "subtopics__name", "description", "tags"]
+    search_fields = ["title", "subtopics__topic__name", "subtopics__name", "description", "tags"]
 
     @action(detail=True, methods=["post"])
     def like(self, request, pk=None):

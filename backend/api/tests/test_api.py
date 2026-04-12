@@ -159,6 +159,40 @@ class TestVideoFiltering(APITestBase):
         self.assertEqual(video_ids, ["abc123"])
 
 
+class TestVideoSearch(APITestBase):
+    """The FE search page sends ?search=query."""
+
+    def test_search_by_title(self):
+        response = self.client.get("/api/videos/?search=Ark")
+        self.assertEqual(response.status_code, 200)
+        video_ids = [v["video_id"] for v in response.json()["results"]]
+        self.assertIn("abc123", video_ids)  # "Noach: Building the Ark"
+
+    def test_search_by_topic_name(self):
+        response = self.client.get("/api/videos/?search=Parshah")
+        self.assertEqual(response.status_code, 200)
+        video_ids = [v["video_id"] for v in response.json()["results"]]
+        self.assertIn("abc123", video_ids)  # Noach is under Parshah
+
+    def test_search_by_subtopic_name(self):
+        response = self.client.get("/api/videos/?search=Yeshayahu")
+        self.assertEqual(response.status_code, 200)
+        video_ids = [v["video_id"] for v in response.json()["results"]]
+        self.assertIn("ghi789", video_ids)
+
+    def test_search_empty_query(self):
+        """Empty search should still return 200."""
+        response = self.client.get("/api/videos/?search=")
+        self.assertEqual(response.status_code, 200)
+
+    def test_search_with_topic_filter(self):
+        """FE sends ?search=x&topic__name__iexact=y together."""
+        response = self.client.get("/api/videos/?search=Building&topic__name__iexact=parshah")
+        self.assertEqual(response.status_code, 200)
+        video_ids = [v["video_id"] for v in response.json()["results"]]
+        self.assertIn("abc123", video_ids)
+
+
 class TestSubtopicSerializer(APITestBase):
     """The FE Subtopic type expects sefaria_text."""
 
