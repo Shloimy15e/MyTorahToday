@@ -12,11 +12,14 @@ class Topic(models.Model):
 
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
-    
-    
+    order = models.IntegerField(default=0, db_index=True)
+
+    class Meta:
+        ordering = ["order", "name"]
+
     def __str__(self):
         return self.name
-    
+
 class Subtopic(models.Model):
     """
     A model representing a subtopic.
@@ -30,7 +33,11 @@ class Subtopic(models.Model):
     description = models.TextField(null=True, blank=True)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     sefaria_text = models.CharField(max_length=255, null=True, blank=True)
-    
+    order = models.IntegerField(default=0, db_index=True)
+
+    class Meta:
+        ordering = ["order", "name"]
+
     def __str__(self):
         return self.name
     
