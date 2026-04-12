@@ -40,11 +40,21 @@ export default async function TopicPage({ params }: Props) {
   try {
     const authToken = cookies().get("auth_token")?.value || null;
     const { topicId } = params;
-    const topic = await fetchTopicServer(topicId);
+
+    // Fetch topic and subtopics in parallel
+    const [topic, subtopics] = await Promise.all([
+      fetchTopicServer(topicId),
+      fetchSubtopicsServer(topicId),
+    ]);
     const displayTopic = topic.name;
-    const subtopics = await fetchSubtopicsServer(topicId);
+
+    if (!subtopics || subtopics.length === 0) {
+      throw new Error("404 - No data was found");
+    }
+
+    // Fetch videos for all subtopics in parallel
     const videosBySubtopics = await Promise.all(
-      subtopics?.map(async (subtopic: Subtopic) => {
+      subtopics.map(async (subtopic: Subtopic) => {
         const videos = await getVideosBySubtopicsServer(
           [subtopic.id],
           authToken,
@@ -53,13 +63,6 @@ export default async function TopicPage({ params }: Props) {
         return { subtopic, videos };
       })
     );
-    if (!subtopics) {
-      throw new Error("400 - Bad Request – The request returned undefined");
-    }
-
-    if (subtopics.length === 0) {
-      throw new Error("404 - No data was found");
-    }
 
     return (
       <>

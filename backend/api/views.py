@@ -1,4 +1,4 @@
-from django.db.models import Q, Case, When
+from django.db.models import Prefetch
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
@@ -13,6 +13,7 @@ from rest_framework.filters import SearchFilter
 from django_filters import rest_framework as filters
 
 from videos.models import Video
+from topics.models import Subtopic
 
 
 class CustomLimitOffsetPagination(LimitOffsetPagination):
@@ -32,7 +33,9 @@ class TopicViewSet(ModelViewSet):
     """
 
     serializer_class = TopicSerializer
-    queryset = TopicSerializer.Meta.model.objects.all()
+    queryset = TopicSerializer.Meta.model.objects.prefetch_related(
+        Prefetch("subtopic_set", queryset=Subtopic.objects.select_related("topic"))
+    ).all()
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = {
         "id": ["exact"],
@@ -48,7 +51,7 @@ class SubtopicViewSet(ModelViewSet):
     """
 
     serializer_class = SubtopicSerializer
-    queryset = SubtopicSerializer.Meta.model.objects.all()
+    queryset = SubtopicSerializer.Meta.model.objects.select_related("topic").all()
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = {
         "id": ["exact"],
@@ -133,7 +136,10 @@ class VideoViewSet(ModelViewSet):
     """
 
     serializer_class = VideoSerializer
-    queryset = VideoSerializer.Meta.model.objects.all()
+    queryset = VideoSerializer.Meta.model.objects.prefetch_related(
+        Prefetch("subtopics", queryset=Subtopic.objects.select_related("topic")),
+        "userLikes", "userSaves", "userViews",
+    ).all()
     permission_classes = [IsAdminUser | AllowAny | IsAuthenticated]
 
     def get_permissions(self):

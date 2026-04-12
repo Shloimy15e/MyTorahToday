@@ -60,22 +60,25 @@ async function getParshahThisWeek(): Promise<Subtopic[] | null> {
 export default async function Home() {
   try {
     const authToken = cookies().get("auth_token")?.value || null;
-    const parshahThisWeek = await getParshahThisWeek();
-    let videosThisParshah = null;
-    if (parshahThisWeek && parshahThisWeek.length > 0) {
-      const subtopicIds = parshahThisWeek.map((s) => s.id);
-      videosThisParshah = await getVideosBySubtopicsServer(
-        subtopicIds,
-        authToken
-      );
-    }
-    const topics = await fetchTopicsServer();
-    const videosByTopic =  await Promise.all(
-      topics.slice(0, 4).map(async (topic: Topic) => {
-        const videos = await getVideosByTopicsServer([topic.id], authToken, 9);
-        return { videos, topic };
-      })
-    );
+
+    // Fetch parshah and topics in parallel — don't wait for one before starting the other
+    const [parshahThisWeek, topics] = await Promise.all([
+      getParshahThisWeek(),
+      fetchTopicsServer(),
+    ]);
+
+    // Now fetch videos for parshah and for each topic in parallel
+    const [videosThisParshah, videosByTopic] = await Promise.all([
+      parshahThisWeek && parshahThisWeek.length > 0
+        ? getVideosBySubtopicsServer(parshahThisWeek.map((s) => s.id), authToken)
+        : null,
+      Promise.all(
+        topics.slice(0, 4).map(async (topic: Topic) => {
+          const videos = await getVideosByTopicsServer([topic.id], authToken, 9);
+          return { videos, topic };
+        })
+      ),
+    ]);
     if (!videosThisParshah && !topics) {
       throw new Error("500 - Internal Server Error");
     }

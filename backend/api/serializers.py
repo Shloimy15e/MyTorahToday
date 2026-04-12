@@ -16,20 +16,10 @@ class TopicSerializer(serializers.ModelSerializer):
         dict: Serialized data for the topic model fields.
     """
     
-    # Return all subtopics in this topic
+    # Uses prefetched subtopic_set from the viewset queryset
     subtopics = serializers.SerializerMethodField()
     def get_subtopics(self, obj):
-        """
-        Get subtopics for the topic.
-
-        Args:
-            obj (Topic): The topic object.
-
-        Returns:
-            list: List of subtopics for the topic.
-        """
-        subtopics = Subtopic.objects.filter(topic=obj)
-        return SubtopicSerializer(subtopics, many=True).data
+        return SubtopicSerializer(obj.subtopic_set.all(), many=True).data
     
     class Meta:
         """
