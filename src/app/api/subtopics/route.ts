@@ -3,17 +3,30 @@ import { sanitizeInput } from "@/utils/sanitizeInput";
 
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
-  const limit = sanitizeInput(searchParams.get("limit") || "10");
-  const offset = sanitizeInput(searchParams.get("offset") || "0");
-  const id = sanitizeInput(searchParams.get("id") || "");
-  const name = sanitizeInput(searchParams.get("name") || "");
-  const topic = sanitizeInput(searchParams.get("topic") || "");
-  const topic__name = sanitizeInput(searchParams.get("topic__name__iexact") || "");
-  const ordering = sanitizeInput(searchParams.get("ordering") || "");
 
-  const url = `${process.env.BACKEND_URL}/api/subtopics/?id=${id}&name__iexact=${name}&limit=${limit}&offset=${offset}&topic__name__iexact=${topic__name}&topic=${topic}&ordering=${ordering}`;
+  const params = new URLSearchParams();
+  params.set("limit", sanitizeInput(searchParams.get("limit") || "10"));
+  params.set("offset", sanitizeInput(searchParams.get("offset") || "0"));
 
-  const response = await fetch(url, {
+  const id = searchParams.get("id");
+  if (id) params.set("id", sanitizeInput(id));
+
+  const name = searchParams.get("name");
+  if (name) params.set("name__iexact", sanitizeInput(name));
+
+  const topic = searchParams.get("topic");
+  if (topic) params.set("topic", sanitizeInput(topic));
+
+  const topicName = searchParams.get("topic__name__iexact");
+  if (topicName) params.set("topic__name__iexact", sanitizeInput(topicName));
+
+  const ordering = searchParams.get("ordering");
+  if (ordering) params.set("ordering", sanitizeInput(ordering));
+
+  const url = new URL(`${process.env.BACKEND_URL}/api/subtopics/`);
+  url.search = params.toString();
+
+  const response = await fetch(url.toString(), {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });

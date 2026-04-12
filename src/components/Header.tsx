@@ -132,23 +132,15 @@ export default function Header() {
     }
   }, [topics, pathname, navigation]);
 
-  const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    if (query.trim() !== "") {
-      if (selectedTopic === "all" && selectedSubtopic === "all") {
-        router.push(`/videos/search?query=${query}`);
-      } else if (selectedTopic !== "all" && selectedSubtopic === "all") {
-        router.push(`/videos/search?query=${query}&topic=${selectedTopic}`);
-      } else if (selectedTopic !== "all" && selectedSubtopic !== "all") {
-        router.push(
-          `/videos/search?query=${query}&topic=${selectedTopic}&subtopic=${selectedSubtopic}`
-        );
-      } else {
-        router.push(
-          `/videos/search?query=${query}&subtopic=${selectedSubtopic}`
-        );
-      }
-    }
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (query.trim() === "") return;
+    const params = new URLSearchParams();
+    params.set("query", query.trim());
+    if (selectedTopic !== "all") params.set("topic", selectedTopic);
+    if (selectedSubtopic !== "all") params.set("subtopic", selectedSubtopic);
+    router.push(`/videos/search?${params.toString()}`);
+    if (isMobile) setShowSearchbar(false);
   };
 
   const closeDialog = () => {
@@ -188,106 +180,103 @@ export default function Header() {
             onClick={() => setShowSearchbar(true)}
             aria-label="Open search bar"
             title="Open search bar"
-            className="col-span-1 col-end-10 flex items-center justify-center gap-1.5 p-2.5 rounded-full border border-primary-blue text-gray-700 hover:bg-gray-100 active:bg-gray-200"
+            className="col-span-1 col-end-10 flex items-center justify-center gap-1.5 p-2.5 rounded-full border border-gray-300 text-gray-600 hover:border-primary-blue hover:text-primary-blue active:bg-gray-100 transition-colors duration-200"
           >
-            <IoSearchOutline className="h-6 w-6" />
+            <IoSearchOutline className="h-5 w-5" />
           </button>
         )}
 
         <Transition as={Fragment} show={showSearchbar}>
-          <form className="grid h-fit md:h-10 grid-rows-auto md:grid-rows-1 grid-cols-12 items-center border border-primary-blue rounded-2xl md:rounded-full justify-center col-start-4 md:col-start-8 col-end-10  transition duration-300 ease-in data-[closed]:opacity-0">
-            <div className="col-span-full row-start-2 md:row-auto md:col-span-3 flex md:flex-col items-start justify-center w-full h-full rounded-b-2xl md:rounded-l-full border-t md:border-t-0 md:border-r border-primary-blue">
-              <div
-                className={`px-1 w-full hover:bg-gray-100 active:bg-gray-200 ${
-                  selectedTopic == "all"
-                    ? "rounded-b-2xl md:rounded-l-full  h-full"
-                    : "rounded-bl-2xl md:rounded-tl-full h-full md:h-1/2"
-                }`}
+          <form
+            onSubmit={handleSearch}
+            className="flex flex-col md:flex-row items-stretch md:items-center md:h-11 border border-gray-300 rounded-xl md:rounded-full shadow-sm col-start-2 col-end-10 md:col-start-4 transition duration-200 ease-out data-[closed]:opacity-0 focus-within:border-primary-blue focus-within:shadow-md"
+          >
+            {/* Search input */}
+            <div className="flex-1 flex items-center min-w-0">
+              <IoSearchOutline className="h-4 w-4 ml-3.5 text-gray-400 flex-shrink-0" />
+              <input
+                type="text"
+                name="search"
+                id="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search for a video..."
+                className="w-full py-2.5 md:py-0 px-2.5 text-sm text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  className="mr-1 p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <XMarkIcon className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Divider */}
+            <div className="hidden md:block w-px h-6 bg-gray-200" />
+
+            {/* Topic filter */}
+            <div className="flex items-center border-t md:border-t-0">
+              <label htmlFor="topicSelect" className="sr-only">Select a topic</label>
+              <select
+                id="topicSelect"
+                value={selectedTopic}
+                onChange={(e) => {
+                  setSelectedTopic(e.target.value);
+                  setSelectedSubtopic("all");
+                }}
+                className="py-2 md:py-0 px-3 text-sm text-gray-600 bg-transparent cursor-pointer focus:outline-none hover:text-gray-800 transition-colors appearance-none"
+                style={{ backgroundImage: "none" }}
               >
-                <label
-                  htmlFor="topicSelect"
-                  className="sr-only"
-                  title="Select a topic"
-                >
-                  Select a topic
-                </label>
-                <select
-                  id="topicSelect"
-                  value={selectedTopic}
-                  onChange={(e) => setSelectedTopic(e.target.value)}
-                  className={`w-full h-full px-1 text-left align-top placeholder-gray-500 bg-transparent cursor-pointer rounded-b-2xl focus:outline-none focus:ring-0 sm:text-sm ${
-                    selectedTopic == "all"
-                      ? "rounded-b-2xl md:rounded-l-full"
-                      : "rounded-bl-2xl md:rounded-tl-full"
-                  }`}
-                >
-                  <option value="all" className="text-gray-800">
-                    All Videos
-                  </option>
-                  {topics
-                    .filter((topic) => topic.subtopics.length > 0)
-                    .map((topic) => (
-                      <option
-                        className="text-gray-800"
-                        key={topic.id}
-                        value={topic.name}
-                      >
-                        {topic.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              {selectedTopic != "all" && (
-                <div className="px-1 h-full md:h-1/2 w-full hover:bg-gray-100 active:bg-gray-200 rounded-br-2xl md:rounded-bl-full border-l md:border-l-0 md:border-t border-primary-blue">
-                  <label
-                    htmlFor="subtopicSelect"
-                    className="sr-only"
-                    title="Select a subtopic"
-                  >
-                    Select a subtopic
-                  </label>
+                <option value="all">All topics</option>
+                {topics
+                  .filter((topic) => topic.subtopics.length > 0)
+                  .map((topic) => (
+                    <option key={topic.id} value={topic.name}>
+                      {topic.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            {/* Subtopic filter — only shows when a topic is selected */}
+            {selectedTopic !== "all" && (
+              <>
+                <div className="hidden md:block w-px h-6 bg-gray-200" />
+                <div className="flex items-center border-t md:border-t-0">
+                  <label htmlFor="subtopicSelect" className="sr-only">Select a subtopic</label>
                   <select
                     id="subtopicSelect"
                     value={selectedSubtopic}
                     onChange={(e) => setSelectedSubtopic(e.target.value)}
-                    className="w-full h-full px-1 align-top text-left placeholder-gray-500 bg-transparent cursor-pointer rounded-none focus:outline-none focus:ring-0 sm:text-sm"
+                    className="py-2 md:py-0 px-3 text-sm text-gray-600 bg-transparent cursor-pointer focus:outline-none hover:text-gray-800 transition-colors appearance-none"
+                    style={{ backgroundImage: "none" }}
                   >
-                    <option value="all" className="text-gray-800">
-                      All Subtopics
-                    </option>
+                    <option value="all">All subtopics</option>
                     {topics
                       .find((topic) => topic.name === selectedTopic)
                       ?.subtopics?.map((subtopic) => (
-                        <option
-                          className="text-gray-800"
-                          key={subtopic.id}
-                          value={subtopic.name}
-                        >
+                        <option key={subtopic.id} value={subtopic.name}>
                           {subtopic.name}
                         </option>
                       ))}
                   </select>
                 </div>
-              )}
-            </div>
-            <input
-              type="text"
-              name="search"
-              id="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search for a video"
-              className="w-full col-span-8 md:col-span-6 p-1 md:p-3 md:ml-2.5 inline-flex items-center justify-center text-gray-800 placeholder-gray-500 bg-inherit rounded-none focus:outline-none focus:ring-0 sm:text-sm"
-            />
+              </>
+            )}
+
+            {/* Search button */}
             <button
               type="submit"
-              onClick={(e) => handleSearch(e)}
               aria-label="Search"
               title="Search"
-              className="w-full h-full gap-1 md:gap-2 col-end-auto text-center col-span-4 md:col-span-3 inline-flex items-center justify-center rounded-tr-2xl md:rounded-r-full bg-primary-blue hover:bg-blue-950 text-white"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 md:py-0 md:h-full text-sm font-medium text-white bg-primary-blue hover:bg-blue-800 active:bg-blue-900 rounded-b-xl md:rounded-none md:rounded-r-full transition-colors duration-200"
             >
-              <IoSearchOutline className="h-6 w-6 flex-shrink-0" />
-              <span className="hidden md:inline">Search</span>
+              <IoSearchOutline className="h-4 w-4 flex-shrink-0" />
+              <span className="md:sr-only lg:not-sr-only">Search</span>
             </button>
           </form>
         </Transition>

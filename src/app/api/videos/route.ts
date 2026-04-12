@@ -4,22 +4,33 @@ import { sanitizeInput } from "@/utils/sanitizeInput";
 
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
-  const limit = sanitizeInput(searchParams.get("limit") || "10");
-  const offset = sanitizeInput(searchParams.get("offset") || "0");
-  const topics = sanitizeInput(searchParams.getAll("topics") || "");
-  const subtopics = sanitizeInput(searchParams.getAll("subtopics") || "");
-  const topic__name = sanitizeInput(searchParams.get("topic__name__iexact") || "");
-  const subtopic__name = sanitizeInput(searchParams.get("subtopic__name__iexact") || "");
-  const topicsArray = topics?.map((topic: string | number) => `topics=${topic}`).join("&");
-  const subtopicsArray = subtopics?.map((subtopic: string | number) => `subtopics=${subtopic}`).join("&");
-  const url = `${process.env.BACKEND_URL}/api/videos/?limit=${limit}&offset=${offset}&${topicsArray}&${subtopicsArray}&topic__name__iexact=${topic__name}&subtopic__name__iexact=${subtopic__name}`;
-  let authToken = cookies().get("auth_token")?.value || null;
 
+  const params = new URLSearchParams();
+  params.set("limit", sanitizeInput(searchParams.get("limit") || "10"));
+  params.set("offset", sanitizeInput(searchParams.get("offset") || "0"));
+
+  for (const topic of searchParams.getAll("topics")) {
+    params.append("topics", sanitizeInput(topic));
+  }
+  for (const subtopic of searchParams.getAll("subtopics")) {
+    params.append("subtopics", sanitizeInput(subtopic));
+  }
+
+  const topicName = searchParams.get("topic__name__iexact");
+  if (topicName) params.set("topic__name__iexact", sanitizeInput(topicName));
+
+  const subtopicName = searchParams.get("subtopic__name__iexact");
+  if (subtopicName) params.set("subtopic__name__iexact", sanitizeInput(subtopicName));
+
+  const url = new URL(`${process.env.BACKEND_URL}/api/videos/`);
+  url.search = params.toString();
+
+  let authToken = cookies().get("auth_token")?.value || null;
   if (!authToken) {
     authToken = request.headers.get("Authorization") || null;
   }
 
-  const response = await fetch(url, {
+  const response = await fetch(url.toString(), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
