@@ -135,11 +135,11 @@ export default function Header() {
   const handleSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (query.trim() === "") return;
-    const params = new URLSearchParams();
-    params.set("query", query.trim());
-    if (selectedTopic !== "all") params.set("topic", selectedTopic);
-    if (selectedSubtopic !== "all") params.set("subtopic", selectedSubtopic);
-    router.push(`/videos/search?${params.toString()}`);
+    const url = new URL("/videos/search", window.location.origin);
+    url.searchParams.set("query", query.trim());
+    if (selectedTopic !== "all") url.searchParams.set("topic", selectedTopic);
+    if (selectedSubtopic !== "all") url.searchParams.set("subtopic", selectedSubtopic);
+    router.push(url.pathname + url.search);
     if (isMobile) setShowSearchbar(false);
   };
 
