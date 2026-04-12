@@ -31,10 +31,11 @@ export const generateMetadata = ({ params }: Props): Metadata => {
 async function getSubtopicText(subtopicId: string | number) {
   try {
     const subtopic = await fetchSubtopicServer(subtopicId);
-    if (!subtopic.sefaria_text) return null;
+    // Use sefaria_text if set, otherwise fall back to the subtopic name
+    const sefariaRef = subtopic.sefaria_text || subtopic.name;
 
     const url = new URL(
-      `/api/v3/texts/${encodeURIComponent(subtopic.sefaria_text)}`,
+      `/api/v3/texts/${encodeURIComponent(sefariaRef)}`,
       "https://www.sefaria.org"
     );
     url.searchParams.set("return_format", "strip_only_footnotes");
