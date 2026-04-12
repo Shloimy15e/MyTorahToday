@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: data }, { status: response.status });
   }
   const accessToken = data.auth_token;
-  cookies().set({
+  (await cookies()).set({
     name: "accessToken",
     value: accessToken,
     httpOnly: true,

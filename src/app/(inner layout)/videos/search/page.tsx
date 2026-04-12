@@ -5,9 +5,10 @@ import VideoGrid from "@/components/VideoGrid";
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams: any;
+  searchParams: Promise<Record<string, string>>;
 }): Promise<Metadata> {
-  const query = searchParams["query"] || "";
+  const params = await searchParams;
+  const query = params["query"] || "";
   return {
     title: `Results for "${query}" - My Torah Today`,
     description: `Search results for "${query}" on My Torah Today`,
@@ -17,14 +18,15 @@ export async function generateMetadata({
 export default async function Search({
   searchParams,
 }: {
-  searchParams: any;
+  searchParams: Promise<Record<string, string>>;
 }) {
-  const query = searchParams["query"] || "";
-  const topic = searchParams["topic"] || "";
-  const subtopic = searchParams["subtopic"] || "";
+  const resolvedParams = await searchParams;
+  const query = resolvedParams["query"] || "";
+  const topic = resolvedParams["topic"] || "";
+  const subtopic = resolvedParams["subtopic"] || "";
 
   if (!query.trim()) {
-    return <NoResults searchParams={searchParams} />;
+    return <NoResults searchParams={resolvedParams} />;
   }
 
   const url = new URL("/api/videos/", process.env.BACKEND_URL);
@@ -35,7 +37,7 @@ export default async function Search({
   const data = await res.json();
 
   if (!data.results || data.results.length === 0) {
-    return <NoResults searchParams={searchParams} />;
+    return <NoResults searchParams={resolvedParams} />;
   }
 
   const filterLabel = topic && subtopic

@@ -5,7 +5,7 @@ import VideoGrid from "@/components/VideoGrid";
 import { cookies } from "next/headers";
 
 export default async function WatchedVideos() {
-  const authToken = cookies().get("auth_token")?.value || null;
+  const authToken = (await cookies()).get("auth_token")?.value || null;
   try {
     if (!authToken) {
       console.log("You must be logged in to have watched videos");

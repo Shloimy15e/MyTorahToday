@@ -10,22 +10,17 @@ import JournalSection from "@/components/JournalSection";
 import Link from "next/link";
 import { Metadata } from "next";
 import SefariaText from "@/components/SefariaText";
+import VideoGrid from "@/components/VideoGrid";
 import { cookies } from "next/headers";
-import dynamic from "next/dynamic";
-
-const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
-  ssr: false, // Prevent server-side rendering
-});
 
 type Props = {
-  params: {
-    subtopicId: string | number;
-  };
+  params: Promise<{ subtopicId: string }>;
 };
 
-export const generateMetadata = ({ params }: Props): Metadata => {
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+  const { subtopicId } = await params;
   return {
-    title: `${params.subtopicId} - My Torah Today`,
+    title: `${subtopicId} - My Torah Today`,
   };
 };
 
@@ -66,8 +61,8 @@ async function getSubtopicText(subtopicId: string | number) {
 //Get the topic name from the params and pass it to the getVideosByTopic function
 export default async function SubtopicPage({ params }: Props) {
   try {
-    const authToken = cookies().get("auth_token")?.value || null;
-    const { subtopicId } = params;
+    const authToken = (await cookies()).get("auth_token")?.value || null;
+    const { subtopicId } = await params;
     const subtopic = await fetchSubtopicServer(subtopicId);
     const displaySubtopic = subtopic.name;
     const videos = await getVideosBySubtopicsServer(

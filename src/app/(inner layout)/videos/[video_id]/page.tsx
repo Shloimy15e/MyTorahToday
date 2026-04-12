@@ -24,16 +24,13 @@ import { fetchRelatedVideosServer } from "@/data/videoData";
 import formatDuration from "@/utils/formatDuration";
 
 type Props = {
-  params: {
-    video_id: string;
-  };
+  params: Promise<{ video_id: string }>;
 };
 
-//Get the topic name from the params and pass it to the getVideosByTopic function
 export default async function VideoPage({ params }: Props) {
   try {
-    const { video_id } = params;
-    const authToken = cookies().get("auth_token")?.value || null;
+    const { video_id } = await params;
+    const authToken = (await cookies()).get("auth_token")?.value || null;
     const response = await fetch(
       `${process.env.BACKEND_URL}/api/videos/${video_id}/`,
       {

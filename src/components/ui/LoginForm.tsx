@@ -1,3 +1,5 @@
+"use client";
+
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/context/ToastProvider";

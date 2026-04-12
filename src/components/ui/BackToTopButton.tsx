@@ -1,4 +1,5 @@
-// src/components/BackToTopButton.tsx
+"use client";
+
 import { useEffect, useState } from 'react';
 import { ArrowUpIcon } from '@heroicons/react/24/solid';
 const BackToTopButton = () => {

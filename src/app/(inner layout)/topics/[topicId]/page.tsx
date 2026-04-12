@@ -10,36 +10,28 @@ import { Error401 } from "@/components/Error401";
 import HeroWithTitle from "@/components/ui/HeroWithTitle";
 import { Metadata } from "next";
 import Subtopic from "@/types/Subtopic";
+import VideoGrid from "@/components/VideoGrid";
+import TopicGrid from "@/components/TopicGrid";
 import { cookies } from "next/headers";
-import dynamic from "next/dynamic";
-
-const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
-  ssr: false, // Prevent server-side rendering
-});
-
-const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
-  ssr: false, // Prevent server-side rendering
-});
 
 type Props = {
-  params: {
-    topicId: string;
-  };
+  params: Promise<{ topicId: string }>;
 };
 
-export const generateMetadata = ({ params }: Props): Metadata => {
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+  const { topicId } = await params;
   return {
     title: `${
-      params.topicId.charAt(0).toUpperCase() +
-      params.topicId.slice(1).replace("-", " ")
+      topicId.charAt(0).toUpperCase() +
+      topicId.slice(1).replace("-", " ")
     } - My Torah Today`,
   };
 };
 
 export default async function TopicPage({ params }: Props) {
   try {
-    const authToken = cookies().get("auth_token")?.value || null;
-    const { topicId } = params;
+    const authToken = (await cookies()).get("auth_token")?.value || null;
+    const { topicId } = await params;
 
     // Fetch topic and subtopics in parallel
     const [topic, subtopics] = await Promise.all([

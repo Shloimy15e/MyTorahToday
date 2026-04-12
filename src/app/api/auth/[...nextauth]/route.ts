@@ -42,7 +42,7 @@ const { handlers, auth } = NextAuth({
             throw new Error("Failed to fetch user data");
           }
           const UserData = await UserDataRes.json();
-          cookies().set("auth_token", user.auth_token, {
+          (await cookies()).set("auth_token", user.auth_token, {
             httpOnly: true,
             sameSite: "lax", // Adjust this based on your requirements
             path: "/",
@@ -58,7 +58,7 @@ const { handlers, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
-      const authToken = cookies().get("auth_token")?.value;
+      const authToken = (await cookies()).get("auth_token")?.value;
       if (authToken) {
         token.auth_token = authToken;
       }
@@ -78,7 +78,7 @@ const { handlers, auth } = NextAuth({
   },
   events:{
     async signOut({ }) {
-      cookies().set("auth_token", "", {
+      (await cookies()).set("auth_token", "", {
         httpOnly: true,
         sameSite: "lax",
         path: "/",

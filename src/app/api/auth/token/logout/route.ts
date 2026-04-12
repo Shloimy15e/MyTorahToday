@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { serialize } from "cookie";
 
 export async function POST(request: Request): Promise<Response> {
-  const token = cookies().get("auth_token")?.value || null;
+  const token = (await cookies()).get("auth_token")?.value || null;
   if (!token) {
     return NextResponse.json({ error: "No token provided" }, { status: 400 });
   }

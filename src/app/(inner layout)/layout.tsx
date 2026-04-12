@@ -1,5 +1,3 @@
-"use client";
-
 import BackToTopButton from "@/components/ui/BackToTopButton";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";

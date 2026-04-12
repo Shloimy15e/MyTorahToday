@@ -25,7 +25,7 @@ export async function GET(request: Request): Promise<Response> {
   const url = new URL(`${process.env.BACKEND_URL}/api/videos/`);
   url.search = params.toString();
 
-  let authToken = cookies().get("auth_token")?.value || null;
+  let authToken = (await cookies()).get("auth_token")?.value || null;
   if (!authToken) {
     authToken = request.headers.get("Authorization") || null;
   }

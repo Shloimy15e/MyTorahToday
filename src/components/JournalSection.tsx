@@ -3,20 +3,20 @@
 import { Journal } from "@/types/Subtopic";
 import { useState, useEffect } from "react";
 import { IoDocumentTextOutline, IoDownloadOutline, IoChevronDown } from "react-icons/io5";
+import dynamic from "next/dynamic";
+
+const PdfViewer = dynamic(() => import("./PdfViewer"), { ssr: false });
 
 export default function JournalSection({ journals }: { journals: Journal[] }) {
   const [expandedId, setExpandedId] = useState<number | null>(
     journals.length === 1 ? journals[0].id : null
   );
-  // Track which journals have their iframe mounted (delayed unmount for close animation)
   const [mountedId, setMountedId] = useState<number | null>(expandedId);
 
   useEffect(() => {
     if (expandedId !== null) {
-      // Opening: mount immediately
       setMountedId(expandedId);
     } else {
-      // Closing: delay unmount to let animation finish
       const timer = setTimeout(() => setMountedId(null), 300);
       return () => clearTimeout(timer);
     }
@@ -71,13 +71,7 @@ export default function JournalSection({ journals }: { journals: Journal[] }) {
                     : "max-h-0 opacity-0"
                 }`}
               >
-                {isMounted && (
-                  <iframe
-                    src={`${journal.pdf}#toolbar=1&navpanes=0`}
-                    className="w-full h-[80vh] min-h-[600px]"
-                    title={journal.title}
-                  />
-                )}
+                {isMounted && <PdfViewer url={journal.pdf} />}
               </div>
             </div>
           );

@@ -1,12 +1,8 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
 import HeroWithTitle from "@/components/ui/HeroWithTitle";
 import { Metadata } from "next";
-import dynamic from "next/dynamic";
+import TopicGrid from "@/components/TopicGrid";
 import { fetchTopicsServer } from "@/data/videoData";
-
-const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
-  ssr: false, // Prevent server-side rendering
-});
 
 export const metadata: Metadata = {
   title: "My Torah Today - Topics",

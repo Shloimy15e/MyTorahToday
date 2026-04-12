@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { Suspense } from 'react';
-import { motion } from 'framer-motion';
-import { usePathname } from 'next/navigation';
-import { useSearchParams } from 'next/navigation';
+import { Suspense } from "react";
+import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 function TemplateComponent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -12,11 +12,21 @@ function TemplateComponent({ children }: { children: React.ReactNode }) {
 
   return (
     <motion.div
-      key={key} // Keyed on the route for consistent transitions
-      initial={{ opacity: 0, rotateY: -105, zIndex: -1, transformOrigin: 'left center' }}
+      key={key}
+      initial={{
+        opacity: 0,
+        rotateY: -105,
+        zIndex: -1,
+        transformOrigin: "left center",
+      }}
       animate={{ opacity: 1, rotateY: 0, zIndex: 0 }}
-      exit={{ opacity: 0, rotateY: 105, zIndex: -1, transformOrigin: 'right center' }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
+      exit={{
+        opacity: 0,
+        rotateY: 105,
+        zIndex: -1,
+        transformOrigin: "right center",
+      }}
+      transition={{ duration: 0.8, ease: "easeInOut" }}
     >
       {children}
     </motion.div>

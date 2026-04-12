@@ -2,20 +2,20 @@ import { NextResponse } from "next/server";
 import { sanitizeInput } from "@/utils/sanitizeInput";
 import { getAuthToken } from "@/utils/getAuthToken";
 
-type Props = { params: { videoId: number } };
+type Props = { params: Promise<{ videoId: string }> };
 
 export async function POST(request: Request, { params }: Props): Promise<Response> {
-  const { videoId } = params;
+  const { videoId } = await params;
   if (!videoId) {
     return NextResponse.json({ error: "No video_id provided" }, { status: 400 });
   }
-  const authToken = getAuthToken(request);
+  const authToken = await getAuthToken(request);
   if (!authToken) {
     return NextResponse.json({ error: "No authToken provided" }, { status: 400 });
   }
 
-  const url = `${process.env.BACKEND_URL}/api/videos/${sanitizeInput(videoId)}/like/`;
-  const response = await fetch(url, {
+  const url = new URL(`/api/videos/${sanitizeInput(videoId)}/like/`, process.env.BACKEND_URL);
+  const response = await fetch(url.toString(), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

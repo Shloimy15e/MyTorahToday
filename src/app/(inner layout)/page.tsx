@@ -11,15 +11,9 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { Error401 } from "@/components/Error401";
 import Image from "next/image";
 import Topic from "@/types/Topic";
+import VideoGrid from "@/components/VideoGrid";
+import TopicGrid from "@/components/TopicGrid";
 import { cookies } from "next/headers";
-import dynamic from "next/dynamic";
-
-const VideoGrid = dynamic(() => import("@/components/VideoGrid"), {
-  ssr: false, // Prevent server-side rendering
-});
-const TopicGrid = dynamic(() => import("@/components/TopicGrid"), {
-  ssr: false, // Prevent server-side rendering
-});
 
 async function getParshahThisWeek(): Promise<Subtopic[] | null> {
   try {
@@ -59,7 +53,7 @@ async function getParshahThisWeek(): Promise<Subtopic[] | null> {
 
 export default async function Home() {
   try {
-    const authToken = cookies().get("auth_token")?.value || null;
+    const authToken = (await cookies()).get("auth_token")?.value || null;
 
     // Fetch parshah and topics in parallel — don't wait for one before starting the other
     const [parshahThisWeek, topics] = await Promise.all([
