@@ -20,7 +20,7 @@
     "framer-motion": "^11.3.8",
     "ioredis": "^5.4.1",
     "next": "^15.5.15",
-    "next-auth": "^5.0.0-beta.25",
+    "next-auth": "^5.0.0-beta.32",
     "next-share": "^0.27.0",
     "nookies": "^2.5.2",
     "react": "^18",
@@ -30,11 +30,12 @@
     "react-lazy-load-image-component": "^1.6.2",
     "react-pdf": "^9.2.1",
     "react-responsive": "^10.0.0",
-    "sharp": "^0.33.5",
+    "sharp": "^0.35.3",
     "sitemap": "^8.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/cookie": "^0.6.0",
     "@types/dompurify": "^3.0.5",
     "@types/node": "^20",
     "@types/react": "^18",
@@ -42,9 +43,16 @@
     "@types/react-lazy-load-image-component": "^1.6.4",
     "cross-env": "^7.0.3",
     "eslint": "^8",
-    "eslint-config-next": "14.2.4",
-    "postcss": "^8",
+    "eslint-config-next": "^15.5.23",
+    "postcss": "^8.5.26",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "$postcss",
+      "sharp": "$sharp"
+    },
+    "brace-expansion@^1.0.0": "1.1.18"
   }
 }

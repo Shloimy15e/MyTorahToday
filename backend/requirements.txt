@@ -8,5 +8,7 @@ psycopg2-binary==2.9.9
 mysqlclient==2.1.1
 django-filter==24.2
 django-cors-headers==4.4.0
+sqlparse>=0.6.0
+cryptography>=49.0.0
 python-dotenv==1.1.0
 django-unfold==0.45.0
