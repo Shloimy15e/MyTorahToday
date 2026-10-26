@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
+from urllib.parse import urlsplit
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,17 +23,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "your-default-secret-key")
+# Debug pages require an explicit local-development setting.
+DEBUG = os.getenv("DJANGO_DEBUG", "false").strip().lower() in {"1", "true", "yes", "on"}
+
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = "local-development-only-secret-key"
+    else:
+        raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set when DJANGO_DEBUG is false.")
 
 CSRF_TRUSTED_ORIGINS = [
     os.environ.get("RAILWAY_APP_URL", "https://mttbackend-production.up.railway.app")
 ]
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = "True"
-
-ALLOWED_HOSTS = ["*"]
+_default_hosts = ["mttbackend-production.up.railway.app", "localhost", "127.0.0.1", "[::1]"]
+_railway_host = urlsplit(os.getenv("RAILWAY_APP_URL", "")).hostname
+if _railway_host:
+    _default_hosts.append(_railway_host)
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("DJANGO_ALLOWED_HOSTS", ",".join(_default_hosts)).split(",")
+    if host.strip()
+]
 
 # Trust X-Forwarded-Proto from Railway's reverse proxy
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 import DOMPurify from "dompurify";
 
@@ -11,10 +11,11 @@ export default function SefariaText({
   title: string;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const purify = typeof window !== "undefined" ? DOMPurify(window) : null;
+  useEffect(() => setMounted(true), []);
   const sanitizedTextArray = text.map((item) =>
-    purify ? purify.sanitize(item) : item
+    mounted ? DOMPurify.sanitize(item) : ""
   );
 
   const hasMoreText = sanitizedTextArray.length > 1;
