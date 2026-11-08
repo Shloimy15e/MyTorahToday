@@ -12,9 +12,6 @@ dj-database-url = "==2.2.0"
 whitenoise = "==6.7.0"
 psycopg2-binary = "==2.9.9"
 mysqlclient = "==2.2.4"
-mysql = "==0.0.3"
-pylint-django = "==2.7.0"
-pylint = "==4.0.9"
 django-filter = "==24.2"
 django-cors-headers = "==4.4.0"
 sqlparse = ">=0.6.0"
@@ -29,6 +26,8 @@ certifi = ">=2026.10.19"
 urllib3 = ">=2.8.0,<3.0.0"
 
 [dev-packages]
+pylint = "==4.0.9"
+pylint-django = "==2.7.0"
 
 [requires]
 python_version = "3.12"

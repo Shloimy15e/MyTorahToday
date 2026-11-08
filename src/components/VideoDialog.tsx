@@ -28,7 +28,6 @@ import SaveButton from "./ui/SaveButton";
 import Video from "@/types/Video";
 import VideoEmbed from "./VideoEmbed";
 import { incrementViewCount } from "@/lib/incrementViewCount";
-import { set } from "zod";
 import { useSessionContext } from "@/context/SessionContext";
 
 export default function VideoDialog(props: {
