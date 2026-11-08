@@ -23,7 +23,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
   const title = `${topic.name} - My Torah Today`;
   const description = topic.description?.trim() || `Explore ${topic.name} and related Torah teachings from Rabbi Shimon Semp on My Torah Today.`;
   const url = `https://mytorahtoday.com/topics/${topic.id}`;
-  const images = [{ url: "https://mytorahtoday.com/images/social-preview-v2.png", width: 1200, height: 630, alt: "My Torah Today — Torah teachings with Rabbi Shimon Semp" }];
+  const images = [{ url: "https://mytorahtoday.com/images/social-preview-v3.png", width: 1200, height: 630, alt: "My Torah Today — Torah teachings with Rabbi Shimon Semp" }];
   return {
     title,
     description,

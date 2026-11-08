@@ -7,7 +7,7 @@ import { SessionProvider } from "@/context/SessionContext";
 import { displayFont, sourceFont } from "@/styles/fonts";
 
 const siteDescription = "Short Torah teachings with Rabbi Shimon Semp. Explore the parshah, Chassidus and more, with source texts and journals where available.";
-const shareImage = { url: "/images/social-preview-v2.png", width: 1200, height: 630, alt: "My Torah Today — Torah teachings with Rabbi Shimon Semp" };
+const shareImage = { url: "/images/social-preview-v3.png", width: 1200, height: 630, alt: "My Torah Today — Torah teachings with Rabbi Shimon Semp" };
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mytorahtoday.com"),
