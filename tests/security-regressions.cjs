@@ -66,6 +66,38 @@ test("patched sharp loads its native library and processes an image", async () =
   assert.equal(metadata.format, "png");
 });
 
+test("patched glob discovers TypeScript sources and honors ignored paths", () => {
+  const { globSync } = require("glob");
+  const files = globSync("src/**/*.{ts,tsx}", {
+    cwd: path.join(__dirname, ".."),
+    ignore: ["src/app/api/**"],
+  }).map((file) => file.replaceAll("\\", "/"));
+  assert.ok(files.includes("src/components/SefariaText.tsx"));
+  assert.ok(files.includes("src/lib/zod.ts"));
+  assert.ok(files.every((file) => !file.startsWith("src/app/api/")));
+});
+
+test("an aborted glob request performs no directory traversal", async () => {
+  const { glob } = require("glob");
+  const controller = new AbortController();
+  const reason = new Error("Traversal cancelled");
+  controller.abort(reason);
+  let directoryReads = 0;
+  await assert.rejects(glob("src/**/*", {
+    cwd: path.join(__dirname, ".."),
+    signal: controller.signal,
+    fs: {
+      ...fs,
+      readdir(...args) {
+        directoryReads++;
+        return fs.readdir(...args);
+      },
+    },
+  }), (error) => error === reason);
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(directoryReads, 0);
+});
+
 function logoutHandler(token) {
   return loadSource("src/app/api/auth/token/logout/route.ts", {
     "next/headers": { cookies: async () => ({ get: () => token ? { value: token } : undefined }) },
