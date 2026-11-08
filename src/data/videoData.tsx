@@ -1,6 +1,8 @@
 import Subtopic from "@/types/Subtopic";
 import Topic from "@/types/Topic";
 import Video from "@/types/Video";
+import { fetchDiscoveryCalendarRefs } from "@/data/discoveryCalendar";
+import { sortTopicsForDiscovery, sortSubtopicsForDiscovery } from "@/utils/discoveryOrder";
 
 function backendUrl(path: string, params?: Record<string, string | string[]>): string {
   const url = new URL(path, process.env.BACKEND_URL);
@@ -48,6 +50,16 @@ async function fetchJson(url: string, options?: RequestInit) {
     throw new Error(`HTTP error ${response.status}${detail}`);
   }
   return response.json();
+}
+
+async function fetchAllDiscoveryItems<T>(path: string, filters: Record<string, string> = {}): Promise<T[]> {
+  const items: T[] = [];
+  while (true) {
+    const data = await fetchJson(backendUrl(path, { ...filters, limit: "100", offset: String(items.length) }));
+    const page: T[] = data.results || [];
+    items.push(...page);
+    if (!data.next || page.length === 0) return items;
+  }
 }
 
 // --- Server-side fetchers (use BACKEND_URL directly) ---
@@ -155,21 +167,37 @@ export const getVideosBySubtopicsServer = async (
   return data.results;
 };
 
+export async function getSubtopicLibraryServer(subtopicId: string | number, authToken: string | null): Promise<Video[]> {
+  const videos: Video[] = [];
+  let offset = 0;
+  while (true) {
+    const data = await fetchJson(backendUrl("/api/videos/", {
+      subtopics: [String(subtopicId)], limit: "100", offset: String(offset),
+    }), { headers: authHeaders(authToken), cache: "no-store" });
+    const page: Video[] = data.results || [];
+    videos.push(...page);
+    if (!data.next || page.length === 0) return videos;
+    offset += page.length;
+  }
+}
+
 export const fetchTopicsServer = async (): Promise<Topic[]> => {
-  const url = backendUrl("/api/topics/");
-  const data = await fetchJson(url);
-  return data.results;
+  const now = new Date();
+  const [topics, calendarRefs] = await Promise.all([fetchAllDiscoveryItems<Topic>("/api/topics/"), fetchDiscoveryCalendarRefs(now)]);
+  return sortTopicsForDiscovery(topics, { now, calendarRefs });
 };
 
 export const fetchSubtopicsServer = async (topicId: string): Promise<Subtopic[]> => {
-  const url = backendUrl("/api/subtopics/", { topic: topicId });
-  const data = await fetchJson(url);
-  return data.results;
+  const now = new Date();
+  const [subtopics, calendarRefs] = await Promise.all([fetchAllDiscoveryItems<Subtopic>("/api/subtopics/", { topic: topicId }), fetchDiscoveryCalendarRefs(now)]);
+  return sortSubtopicsForDiscovery(subtopics, { now, calendarRefs });
 };
 
 export const fetchTopicServer = async (topicId: string | number): Promise<Topic> => {
   const url = backendUrl(`/api/topics/${topicId}/`);
-  return fetchJson(url);
+  const now = new Date();
+  const [topic, calendarRefs] = await Promise.all([fetchJson(url), fetchDiscoveryCalendarRefs(now)]);
+  return sortTopicsForDiscovery([topic], { now, calendarRefs })[0];
 };
 
 export const fetchTopicServerByName = async (topicName: string): Promise<Topic> => {
@@ -178,9 +206,9 @@ export const fetchTopicServerByName = async (topicName: string): Promise<Topic> 
   return data.results[0];
 };
 
-export const fetchSubtopicServer = async (subtopicId: string | number): Promise<Subtopic> => {
+export const fetchSubtopicServer = async (subtopicId: string | number, authToken: string | null = null): Promise<Subtopic> => {
   const url = backendUrl(`/api/subtopics/${subtopicId}/`);
-  return fetchJson(url);
+  return fetchJson(url, { headers: authHeaders(authToken), cache: "no-store" });
 };
 
 export const fetchSubtopicServerByName = async (name: string): Promise<Subtopic | null> => {

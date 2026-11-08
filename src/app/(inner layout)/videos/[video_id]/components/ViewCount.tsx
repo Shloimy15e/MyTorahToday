@@ -1,47 +1,36 @@
 "use client";
+
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { useEffect, useRef, useState } from "react";
-import { IoMdEye } from "react-icons/io";
+import { useEffect, useState } from "react";
 import { useSessionContext } from "@/context/SessionContext";
 import { incrementViewCount } from "@/lib/incrementViewCount";
 
-export default function ViewCount({
-  views,
-  isViewed,
-  videoId
-}: {
+export default function ViewCount({ views, isViewed, videoId }: {
   views: number;
   isViewed: boolean;
   videoId: number;
 }) {
   const [viewCount, setViewCount] = useState(views);
   const [viewed, setViewed] = useState(isViewed);
-  const timeoutRef = useRef<NodeJS.Timeout>();
   const { session } = useSessionContext();
 
   useEffect(() => {
-    timeoutRef.current = setTimeout(async () => {
-      if (session && !viewed && videoId) {
-        const response = await incrementViewCount(videoId);
-        if (!response.ok) {
-          console.error("Failed to increment view count");
-        }
-        console.log(await response.json());
+    setViewCount(views);
+    setViewed(isViewed);
+  }, [views, isViewed, videoId]);
+
+  useEffect(() => {
+    if (!session || viewed || !videoId) return;
+    let active = true;
+    const timeout = setTimeout(async () => {
+      const response = await incrementViewCount(videoId);
+      if (response.ok && active) {
         setViewed(true);
-        setViewCount((prev) => prev + 1);
+        setViewCount((count) => count + 1);
       }
     }, 5000);
-    return () => clearTimeout(timeoutRef.current);
+    return () => { active = false; clearTimeout(timeout); };
   }, [session, videoId, viewed]);
 
-  return (
-    <>
-      {viewCount}
-      {viewed ? (
-        <IoMdEye className="h-5 w-5 text-primary-blue" />
-      ) : (
-        <EyeIcon className="h-5 w-5 text-gray-600" />
-      )}
-    </>
-  );
+  return <><EyeIcon aria-hidden="true" className={`h-4 w-4 ${viewed ? "text-primary-blue" : ""}`} /><span className="tabular-nums">{viewCount.toLocaleString()} views</span></>;
 }

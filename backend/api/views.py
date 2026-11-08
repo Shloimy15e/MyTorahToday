@@ -27,14 +27,26 @@ from .serializers import TopicSerializer
 from .serializers import SubtopicSerializer
 
 
+def subtopic_content_queryset():
+    return Subtopic.objects.select_related("topic", "featured_video").prefetch_related(
+        "journals",
+        Prefetch("featured_video__subtopics", queryset=Subtopic.objects.select_related("topic")),
+        "featured_video__userLikes", "featured_video__userSaves", "featured_video__userViews",
+    )
+
+
 class TopicViewSet(ModelViewSet):
     """
     A viewset for the Topic model.
     """
 
     serializer_class = TopicSerializer
+
+    def get_permissions(self):
+        return [AllowAny()] if self.action in ["list", "retrieve"] else [IsAdminUser()]
+
     queryset = TopicSerializer.Meta.model.objects.prefetch_related(
-        Prefetch("subtopic_set", queryset=Subtopic.objects.select_related("topic"))
+        Prefetch("subtopic_set", queryset=subtopic_content_queryset())
     ).all()
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = {
@@ -51,7 +63,11 @@ class SubtopicViewSet(ModelViewSet):
     """
 
     serializer_class = SubtopicSerializer
-    queryset = SubtopicSerializer.Meta.model.objects.select_related("topic").all()
+    queryset = subtopic_content_queryset()
+
+    def get_permissions(self):
+        return [AllowAny()] if self.action in ["list", "retrieve"] else [IsAdminUser()]
+
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = {
         "id": ["exact"],

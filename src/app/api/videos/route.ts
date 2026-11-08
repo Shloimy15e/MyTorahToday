@@ -9,6 +9,9 @@ export async function GET(request: Request): Promise<Response> {
   params.set("limit", sanitizeInput(searchParams.get("limit") || "10"));
   params.set("offset", sanitizeInput(searchParams.get("offset") || "0"));
 
+  const search = searchParams.get("search")?.trim();
+  if (search) params.set("search", search);
+
   for (const topic of searchParams.getAll("topics")) {
     params.append("topics", sanitizeInput(topic));
   }
@@ -17,24 +20,22 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   const topicName = searchParams.get("topic__name__iexact");
-  if (topicName) params.set("topic__name__iexact", sanitizeInput(topicName));
+  if (topicName) params.set("topic__name__iexact", topicName);
 
   const subtopicName = searchParams.get("subtopic__name__iexact");
-  if (subtopicName) params.set("subtopic__name__iexact", sanitizeInput(subtopicName));
+  if (subtopicName) params.set("subtopic__name__iexact", subtopicName);
 
   const url = new URL(`${process.env.BACKEND_URL}/api/videos/`);
   url.search = params.toString();
 
-  let authToken = (await cookies()).get("auth_token")?.value || null;
-  if (!authToken) {
-    authToken = request.headers.get("Authorization") || null;
-  }
+  const authToken = (await cookies()).get("auth_token")?.value;
+  const authorization = authToken ? `Token ${authToken}` : request.headers.get("Authorization");
 
   const response = await fetch(url.toString(), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      ...(authToken && { Authorization: `${authToken}` }),
+      ...(authorization && { Authorization: authorization }),
     },
   });
   const data = await response.json();

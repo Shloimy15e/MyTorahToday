@@ -49,3 +49,36 @@ body {
     text-wrap: balance;
   }
 }
+
+.subtopic-learning :is(a, button):focus-visible {
+  outline: 2px solid #224395;
+  outline-offset: 4px;
+}
+
+.learning-display {
+  font-family: var(--font-learning-display), Georgia, serif;
+  font-weight: 400;
+}
+
+html:has(.subtopic-learning) {
+  scroll-behavior: smooth;
+}
+
+.subtopic-learning :is(a, button) {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-duration: 280ms;
+}
+
+.subtopic-learning .learning-feature a:focus-visible {
+  outline-color: white;
+}
+
+.learning-detail-link:hover svg {
+  transform: translate(2px, -2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(.subtopic-learning) {
+    scroll-behavior: auto;
+  }
+}

@@ -1,0 +1,50 @@
+@font-face {
+  font-family: "Dynamiq Inter";
+  src: url("/fonts/dynamiq-inter.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+.credit {
+  display: inline-flex;
+  min-height: 44px;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.credit:focus-visible {
+  outline: 2px solid #0f2a44;
+  outline-offset: 5px;
+}
+
+.caption { color: #0f2a44; font-family: "Dynamiq Inter", Arial, sans-serif; font-size: 12px; }
+.horizontal { display: none; width: 144px; height: auto; }
+.stacked { display: block; width: 84px; height: auto; }
+.cell { display: inline-grid; white-space: pre; }
+.reserve, .letter { grid-area: 1 / 1; }
+.reserve { visibility: hidden; font-weight: 700; }
+.letter {
+  font-weight: 500;
+  transition: color 200ms ease-out, font-weight 200ms ease-out;
+  transition-delay: var(--letter-out);
+}
+
+.credit:is(:hover, :focus-visible) .letter {
+  color: #f97316;
+  font-weight: 700;
+  transition-delay: var(--letter-in);
+}
+
+@media (min-width: 640px) {
+  .credit { flex-direction: row; gap: 4px; }
+  .horizontal { display: block; }
+  .stacked { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter { transition: none; }
+}

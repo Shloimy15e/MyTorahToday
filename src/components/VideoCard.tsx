@@ -1,100 +1,41 @@
-import {
-  EyeIcon,
-  ClockIcon,
-  CalendarIcon,
-  PlayIcon,
-} from "@heroicons/react/24/outline";
+import { PlayIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
+import Link from "next/link";
 import formatDuration from "@/utils/formatDuration";
 import Video from "@/types/Video";
-import { MdOutlineThumbUp, MdThumbUp } from "react-icons/md";
 import SaveButton from "./ui/SaveButton";
-import { IoMdEye } from "react-icons/io";
 
-// A card that has the videoEmbed in it and takes a video from a video list by a parent
-function VideoCard(props: {
+export default function VideoCard({ video }: {
   video: Video;
-  onClick: () => void;
-  showDescription: boolean;
+  onClick?: () => void;
+  showDescription?: boolean;
 }) {
   return (
-    <div className="group bg-white box-border w-full h-full rounded-2xl shadow-md hover:shadow-xl hover:scale-[1.03] hover:cursor-pointer overflow-hidden transition-card">
-      <div className="absolute p-0.5 m-1.5 rounded-full z-10 w-content bg-white/60 group-hover:bg-white group-hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 ease-out">
-        <SaveButton
-          videoId={props.video.id}
-          isSaved={props.video.is_saved_by_user}
-        />
-      </div>
-      <div onClick={props.onClick} className="h-full w-full group rounded-2xl flex flex-col overflow-hidden gap-3">
-        <div className="w-full box-border h-auto max-w-full aspect-video relative">
+    <article className="relative min-w-0 w-full">
+      <Link href={`/videos/${video.id}`} className="group block rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue">
+        <div className="relative aspect-video overflow-hidden rounded-xl bg-stone-200">
           <Image
-            width={400}
-            height={300}
-            src={`https://i.ytimg.com/vi/${props.video.video_id}/hqdefault.jpg`}
-            alt="Video Thumbnail"
-            className="rounded-t-2xl w-full h-full object-cover"
+            fill
+            sizes="(min-width: 1280px) 280px, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
+            src={`https://i.ytimg.com/vi/${video.video_id}/hqdefault.jpg`}
+            alt=""
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.035] motion-reduce:transform-none"
           />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <PlayIcon className="w-11 h-11 text-white bg-opacity-65 group-hover:bg-opacity-100 transition duration-300 bg-primary-blue rounded-full p-2 fill-current absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-          </div>
+          <span className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-300 group-hover:bg-black/15 group-focus-visible:bg-black/15">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/95 text-primary-blue shadow-md transition-[transform,background-color] duration-300 group-hover:scale-110 group-hover:bg-white motion-reduce:transform-none">
+              <PlayIcon className="ml-0.5 h-5 w-5 fill-current" aria-hidden="true" />
+            </span>
+          </span>
+          <span className="absolute bottom-3 right-3 rounded bg-stone-950/85 px-2 py-1 text-xs tabular-nums text-white">{formatDuration(video.duration)}</span>
         </div>
-        <h1 className="text-xl font-bold text-left px-5 w-full">
-          {props.video.title}
-        </h1>
-        {/* description */}
-        {props.showDescription && (
-          <div className="px-4 w-full">
-            <p className="text-sm text-gray-700 w-full overflow-hidden">
-              {props.video.description.toLowerCase().startsWith("subscribe")
-                ? props.video.description
-                : `${props.video.description.slice(0, 250)}...`}
-            </p>
-          </div>
-        )}
-        {/* likes and views */}
-        <div className="flex flex-wrap justify-center items-center px-3 sm:px-6 gap-1.5 sm:gap-2 mt-auto pt-2 border-t border-gray-200 mb-2 text-xs sm:text-sm">
-          <div className="flex justify-start items-center gap-1 text-gray-600">
-            {props.video.is_liked_by_user ? (
-              <MdThumbUp className="h-4 w-4 text-primary-blue" />
-            ) : (
-              <MdOutlineThumbUp className="h-4 w-4 text-gray-600" />
-            )}
-            <p className="pr-1 md:pr-2 lg:pr-1 xl:pr-2 border-r border-gray-300">
-              {props.video.likes + props.video.userLikes}
-            </p>
-          </div>
-          <div className="flex justify-start items-center gap-1">
-            {props.video.is_viewed_by_user ? (
-              <IoMdEye className="h-5 w-5 text-primary-blue" />
-            ) : (
-              <EyeIcon className="h-5 w-5 text-gray-600" />
-            )}
-            <p className="text-sm pr-1 md:pr-2 lg:pr-1 xl:pr-2 border-r border-gray-300">
-              {props.video.views + props.video.userViews}
-            </p>
-          </div>
-          <div className="flex gap-1 justify-start items-center text-gray-600">
-            <ClockIcon className="h-5 w-5" />
-            <p className="text-sm pr-1 md:pr-2 lg:pr-1 xl:pr-2 border-r border-gray-300">
-              {formatDuration(props.video.duration)}
-            </p>
-          </div>
-          <div className="flex justify-start items-center gap-1 text-gray-600">
-            <CalendarIcon className="h-5 w-5" />
-            <p className="text-sm">
-              {props.video.publishedAt
-                ? new Intl.DateTimeFormat("en-US", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                  }).format(new Date(props.video.publishedAt))
-                : "N/A"}
-            </p>
-          </div>
+        <div className="pr-12 pt-4">
+          <h3 className="text-base font-semibold leading-snug text-stone-900 transition-colors duration-200 group-hover:text-primary-blue">{video.title}</h3>
+          <span className="mt-2 inline-block text-sm text-stone-500">{video.is_viewed_by_user ? "Watch again" : "Watch teaching"}</span>
         </div>
+      </Link>
+      <div className="absolute bottom-0 right-0 rounded-full bg-stone-50">
+        <SaveButton key={video.id} videoId={video.id} isSaved={video.is_saved_by_user} />
       </div>
-    </div>
+    </article>
   );
 }
-
-export default VideoCard;

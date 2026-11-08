@@ -12,7 +12,7 @@
     "test:security": "node --test tests/security-regressions.cjs"
   },
   "dependencies": {
-    "@headlessui/react": "^2.1.2",
+    "@headlessui/react": "2.2.10",
     "@heroicons/react": "^2.1.4",
     "dompurify": "^3.4.17",
     "framer-motion": "^11.3.8",

@@ -4,6 +4,7 @@ import "../styles/globals.css";
 import { ToastProvider } from "@/context/ToastProvider";
 import { SessionProvider as NextAuthSessionProvider } from "next-auth/react";
 import { SessionProvider } from "@/context/SessionContext";
+import { displayFont, sourceFont } from "@/styles/fonts";
 
 export const metadata: Metadata = {
   title: "My Torah Today",
@@ -48,10 +49,13 @@ export const metadata: Metadata = {
     "Baal Shem Tov",
   ],
   icons: {
+    shortcut: "/favicon.ico?v=book-v2",
     icon: [
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.ico?v=book-v2", sizes: "16x16 32x32 48x48", type: "image/x-icon" },
+      { url: "/favicon-16x16.png?v=book-v2", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png?v=book-v2", sizes: "32x32", type: "image/png" },
       { url: "/favicon-194x194.png", sizes: "194x194", type: "image/png" },
+      { url: "/favicon.svg?v=book-v2", sizes: "any", type: "image/svg+xml" },
     ],
     apple: [
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
@@ -159,7 +163,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>
+      <body className={`${displayFont.variable} ${sourceFont.variable}`}>
         <NextAuthSessionProvider>
           <SessionProvider>
             <ToastProvider>{children}</ToastProvider>

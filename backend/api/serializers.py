@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from urllib.parse import urlsplit
 from django.contrib.auth import get_user_model
 from users.models import UserSavedVideo
 from users.models import UserVideoList
@@ -18,14 +19,14 @@ class TopicSerializer(serializers.ModelSerializer):
     # Uses prefetched subtopic_set from the viewset queryset
     subtopics = serializers.SerializerMethodField()
     def get_subtopics(self, obj):
-        return SubtopicSerializer(obj.subtopic_set.all(), many=True).data
+        return SubtopicSerializer(obj.subtopic_set.all(), many=True, context=self.context).data
     
     class Meta:
         """
         Meta options for the TopicSerializer class.
         """
         model = Topic
-        fields = ["id", "name", "description", "subtopics"]
+        fields = ["id", "name", "description", "subtopics", "order", "discovery_schedule"]
         
 class JournalSerializer(serializers.ModelSerializer):
     pdf = serializers.SerializerMethodField()
@@ -37,7 +38,7 @@ class JournalSerializer(serializers.ModelSerializer):
         if request:
             url = request.build_absolute_uri(obj.pdf.url)
             # Railway proxies HTTPS -> HTTP internally, so force HTTPS in production
-            if url.startswith("http://") and not request.META.get("HTTP_HOST", "").startswith("localhost"):
+            if url.startswith("http://") and urlsplit(url).hostname not in {"localhost", "127.0.0.1", "::1"}:
                 url = url.replace("http://", "https://", 1)
             return url
         return obj.pdf.url
@@ -50,13 +51,34 @@ class JournalSerializer(serializers.ModelSerializer):
 class SubtopicSerializer(serializers.ModelSerializer):
     topic_name = serializers.CharField(source='topic.name', read_only=True)
     journals = serializers.SerializerMethodField()
+    featured_video_data = serializers.SerializerMethodField()
+
+    def validate_featured_video(self, video):
+        if video is not None and (
+            self.instance is None or not video.subtopics.filter(pk=self.instance.pk).exists()
+        ):
+            raise serializers.ValidationError("Choose a video assigned to this subtopic.")
+        return video
+
+    def get_featured_video_data(self, obj):
+        video = obj.featured_video
+        if video and any(subtopic.pk == obj.pk for subtopic in video.subtopics.all()):
+            return VideoSerializer(video, context=self.context).data
+        return None
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if data["featured_video_data"] is None:
+            data["featured_video"] = None
+        return data
 
     def get_journals(self, obj):
         return JournalSerializer(obj.journals.all(), many=True, context=self.context).data
 
     class Meta:
         model = Subtopic
-        fields = ["id", "name", "description", "topic", "topic_name", "sefaria_text", "journals"]
+        fields = ["id", "name", "description", "topic", "topic_name", "sefaria_text", "journals",
+                  "featured_video", "featured_video_data", "order", "discovery_schedule"]
 
 
 class VideoSerializer(serializers.ModelSerializer):

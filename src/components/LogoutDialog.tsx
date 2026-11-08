@@ -1,130 +1,51 @@
 "use client";
 
-import {
-  Dialog,
-  Transition,
-  DialogPanel,
-  DialogTitle,
-  TransitionChild,
-} from "@headlessui/react";
-import { Fragment } from "react";
+import { Description, Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useState } from "react";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useToast } from "../context/ToastProvider";
 import { signOut } from "next-auth/react";
 import { useSessionContext } from "@/context/SessionContext";
-import LoadingAnimation from "./LoadingAnimation";
+import { useRouter } from "next/navigation";
 
-export default function LogoutDialog(props: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
+export default function LogoutDialog({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { showToast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const closeModal = () => props.onClose();
   const { session } = useSessionContext();
-
-  const handleOnSubmit = async () => {
-    if (!session) {
-      showToast("You are not logged in", "error");
-      closeModal();
-      return;
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const handleLogout = async () => {
+    if (!session) { onClose(); return; }
+    setIsLoading(true);
+    setError("");
+    try {
+      await signOut({ redirect: false });
+      document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      showToast("Logged out successfully", "success");
+      onClose();
+      router.refresh();
+    } catch {
+      setError("We couldn’t log you out. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-    await signOut({ redirect: false })
-      .then(() => {
-        document.cookie =
-          "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        showToast("Logged out successfully", "success");
-        setIsLoading(false);
-        props.onClose();
-      })
-      .catch((error) => {
-        showToast("Failed to log out", "error");
-        setIsLoading(false);
-      });
   };
+
   return (
-    <>
-      <Transition show={props.isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <TransitionChild
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/45" />
-          </TransitionChild>
-
-          <div className="fixed inset-0 flex items-center justify-center">
-            <div className="w-2/3 p-4 text-center">
-              <TransitionChild
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <DialogPanel className="w-full transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <DialogTitle
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 text-pretty"
-                  >
-                    Are you sure you want to log out?
-                  </DialogTitle>
-
-                  <div className="mt-3 text-center sm:mt-0 sm:text-left">
-                    <form className="mt-3">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="mt-3">
-                          <button
-                            type="submit"
-                            title="Log out"
-                            className="w-full text-nowrap text-center py-2 rounded-md shadow-sm text-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleOnSubmit();
-                            }}
-                          >
-                            Log out
-                          </button>
-                        </div>
-                        <div className="mt-3">
-                          <button
-                            type="button"
-                            title="Cancel"
-                            className="w-full text-nowrap py-2 rounded-md shadow-sm text-sm text-white bg-primary-blue hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              // Cancel and close
-                              closeModal();
-                            }}
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                  {isLoading && (
-                    <div className="fixed inset-0 bg-black bg-opacity-65 flex items-center justify-center z-50">
-                      <div className="text-white text-2xl flex flex-col gap-1 items-center">
-                        <LoadingAnimation />
-                        <span>Please wait while we log you out</span>
-                      </div>
-                    </div>
-                  )}
-                </DialogPanel>
-              </TransitionChild>
+    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+      <DialogBackdrop transition className="fixed inset-0 bg-stone-950/45 transition-opacity duration-200 data-[closed]:opacity-0 motion-reduce:duration-75" />
+      <div className="fixed inset-0 overflow-y-auto">
+        <div className="flex min-h-full items-center justify-center p-4">
+          <DialogPanel transition className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl transition duration-200 ease-out data-[closed]:translate-y-2 data-[closed]:opacity-0 motion-reduce:transform-none motion-reduce:duration-75 sm:p-8">
+            <DialogTitle className="learning-display text-4xl text-stone-900">Log out?</DialogTitle>
+            <Description className="mt-3 text-sm leading-6 text-stone-600">Your saved videos and likes will be here when you return.</Description>
+            {error && <p role="alert" className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-800">{error}</p>}
+            <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row" aria-busy={isLoading}>
+              <button type="button" onClick={onClose} disabled={isLoading} data-autofocus className="min-h-12 flex-1 rounded-lg border border-stone-300 px-5 py-3 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue disabled:opacity-60">Stay logged in</button>
+              <button type="button" onClick={handleLogout} disabled={isLoading} className="min-h-12 flex-1 rounded-lg bg-primary-blue px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-blue disabled:cursor-wait disabled:opacity-60">{isLoading ? "Logging out…" : "Log out"}</button>
             </div>
-          </div>
-        </Dialog>
-      </Transition>
-    </>
+          </DialogPanel>
+        </div>
+      </div>
+    </Dialog>
   );
 }

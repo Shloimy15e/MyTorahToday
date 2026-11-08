@@ -1,96 +1,34 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import LoginDialog from "./LoginDialog";
 import SignupDialog from "./SignupDialog";
 import LogoutDialog from "./LogoutDialog";
 import { useSessionContext } from "@/context/SessionContext";
 import { useRouter } from "next/navigation";
 
-export const Error401 = () => {
-  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
-  const [isSignupDialogOpen, setIsSignupDialogOpen] = useState(false);
-  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
-  const { session } = useSessionContext();
+export const Error401 = ({ title, description }: { title?: string; description?: string }) => {
+  const [dialog, setDialog] = useState<"login" | "signup" | "logout" | null>(null);
+  const { session, status } = useSessionContext();
   const router = useRouter();
 
-  const closeDialog = () => {
-    setIsLoginDialogOpen(false);
-    setIsSignupDialogOpen(false);
-    setIsLogoutDialogOpen(false);
-  };
-
   return (
-    <>
-      <main className="bg-neutral-100 flex flex-col gap-6 min-h-screen">
-        <h2 className="text-2xl text-center mx-auto mt-10 w-full">
-          {session
-            ? "Something went wrong."
-            : "You have been logged out succesfully."}
-        </h2>
-        <h3 className="text-xl text-center mx-6 my-4 w-full">
-          {session ? (
-            <>
-              We&apos;re sorry, but your login credentials seem to be invalid.
-              <br />
-              Please try logging out and logging back in.
-            </>
-          ) : (
-            <>
-              You can log back in, sign up for a new account, or reload the page
-              to continue.
-            </>
-          )}
-        </h3>
-
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
-          {session ? (
-            <button
-              onClick={() => setIsLogoutDialogOpen(true)}
-              className="bg-primary-blue w-1/3 hover:bg-blue-700 active:scale-90 text-white font-bold py-2 px-4 rounded"
-            >
-              Log out
-            </button>
-          ) : (
-            <>
-              <button
-                onClick={() => setIsLoginDialogOpen(true)}
-                className="bg-primary-blue w-1/4 hover:bg-blue-700 active:scale-90 text-white font-bold py-2 px-4 rounded"
-              >
-                Log in
-              </button>
-              <button
-                onClick={() => router.refresh()}
-                className="bg-primary-blue w-1/4 hover:bg-blue-700 active:scale-90 text-white font-bold py-2 px-4 rounded"
-              >
-                Reload
-              </button>
-              <button
-                onClick={() => setIsSignupDialogOpen(true)}
-                className="bg-primary-blue w-1/4 hover:bg-blue-700 active:scale-90 text-white font-bold py-2 px-4 rounded"
-              >
-                Sign up
-              </button>
-            </>
-          )}
-        </div>
-        <div className="flex flex-col gap-4 items-center justify-center mx-6">
-          <p className="text-center text-lg text-gray-700">
-            This error occurs when you log out on one device and are still
-            logged in on another.
-          </p>
-          <p className="text-center text-gray-600">
-            Technical explanation: When you log out, you are effectively
-            terminating your session on the backend server and the frontend
-            website. However, if you are still logged in on another device, that
-            device may incorrectly assume that your session is still valid on
-            the backend server, when in reality, it has been invalidated.
-          </p>
-        </div>
-      </main>
-      <SignupDialog isOpen={isSignupDialogOpen} onClose={closeDialog} />
-      <LoginDialog isOpen={isLoginDialogOpen} onClose={closeDialog} />
-      <LogoutDialog isOpen={isLogoutDialogOpen} onClose={closeDialog} />
-    </>
+    <section className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 lg:px-12">
+      <div className="max-w-xl">
+        <h1 className="learning-display text-4xl leading-tight text-stone-900 sm:text-5xl">{session ? "Let’s reconnect your account" : title || "Log in to keep learning"}</h1>
+        <p className="mt-5 text-base leading-7 text-stone-600">{session ? "Your session needs to be renewed. Log out, then log back in to continue." : description || "Log in to access your saved videos, likes, and viewing history."}</p>
+        {status === "loading" ? <p role="status" className="mt-7 text-sm text-stone-600">Checking your account…</p> :
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <button type="button" onClick={() => setDialog(session ? "logout" : "login")} className="min-h-12 rounded-lg bg-primary-blue px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-blue">{session ? "Log out" : "Log in"}</button>
+            {!session && <button type="button" onClick={() => setDialog("signup")} className="min-h-12 rounded-lg border border-stone-300 bg-white px-5 py-3 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue">Create an account</button>}
+            {session && <button type="button" onClick={() => router.refresh()} className="min-h-12 rounded-lg border border-stone-300 bg-white px-5 py-3 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue">Try again</button>}
+          </div>}
+        <Link href="/topics" className="mt-5 inline-flex min-h-11 items-center text-sm text-stone-600 underline decoration-stone-300 underline-offset-4 transition-colors hover:text-primary-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue">Explore topics while you’re here</Link>
+      </div>
+      <SignupDialog isOpen={dialog === "signup"} onClose={() => setDialog(null)} />
+      <LoginDialog isOpen={dialog === "login"} onClose={() => setDialog(null)} />
+      <LogoutDialog isOpen={dialog === "logout"} onClose={() => setDialog(null)} />
+    </section>
   );
 };

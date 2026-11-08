@@ -1,7 +1,6 @@
 import {
   fetchSubtopicsServer,
   fetchTopicServer,
-  getVideosBySubtopicNameServer,
   getVideosBySubtopicsServer,
 } from "@/data/videoData";
 
@@ -20,11 +19,9 @@ type Props = {
 
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
   const { topicId } = await params;
+  const topic = await fetchTopicServer(topicId);
   return {
-    title: `${
-      topicId.charAt(0).toUpperCase() +
-      topicId.slice(1).replace("-", " ")
-    } - My Torah Today`,
+    title: `${topic.name} - My Torah Today`,
   };
 };
 
@@ -40,10 +37,6 @@ export default async function TopicPage({ params }: Props) {
     ]);
     const displayTopic = topic.name;
 
-    if (!subtopics || subtopics.length === 0) {
-      throw new Error("404 - No data was found");
-    }
-
     // Fetch videos for all subtopics in parallel
     const videosBySubtopics = await Promise.all(
       subtopics.map(async (subtopic: Subtopic) => {
@@ -57,15 +50,14 @@ export default async function TopicPage({ params }: Props) {
     );
 
     return (
-      <>
-        <main className="bg-neutral-100 grid grid-cols-1">
-          <HeroWithTitle title={displayTopic} />
+        <main className="min-h-[60vh] bg-stone-50 pb-16">
           <Breadcrumbs
             segments={[
               { href: "topics", label: "Topics" },
               { href: `topics/${topicId}`, label: displayTopic },
             ]}
           />
+          <HeroWithTitle title={displayTopic} description={topic.description} />
           {/* List of topics */}
           <TopicGrid topics={subtopics} areSubtopics={true} showAll={false} />
           {/* List of videos by topic */}
@@ -86,10 +78,9 @@ export default async function TopicPage({ params }: Props) {
                 )
             )}
         </main>
-      </>
     );
-  } catch (error: any) {
-    if (error.message.includes("401")) {
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("401")) {
       return (
         <>
           <Error401 />

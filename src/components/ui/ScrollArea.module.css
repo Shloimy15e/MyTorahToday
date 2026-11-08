@@ -1,0 +1,55 @@
+.scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  min-height: 32px;
+  border-radius: 999px;
+  background: #d6d3d1;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a8a29e;
+}
+
+.scrollbar::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #d6d3d1 transparent;
+  }
+
+  .scrollbar:hover {
+    scrollbar-color: #a8a29e transparent;
+  }
+}
+
+@media (forced-colors: active) {
+  .scrollbar,
+  .scrollbar:hover {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: auto;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    background: Canvas;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb,
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: CanvasText;
+  }
+}

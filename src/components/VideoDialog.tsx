@@ -1,249 +1,36 @@
 "use client";
 
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  EyeIcon,
-} from "@heroicons/react/24/solid";
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  Transition,
-  TransitionChild,
-} from "@headlessui/react";
-import {
-  EmailIcon,
-  EmailShareButton,
-  WhatsappIcon,
-  WhatsappShareButton,
-} from "next-share";
-import { Fragment, useEffect, useRef, useState } from "react";
-
-import { CalendarDaysIcon } from "@heroicons/react/24/outline";
-import { IoMdEye } from "react-icons/io";
-import LikeButtonAndCount from "./ui/LikeButtonAndCount";
+import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
+import { ArrowRightIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Fragment } from "react";
 import Link from "next/link";
+import LikeButtonAndCount from "./ui/LikeButtonAndCount";
 import SaveButton from "./ui/SaveButton";
 import Video from "@/types/Video";
 import VideoEmbed from "./VideoEmbed";
-import { incrementViewCount } from "@/lib/incrementViewCount";
-import { useSessionContext } from "@/context/SessionContext";
+import ShareButtons from "@/app/(inner layout)/videos/[video_id]/components/ShareButtons";
+import ViewCount from "@/app/(inner layout)/videos/[video_id]/components/ViewCount";
 
-export default function VideoDialog(props: {
+export default function VideoDialog({ isOpen, video, onClose }: {
   isOpen: boolean;
   video: Video;
   onClose: () => void;
 }) {
-  const closeModal = () => props.onClose();
-  const lowerCaseTopicNames =
-    props.video?.topics_data
-      ?.map((topic) => topic.name.toLowerCase())
-      .join(", ") ?? "";
-  const lowerCaseSubtopicName =
-    props.video?.subtopics_data
-      ?.map((subtopic) => subtopic.name.toLowerCase())
-      .join(", ") ?? "";
-  const lowercaseTitle = props.video?.title?.toLowerCase() ?? "";
-  const [isViewed, setIsViewed] = useState(props.video.is_viewed_by_user);
-  const [viewCount, setViewCount] = useState(0);
-  const { session } = useSessionContext();
-
-  useEffect(() => {
-    setIsViewed(props.video.is_viewed_by_user);
-    setViewCount(props.video.views + props.video.userViews);
-  }, [props.video.is_viewed_by_user, props.video.userViews, props.video.views]);
-
-  const timeoutRef = useRef<NodeJS.Timeout>();
-
-  useEffect(() => {
-    timeoutRef.current = setTimeout(async () => {
-      if (session && !props.video.is_viewed_by_user && props.video.id) {
-        const response = await incrementViewCount(props.video.id);
-        if (!response.ok) {
-          console.error("Failed to increment view count");
-        }
-        console.log(await response.json());
-        setIsViewed(true);
-        setViewCount((prev) => prev + 1);
-      }
-    }, 5000);
-
-    return () => clearTimeout(timeoutRef.current);
-  }, [props.video.id, session, props.video.is_viewed_by_user]);
-
-  return (
-    <>
-      <Transition show={props.isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <TransitionChild
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/45" />
-          </TransitionChild>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-1/2 items-center justify-center p-4 text-center">
-              <TransitionChild
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <DialogPanel className="w-full max-w-4xl md:max-w-2xl lg:max-w-3xl 2xl:max-w-5xl transform overflow-hidden rounded-2xl bg-white p-4 md:p-6 text-left align-middle shadow-xl transition-all">
-                  <div className="mt-2">
-                    <VideoEmbed
-                      src={props.video.video_id}
-                      className="w-full aspect-video rounded-md"
-                    />
-                  </div>
-
-                  {/* Likes and other info */}
-                  <DialogTitle
-                    as="h3"
-                    className="text-lg text-start overflow-hidden font-medium leading-6 text-gray-900 my-2"
-                  >
-                    {props.video.title}
-                  </DialogTitle>
-                  <div className="flex items-center justify-start gap-6">
-                    <span>
-                      <LikeButtonAndCount
-                        videoId={props.video.id}
-                        likes={props.video.likes + props.video.userLikes}
-                        isLiked={props.video.is_liked_by_user}
-                      />
-                    </span>
-                    <span>
-                      <SaveButton
-                        videoId={props.video.id}
-                        isSaved={props.video.is_saved_by_user}
-                      />
-                    </span>
-                    <span
-                      title="Share via Email"
-                      className="flex items-center justify-center"
-                    >
-                      <EmailShareButton
-                        url={`${process.env.NEXT_PUBLIC_BASE_URL}/topics/${lowerCaseTopicNames}/${lowerCaseSubtopicName}/${props.video.video_id}`}
-                        subject={`R' Shimon Semp - ${props.video.title?.slice(
-                          0,
-                          50
-                        )}`}
-                        body={`Check out this video by R' Shimon Semp: ${process.env.NEXT_PUBLIC_BASE_URL}/topics/${lowerCaseTopicNames}/${lowerCaseSubtopicName}/${props.video.video_id}`}
-                        blankTarget={true}
-                      >
-                        <EmailIcon className="w-9 h-9" round />
-                      </EmailShareButton>
-                    </span>
-                    <span
-                      title="Share on Whatsapp"
-                      className="flex items-center justify-center"
-                    >
-                      <WhatsappShareButton
-                        url={`${process.env.NEXT_PUBLIC_BASE_URL}/topics/${lowerCaseTopicNames}/${lowerCaseSubtopicName}/${props.video.video_id}`}
-                        title={`R' Shimon Semp - ${props.video.title?.slice(
-                          0,
-                          50
-                        )}`}
-                        separator=":: "
-                        blankTarget={true}
-                      >
-                        <WhatsappIcon className="w-9 h-9" round />
-                      </WhatsappShareButton>
-                    </span>
-                  </div>
-                  <div className="mt-2 flex flex-col items-center justify-between w-full bg-neutral-200 p-2 rounded-lg">
-                    <div className="md:px-4 my-2 flex flex-col gap-2 md:flex-row items-start justify-between w-full">
-                      <span className="text-gray-500">
-                        {props.video.topics_data?.map((topic) => (
-                          <Link
-                            key={topic.id}
-                            href={`/topics/${topic.id}`}
-                            className=" hover:underline"
-                          >
-                            {topic.name}
-                          </Link>
-                        ))}
-                        {" - "}
-                        {props.video.subtopics_data?.map((subtopic, index) => (
-                          <>
-                            <Link
-                              key={subtopic.id}
-                              href={`/subtopics/${subtopic.id}`}
-                              className=" hover:underline"
-                            >
-                              {subtopic.name}
-                            </Link>{" "}
-                            {index === props.video.subtopics_data.length - 1
-                              ? ""
-                              : " • "}
-                          </>
-                        ))}
-                      </span>
-                      <div className="flex justify-between w-full md:w-auto">
-                        <span className="text-gray-500 flex items-center justify-start gap-2">
-                          <CalendarDaysIcon className="h-5 w-5 text-gray-400" />
-                          {props.video.publishedAt
-                            ? new Intl.DateTimeFormat("en-US", {
-                                year: "numeric",
-                                month: "2-digit",
-                                day: "2-digit",
-                              }).format(new Date(props.video.publishedAt))
-                            : "N/A"}
-                        </span>
-                        <span className="text-gray-500 ml-4 flex items-center justify-center gap-2">
-                          {viewCount}
-                          <IoMdEye
-                            className={`inline h-5 w-5 ${
-                              isViewed ? "text-primary-blue" : "text-gray-400"
-                            }`}
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-start w-full overflow-clip">
-                      {props.video.description}
-                    </p>
-                  </div>
-                  <div className="mt-4 flex justify-between items-center">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-primary-blue px-4 py-2 text-sm font-medium text-white hover:bg-blue-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={closeModal}
-                    >
-                      <ArrowLeftIcon className="h-5 w-6 mr-2" />
-                      Return to video list
-                    </button>
-                    <Link
-                      href={`/videos/${props.video.id}`}
-                      className="inline-flex justify-center rounded-md border border-transparent bg-primary-blue px-4 py-2 text-sm font-medium text-white hover:bg-blue-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ml-4"
-                      onClick={closeModal}
-                      aria-label="Go to video page"
-                      title="Go to video page"
-                      role="button"
-                      aria-hidden="false"
-                      tabIndex={0}
-                    >
-                      See video page
-                      <ArrowRightIcon className="h-5 w-6 ml-2" />
-                    </Link>
-                  </div>
-                </DialogPanel>
-              </TransitionChild>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
-    </>
-  );
+  if (!video.id) return null;
+  return <Transition show={isOpen} as={Fragment}>
+    <Dialog as="div" className="relative z-50" onClose={onClose}>
+      <TransitionChild as={Fragment} enter="ease-out duration-200 motion-reduce:transition-none" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-out duration-150 motion-reduce:transition-none" leaveFrom="opacity-100" leaveTo="opacity-0"><div className="fixed inset-0 bg-stone-950/60" /></TransitionChild>
+      <div className="fixed inset-0 overflow-y-auto p-3 sm:p-6"><div className="flex min-h-full items-center justify-center">
+        <TransitionChild as={Fragment} enter="ease-out duration-300 motion-reduce:transition-none" enterFrom="translate-y-3 opacity-0" enterTo="translate-y-0 opacity-100" leave="ease-out duration-150 motion-reduce:transition-none" leaveFrom="translate-y-0 opacity-100" leaveTo="translate-y-3 opacity-0">
+          <DialogPanel className="w-full max-w-4xl overflow-hidden rounded-2xl bg-white p-4 shadow-2xl sm:rounded-[1.5rem] sm:p-6">
+            <div className="mb-4 flex items-start justify-between gap-4"><DialogTitle className="pt-1 font-sans text-2xl font-semibold leading-[1.25] text-stone-900 sm:text-3xl lg:text-[32px]">{video.title}</DialogTitle><button type="button" onClick={onClose} aria-label="Close video" className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-stone-100 text-stone-600 transition-colors duration-200 hover:bg-stone-200 motion-reduce:transition-none"><XMarkIcon className="h-5 w-5" /></button></div>
+            <div className="aspect-video overflow-hidden rounded-xl bg-stone-900"><VideoEmbed src={video.video_id} className="h-full w-full" autoplay={false} /></div>
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-stone-600">Rabbi Shimon Semp</p>{isOpen && <span className="inline-flex items-center gap-1.5 text-sm text-stone-600"><ViewCount key={video.id} views={video.views + video.userViews} isViewed={video.is_viewed_by_user} videoId={video.id} /></span>}</div>
+            <div className="mt-5 flex flex-wrap items-center gap-2"><LikeButtonAndCount videoId={video.id} likes={video.likes + video.userLikes} isLiked={video.is_liked_by_user} /><SaveButton videoId={video.id} isSaved={video.is_saved_by_user} showLabel /><ShareButtons video={video} /></div>
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3"><button type="button" onClick={onClose} className="inline-flex min-h-11 items-center px-2 text-sm text-stone-600 hover:text-primary-blue">Back to teachings</button><Link href={`/videos/${video.id}`} onClick={onClose} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary-blue px-5 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-950 motion-reduce:transition-none">Open teaching<ArrowRightIcon aria-hidden="true" className="h-4 w-4" /></Link></div>
+          </DialogPanel>
+        </TransitionChild>
+      </div></div>
+    </Dialog>
+  </Transition>;
 }

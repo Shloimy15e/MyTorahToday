@@ -4,126 +4,60 @@ import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/context/ToastProvider";
 import { useRouter } from "next/navigation";
-import LoadingAnimation from "../LoadingAnimation";
-import { useState } from "react";
-import { BiHide, BiShow } from "react-icons/bi";
+import { useId, useState } from "react";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
-export function LoginForm({ onClose }: { onClose: () => void }) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+type LoginValues = { username: string; password: string };
+
+export function LoginForm({ onClose, onSignup }: { onClose: () => void; onSignup?: () => void }) {
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginValues>();
   const [showPassword, setShowPassword] = useState(false);
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
-  const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { showToast } = useToast();
   const router = useRouter();
+  const id = useId();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: LoginValues) => {
     setIsLoading(true);
-    const result = await signIn("credentials", {
-      username: data.username,
-      password: data.password,
-      redirect: false,
-    });
-
-    if (result?.error) {
-      showToast("Invalid username or password", "error");
-      setIsLoading(false);
-    } else {
-      onClose();
+    setError("");
+    try {
+      const result = await signIn("credentials", { username: data.username, password: data.password, redirect: false });
+      if (!result || result.error) {
+        setError("That username or password wasn’t recognized. Please try again.");
+        return;
+      }
       showToast("Logged in successfully", "success");
-      setIsLoading(false);
+      onClose();
       router.refresh();
+    } catch {
+      setError("We couldn’t connect. Please try logging in again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const inputClass = "block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-base text-stone-900 outline-none transition-colors placeholder:text-stone-500 focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/20 disabled:bg-stone-100";
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="mt-3">
-        <div className="relative">
-          <input
-            id="username"
-            type="text"
-            required
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Username or Email"
-            {...register("username", {
-              required: true,
-              validate: (value: string) =>
-                value.trim() !== "" || "Username or email is required",
-            })}
-          />
-          <label
-            htmlFor="username"
-            className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-indigo-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
-          >
-            Username or Email
-          </label>
-          {errors.username && (
-            <p className="text-red-500 text-xs italic mt-1">
-              {errors.username.message as string}
-            </p>
-          )}
-        </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" aria-busy={isLoading}>
+      <div>
+        <label htmlFor={`${id}-username`} className="block text-sm font-medium leading-5 text-stone-800">Username or email</label>
+        <input id={`${id}-username`} type="text" autoComplete="username" autoCapitalize="none" spellCheck={false} required disabled={isLoading} aria-invalid={Boolean(errors.username)} aria-describedby={errors.username ? `${id}-username-error` : undefined} className={`${inputClass} mt-1.5`} {...register("username", { required: "Enter your username or email.", validate: value => value.trim() !== "" || "Enter your username or email." })} />
+        {errors.username && <p id={`${id}-username-error`} className="mt-1.5 text-sm text-red-700">{errors.username.message}</p>}
       </div>
-      <div className="mt-3">
-        <div className="relative">
-          <input
-            id="password"
-            type={showPassword ? "text" : "password"}
-            autoComplete="current-password"
-            placeholder="Password"
-            required
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            {...register("password", {
-              required: true,
-              validate: (value: string) =>
-                value.trim() !== "" || "Password is required",
-            })}
-          />
-          {errors.password && (
-            <p className="text-red-500 text-xs italic">
-              {errors.password.message as string}
-            </p>
-          )}
-          <label
-            htmlFor="password"
-            className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-indigo-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
-          >
-            Password
-          </label>
-          <button
-            type="button"
-            className="absolute top-2 right-2 text-gray-600"
-            onClick={togglePasswordVisibility}
-          >
-            {showPassword ? (
-              <BiHide className="h-5 w-5" />
-            ) : (
-              <BiShow className="h-5 w-5" />
-            )}
+      <div>
+        <label htmlFor={`${id}-password`} className="block text-sm font-medium leading-5 text-stone-800">Password</label>
+        <div className="relative mt-1.5">
+          <input id={`${id}-password`} type={showPassword ? "text" : "password"} autoComplete="current-password" required disabled={isLoading} aria-invalid={Boolean(errors.password)} aria-describedby={errors.password ? `${id}-password-error` : undefined} className={`${inputClass} pr-12`} {...register("password", { required: "Enter your password.", validate: value => value.trim() !== "" || "Enter your password." })} />
+          <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} className="absolute right-1 top-0 flex h-11 w-11 items-center justify-center rounded-lg text-stone-500 hover:text-primary-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue">
+            {showPassword ? <EyeSlashIcon aria-hidden="true" className="h-5 w-5" /> : <EyeIcon aria-hidden="true" className="h-5 w-5" />}
           </button>
         </div>
+        {errors.password && <p id={`${id}-password-error`} className="mt-1.5 text-sm text-red-700">{errors.password.message}</p>}
       </div>
-      <div className="mt-3">
-        <button
-          type="submit"
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-blue hover:bg-blue-950 disabled:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600"
-          disabled={isLoading}
-        >
-          Log in to your account
-        </button>
-      </div>
-      {isLoading && (
-        <div className="fixed inset-0 bg-black bg-opacity-65 flex items-center justify-center z-50">
-          <div className="text-white text-2xl flex flex-col gap-1 items-center">
-            <LoadingAnimation />
-            <span>Logging you in...</span>
-          </div>
-        </div>
-      )}
+      {error && <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm leading-6 text-red-800">{error}</p>}
+      <button type="submit" disabled={isLoading} className="min-h-12 w-full rounded-lg bg-primary-blue px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-blue disabled:cursor-wait disabled:opacity-60">{isLoading ? "Logging in…" : "Log in"}</button>
+      {onSignup && <p className="text-center text-sm text-stone-600">New to My Torah Today? <button type="button" onClick={onSignup} disabled={isLoading} className="inline-flex min-h-11 items-center rounded-md px-1 font-semibold text-primary-blue underline decoration-primary-blue/30 underline-offset-4 transition-colors hover:decoration-primary-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-blue disabled:cursor-wait disabled:opacity-60">Create an account</button></p>}
     </form>
   );
 }

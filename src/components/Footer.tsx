@@ -1,4 +1,4 @@
-import Link from "next/link";
+import DynamiqCredit from "./DynamiqCredit";
 
 const socials = [
   {
@@ -63,17 +63,17 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-gray-200 bg-gray-50">
-      <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
+    <footer className="bg-stone-100/70 text-stone-600">
+      <div className="mx-auto max-w-7xl px-5 py-9 sm:px-8 lg:px-12">
         {/* Social links */}
-        <div className="flex justify-center gap-5 mb-8">
+        <div className="mb-6 flex flex-wrap justify-center gap-2">
           {socials.map((item) => (
             <a
               key={item.name}
               href={item.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-gray-600 hover:scale-110 active:scale-95 inline-block"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-stone-500 transition-[color,background-color,transform] duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-primary-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue motion-reduce:transform-none"
             >
               <span className="sr-only">{item.name}</span>
               <item.icon aria-hidden="true" className="h-6 w-6" />
@@ -81,30 +81,13 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Divider */}
-        <div className="h-px bg-gray-200 mb-8" />
-
         {/* Credits */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-500">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-500 sm:pr-16">
           <p className="text-center sm:text-left">
             &copy; {new Date().getFullYear()} MyTorahToday. All rights reserved
             to Hashem.
           </p>
-          <a
-            href="https://www.dynamiq.dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-gray-400 hover:text-gray-600"
-          >
-            <span>Built by</span>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://www.dynamiq.dev/logo.svg"
-              alt="Dynamiq Solutions"
-              className="h-6 -mx-2"
-            />
-            <span className="font-semibold text-gray-600">Dynamiq Solutions</span>
-          </a>
+          <DynamiqCredit />
         </div>
       </div>
     </footer>

@@ -1,78 +1,44 @@
 "use client";
+
+import { useId, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import TopicCard from "./TopicCard";
 import Topic from "@/types/Topic";
 import Subtopic from "@/types/Subtopic";
-import { useState } from "react";
-import { useMediaQuery } from "react-responsive";
 
 export default function TopicGrid(props: {
   topics: Topic[] | Subtopic[];
   areSubtopics: boolean;
   showAll: boolean;
+  hideTitle?: boolean;
 }) {
-  const [showMore, setShowMore] = useState(false);
-  const isMobile = useMediaQuery({ maxWidth: 639 });
-  const isTablet = useMediaQuery({ minWidth: 640, maxWidth: 1023 });
-  const isLaptop = useMediaQuery({ minWidth: 1024, maxWidth: 1279 });
-  const isDesktop = useMediaQuery({ minWidth: 1280, maxWidth: 1535 });
-  const isLargeDesktop = useMediaQuery({ minWidth: 1536 });
+  const [expanded, setExpanded] = useState(false);
+  const reduceMotion = useReducedMotion();
+  const gridId = useId();
+  const topics = props.topics.filter(topic => props.areSubtopics || (topic as Topic).subtopics.length > 0);
+  const label = props.areSubtopics ? "Subtopics" : "Topics";
 
   return (
-    <div>
-      <h1 className="leading-relaxed pb-4 relative text-2xl sm:text-3xl md:text-4xl font-bold my-4 md:my-6 ml-4 sm:ml-6 md:ml-10 text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900">
-        {props.areSubtopics ? "Subtopics" : "Topics"}
-      </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-4 sm:gap-6 md:gap-8 lg:gap-10 justify-items-center place-items-center align-middle w-full auto-rows-max px-4 sm:px-6 md:px-10 pb-4 sm:pb-6 md:pb-10">
-        {props.showAll
-          ? props.topics
-              .filter(
-                (topic) =>
-                  props.areSubtopics || (topic as Topic).subtopics.length > 0
-              )
-              .map((topic) => (
-                <TopicCard
-                  key={topic.id}
-                  topic={topic}
-                  isSubtopic={props.areSubtopics}
-                />
-              ))
-          : props.topics
-              .filter(
-                (topic) =>
-                  props.areSubtopics || (topic as Topic).subtopics.length > 0
-              )
-              .slice(
-                0,
-                showMore
-                  ? props.topics.length
-                  : isMobile
-                  ? 4
-                  : isTablet || isLaptop || isDesktop
-                  ? 6
-                  : 8
-              )
-              .map((topic: Topic | Subtopic) => (
-                <TopicCard
-                  topic={topic}
-                  key={topic.id}
-                  isSubtopic={props.areSubtopics}
-                />
-              ))}
-      </div>
-      {!props.showAll &&
-        props.topics.length >
-          (isMobile ? 4 : isTablet || isLaptop || isDesktop ? 6 : 10) &&
-        !showMore && (
-          <div className="flex justify-center mt-6">
-            <button
-              title={`Load More ${props.areSubtopics ? "Subtopics" : "Topics" }`}
-              onClick={() => setShowMore(true)}
-              className="text-base md:text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:bg-blue-950 mx-4 sm:mx-14 md:mx-24 my-6 w-full sm:w-auto transition-card"
-            >
-              Load More {props.areSubtopics ? "Subtopics" : "Topics"}
-            </button>
-          </div>
-        )}
-    </div>
+    <section id="topics" aria-label={label} className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:px-12">
+      {!props.hideTitle && <h2 className="learning-display mb-7 text-3xl tracking-tight text-stone-900 sm:text-4xl">{props.areSubtopics ? "Explore the subtopics" : "Explore by topic"}</h2>}
+      {topics.length > 0 ? (
+        <motion.div id={gridId} layout={!reduceMotion} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }} className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {topics.map((topic, index) => (
+            <motion.div key={topic.id} layout={reduceMotion ? false : "position"} initial={false} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }} className={!props.showAll && !expanded && index >= 6 ? "hidden" : !props.showAll && !expanded && index >= 4 ? "hidden sm:block" : undefined}>
+              <TopicCard topic={topic} isSubtopic={props.areSubtopics} />
+            </motion.div>
+          ))}
+        </motion.div>
+      ) : <p className="rounded-xl bg-white px-6 py-8 text-stone-600">Topics will appear here as the library grows.</p>}
+      {!props.showAll && topics.length > 4 && (
+        <div className={`mt-6 ${topics.length <= 6 ? "sm:hidden" : ""}`}>
+          <button type="button" aria-expanded={expanded} aria-controls={gridId} onClick={() => setExpanded(value => !value)} className="group inline-flex min-h-11 items-center gap-2 rounded-full border border-stone-300 px-5 py-2.5 text-sm font-medium text-stone-700 transition-colors duration-200 hover:border-primary-blue hover:bg-white hover:text-primary-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue">
+            {expanded ? `Show fewer ${label.toLowerCase()}` : `Show all ${label.toLowerCase()}`}
+            <ChevronDownIcon className={`h-4 w-4 transition-transform duration-300 motion-reduce:transition-none ${expanded ? "rotate-180" : ""}`} aria-hidden="true" />
+          </button>
+        </div>
+      )}
+    </section>
   );
 }

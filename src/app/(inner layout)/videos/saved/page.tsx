@@ -1,58 +1,8 @@
-import Head from "next/head";
-import Link from "next/link";
 import { Metadata } from "next";
-import VideoGrid from "@/components/VideoGrid";
-import { cookies } from "next/headers";
+import CollectionPage from "@/components/CollectionPage";
 
-export default async function SavedVideos() {
-  const authToken = (await cookies()).get("auth_token")?.value || null;
-  try {
-    if (!authToken) {
-      console.log("You must be logged in to have saved videos");
-      throw new Error("You must be logged in to have saved videos");
-    }
-    const url = new URL("/api/videos/", process.env.BACKEND_URL);
-    url.searchParams.set("is_saved_by_user", "true");
-    const res = await fetch(url.toString(), {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Token ${authToken}`,
-      },
-    });
-    const data = await res.json();
-    const videos = data.results;
-    if (!videos) {
-      throw new Error("No videos were found");
-    }
-    return (
-      <>
-        <main>
-          {videos && videos.length > 0 && (
-            <VideoGrid
-              videos={videos}
-              title={"Videos you saved"}
-              topic_name={"saved videos"}
-              topic={0}
-              showAll={true}
-              topicVideos={false}
-              isThereText={false}
-            />
-          )}
-          {videos && videos.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-96">
-              <h1 className="text-xl font-bold">No saved videos found</h1>
-              <Link
-                href="/topics"
-                className="md:text-lg bg-primary-blue text-gray-100 text-center font-semibold md:px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer hover:bg-blue-950 mx-14 md:mx-24 my-6 w-4/5"
-              >
-                Browse Topics
-              </Link>
-            </div>
-          )}
-        </main>
-      </>
-    );
-  } catch (error) {
-    throw error;
-  }
+export const metadata: Metadata = { title: "Saved videos - My Torah Today" };
+
+export default async function SavedVideos({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  return <CollectionPage collection="saved" page={(await searchParams).page} />;
 }

@@ -1,0 +1,1421 @@
+{
+  "schema_version": 1,
+  "sources": [
+    "https://www.sefaria.org/api/v2/raw/index/Genesis",
+    "https://www.sefaria.org/api/v2/raw/index/Exodus",
+    "https://www.sefaria.org/api/v2/raw/index/Leviticus",
+    "https://www.sefaria.org/api/v2/raw/index/Numbers",
+    "https://www.sefaria.org/api/v2/raw/index/Deuteronomy"
+  ],
+  "topics": [
+    {
+      "id": 1,
+      "name": "Parshah",
+      "order": 10,
+      "discovery_schedule": []
+    },
+    {
+      "id": 5,
+      "name": "Mo'adim",
+      "order": 20,
+      "discovery_schedule": []
+    },
+    {
+      "id": 3,
+      "name": "Chassidus",
+      "order": 30,
+      "discovery_schedule": []
+    },
+    {
+      "id": 4,
+      "name": "Life's Ways",
+      "order": 40,
+      "discovery_schedule": []
+    },
+    {
+      "id": 2,
+      "name": "Neviim",
+      "order": 50,
+      "discovery_schedule": []
+    },
+    {
+      "id": 10,
+      "name": "Israel",
+      "order": 60,
+      "discovery_schedule": []
+    },
+    {
+      "id": 6,
+      "name": "Shabbos",
+      "order": 70,
+      "discovery_schedule": []
+    },
+    {
+      "id": 7,
+      "name": "Fast Days",
+      "order": 80,
+      "discovery_schedule": []
+    },
+    {
+      "id": 8,
+      "name": "Bein Ham'tzarim",
+      "order": 90,
+      "discovery_schedule": []
+    }
+  ],
+  "subtopics": [
+    {
+      "id": 1,
+      "name": "Devarim",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 440,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Deuteronomy 1:1-3:22"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "name": "Balak",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 400,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Numbers 22:2-25:9"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "name": "Pinchas",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 410,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Numbers 25:10-30:1"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "name": "Chukat",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 390,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Numbers 19:1-22:1"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "Matot",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 420,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Numbers 30:2-32:42"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "name": "Sh'lach",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 370,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Numbers 13:1-15:41"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "name": "Vayishlach",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 80,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Genesis 32:4-36:43"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "name": "Shemot",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 130,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 1:1-6:1"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "name": "Toldot",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 60,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Genesis 25:19-28:9"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "name": "Re'eh",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 470,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Deuteronomy 11:26-16:17"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "name": "Vaetchanan",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 450,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Deuteronomy 3:23-7:11"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "name": "Eikev",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 460,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Deuteronomy 7:12-11:25"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "name": "Shoftim",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 480,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Deuteronomy 16:18-21:9"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "name": "Ki Teitzei",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 490,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Deuteronomy 21:10-25:19"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "name": "Ki Tavo",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 500,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Deuteronomy 26:1-29:8"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "name": "Nitzavim",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 510,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Deuteronomy 29:9-30:20"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "name": "Yom Kippur",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Tishri"
+          ],
+          "hebrew_days": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "name": "Masei",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 430,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Numbers 33:1-36:13"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "name": "Korach",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 380,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Numbers 16:1-18:32"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "name": "Beshalach",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 160,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 13:17-17:16"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "name": "Mishpatim",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 180,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 21:1-24:18"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "name": "Terumah",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 190,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 25:1-27:19"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "name": "Purim",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Adar",
+            "Adar II"
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "name": "Ki Tisa",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 210,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 30:11-34:35"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 50,
+      "name": "Pesach",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Nisan"
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "name": "Lag Ba'omer",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Iyar"
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "name": "Bo",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 150,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 10:1-13:16"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "name": "Vaera",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 140,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 6:2-9:35"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "name": "Vayigash",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 110,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Genesis 44:18-47:27"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "name": "Vayeshev",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 90,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Genesis 37:1-40:23"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "name": "Chayei Sara",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 50,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Genesis 23:1-25:18"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "name": "Vayera",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 40,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Genesis 18:1-22:24"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "name": "Lech Lecha",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 30,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Genesis 12:1-17:27"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "name": "Noach",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 20,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Genesis 6:9-11:32"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "name": "Miketz",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 100,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Genesis 41:1-44:17"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 63,
+      "name": "Tetzaveh",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 200,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 27:20-30:10"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "name": "Pikudei",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 230,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 38:21-40:38"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 65,
+      "name": "Metzora",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 280,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Leviticus 14:1-15:33"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 66,
+      "name": "Vayeilech",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 520,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Deuteronomy 31:1-30"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 68,
+      "name": "Nachamu",
+      "topic": {
+        "id": 6,
+        "name": "Shabbos"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Av"
+          ],
+          "priority": 20
+        }
+      ]
+    },
+    {
+      "id": 69,
+      "name": "Tishah Be'av",
+      "topic": {
+        "id": 7,
+        "name": "Fast Days"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Av"
+          ],
+          "priority": 20
+        }
+      ]
+    },
+    {
+      "id": 70,
+      "name": "Inyan",
+      "topic": {
+        "id": 8,
+        "name": "Bein Ham'tzarim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Tamuz",
+            "Av"
+          ],
+          "priority": 20
+        }
+      ]
+    },
+    {
+      "id": 71,
+      "name": "Tu B'av",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Av"
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 72,
+      "name": "Ha'Azinu",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 530,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Deuteronomy 32:1-52"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 73,
+      "name": "V'Zot HaBerachah",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 540,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Deuteronomy 33:1-34:12"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 74,
+      "name": "Bereshit",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 10,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Genesis 1:1-6:8"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 75,
+      "name": "Vayetzei",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 70,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Genesis 28:10-32:3"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 76,
+      "name": "Vayechi",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 120,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Genesis 47:28-50:26"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 77,
+      "name": "Yitro",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 170,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 18:1-20:23"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 78,
+      "name": "Vayakhel",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 220,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 35:1-38:20"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 79,
+      "name": "Pekudei",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 230,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 38:21-40:38"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 80,
+      "name": "Pekudei",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 230,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Exodus 38:21-40:38"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 81,
+      "name": "Vayikra",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 240,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Leviticus 1:1-5:26"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 82,
+      "name": "Tzav",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 250,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Leviticus 6:1-8:36"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 83,
+      "name": "Shmini",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 260,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Leviticus 9:1-11:47"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 84,
+      "name": "Tazria",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 270,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Leviticus 12:1-13:59"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 85,
+      "name": "Metzora",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 280,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Leviticus 14:1-15:33"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 86,
+      "name": "Achrei Mot",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 290,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Leviticus 16:1-18:30"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 87,
+      "name": "Kedoshim",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 300,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Leviticus 19:1-20:27"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 88,
+      "name": "Beha'alotcha",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 360,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Numbers 8:1-12:16"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 89,
+      "name": "Emor",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 310,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Leviticus 21:1-24:23"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 90,
+      "name": "Behar",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 320,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Leviticus 25:1-26:2"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 91,
+      "name": "Bechukotai",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 330,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Leviticus 26:3-27:34"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 92,
+      "name": "Bamidbar",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 340,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Numbers 1:1-4:20"
+          ],
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": 93,
+      "name": "Nasso",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 350,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Numbers 4:21-7:89"
+          ],
+          "priority": 40
+        }
+      ],
+      "description": "Explore Nasso through short teachings from Rabbi Shimon Semp on blessing, taking responsibility, and bringing your own meaning to familiar mitzvos. Continue with the parshah text and a printable journal for learning and discussion.",
+      "sefaria_text": "Numbers 4:21-7:89",
+      "featured_video": 3043
+    },
+    {
+      "id": 94,
+      "name": "Rosh Hashanah",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Elul"
+          ],
+          "priority": 25
+        },
+        {
+          "hebrew_months": [
+            "Tishri"
+          ],
+          "hebrew_days": [
+            1,
+            2
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 95,
+      "name": "Aseres Yemei Teshuvah",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Tishri"
+          ],
+          "hebrew_days": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 97,
+      "name": "Elul",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Elul"
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 99,
+      "name": "Sukkos",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Tishri"
+          ],
+          "hebrew_days": [
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 101,
+      "name": "Chanukah",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Kislev",
+            "Tevet"
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "name": "Shiv'ah Assar Be'Tammuz",
+      "topic": {
+        "id": 7,
+        "name": "Fast Days"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Tamuz"
+          ],
+          "priority": 20
+        }
+      ]
+    },
+    {
+      "id": 110,
+      "name": "Tu B'shvat",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Shevat"
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 112,
+      "name": "Sefiras Ha'omer",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Nisan",
+            "Iyar",
+            "Sivan"
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 113,
+      "name": "Shavuos",
+      "topic": {
+        "id": 5,
+        "name": "Mo'adim"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "hebrew_months": [
+            "Sivan"
+          ],
+          "priority": 25
+        }
+      ]
+    },
+    {
+      "id": 114,
+      "name": "Shabbos",
+      "topic": {
+        "id": 4,
+        "name": "Life's Ways"
+      },
+      "order": 0,
+      "discovery_schedule": [
+        {
+          "weekdays": [
+            4,
+            5,
+            6
+          ],
+          "priority": 30
+        }
+      ]
+    },
+    {
+      "id": 116,
+      "name": "Tazria Metzora",
+      "topic": {
+        "id": 1,
+        "name": "Parshah"
+      },
+      "order": 270,
+      "discovery_schedule": [
+        {
+          "calendar_refs": [
+            "Leviticus 12:1-15:33",
+            "Leviticus 12:1-13:59",
+            "Leviticus 14:1-15:33"
+          ],
+          "priority": 40
+        }
+      ]
+    }
+  ]
+}

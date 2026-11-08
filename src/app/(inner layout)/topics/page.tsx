@@ -9,26 +9,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Topics() {
-  try {
-    const topics = await fetchTopicsServer();
-    if(!topics) {
-      throw new Error("500 - There was a serer error fetching topics");
-    }
-
-    if (topics.length === 0) {
-      throw new Error("404 - No topics found");
-    }
-
-    return (
-      <>
-        <main>
-          <HeroWithTitle title="Topics" />
-          <Breadcrumbs segments={[{href: "topics", label: "Topics"}]} />
-          <TopicGrid topics={topics} areSubtopics={false} showAll={true} />
-        </main>
-      </>
-    );
-  } catch (error) {
-    throw error;
-  }
+  const topics = await fetchTopicsServer();
+  return (
+    <main className="min-h-[60vh] bg-stone-50 pb-16">
+      <Breadcrumbs segments={[{ href: "topics", label: "Topics" }]} />
+      <HeroWithTitle title="Find your next teaching." description="Follow a familiar subject, or make room for something new." />
+      <TopicGrid topics={topics} areSubtopics={false} showAll hideTitle />
+    </main>
+  );
 }

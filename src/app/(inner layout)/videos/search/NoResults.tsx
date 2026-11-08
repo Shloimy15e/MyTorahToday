@@ -1,63 +1,24 @@
-"use client";
-
 import Link from "next/link";
-import { IoArrowBack, IoHomeOutline, IoSearchOutline } from "react-icons/io5";
 
-export default function NoResults({ searchParams }: { searchParams: any }) {
-  const query = searchParams["query"] || "";
-  const topic = searchParams["topic"] || "";
-  const subtopic = searchParams["subtopic"] || "";
-
-  const filterLabel = topic && subtopic
-    ? `${topic} \u203a ${subtopic}`
-    : topic || subtopic || "";
+export default function NoResults({ searchParams, failed = false, page = 1 }: { searchParams: { query?: string; topic?: string; subtopic?: string }; failed?: boolean; page?: number }) {
+  const { query = "", topic = "", subtopic = "" } = searchParams;
+  const filterLabel = [topic, subtopic].filter(Boolean).join(" / ");
+  const retryParams = new URLSearchParams({ query });
+  if (topic) retryParams.set("topic", topic);
+  if (subtopic) retryParams.set("subtopic", subtopic);
 
   return (
-    <main className="min-h-[60vh] flex flex-col items-center justify-center px-4">
-      <div className="flex flex-col items-center gap-6 max-w-md text-center">
-        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
-          <IoSearchOutline className="w-7 h-7 text-gray-400" />
-        </div>
-
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold text-gray-900">
-            No results found
-          </h1>
-          <p className="text-gray-500">
-            {query ? (
-              <>
-                We couldn&apos;t find any videos matching &ldquo;{query}&rdquo;
-                {filterLabel && <> in {filterLabel}</>}.
-              </>
-            ) : (
-              <>Enter a search term to find videos.</>
-            )}
-          </p>
-        </div>
-
-        {query && (
-          <p className="text-sm text-gray-400">
-            Try different keywords or remove the topic filter.
-          </p>
-        )}
-
-        <div className="flex gap-3">
-          <button
-            onClick={() => window.history.back()}
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors"
-          >
-            <IoArrowBack className="w-4 h-4" />
-            Go back
-          </button>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-primary-blue rounded-lg hover:bg-blue-800 active:bg-blue-900 transition-colors"
-          >
-            <IoHomeOutline className="w-4 h-4" />
-            Home
-          </Link>
-        </div>
+    <section className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-12">
+      <h2 className="learning-display text-3xl text-stone-900 sm:text-4xl">{failed ? "Search is taking a pause" : query && page > 1 ? "You’ve reached the end." : query ? "No matching videos yet" : "What would you like to learn?"}</h2>
+      <p className="mt-4 max-w-xl text-base leading-7 text-stone-600">
+        {failed ? "We couldn’t load these results. Please try your search again." : query && page > 1 ? "There are no videos on this page. Return to the first page to explore your results." : query ? <>We couldn’t find videos for &ldquo;{query}&rdquo;{filterLabel && <> in {filterLabel}</>}. Try a shorter phrase{filterLabel ? " or search across all topics" : " or a different keyword"}.</> : "Enter a word or phrase above, or explore the library by topic."}
+      </p>
+      <div className="mt-7 flex flex-wrap gap-3">
+        {failed ? <Link href={`/videos/search?${retryParams}`} className="inline-flex min-h-11 items-center rounded-lg bg-primary-blue px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-blue">Try again</Link>
+          : query && page > 1 ? <Link href={`/videos/search?${retryParams}`} className="inline-flex min-h-11 items-center rounded-lg bg-primary-blue px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-blue">Back to the first page</Link>
+          : query && filterLabel ? <Link href={`/videos/search?${new URLSearchParams({ query })}`} className="inline-flex min-h-11 items-center rounded-lg bg-primary-blue px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-blue">Search all topics</Link> : null}
+        <Link href="/topics" className="inline-flex min-h-11 items-center rounded-lg border border-stone-300 bg-white px-5 py-3 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue">Browse topics</Link>
       </div>
-    </main>
+    </section>
   );
 }

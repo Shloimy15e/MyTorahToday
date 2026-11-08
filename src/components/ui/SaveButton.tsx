@@ -8,9 +8,11 @@ import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 export default function SaveButton({
   videoId,
   isSaved: isSaved,
+  showLabel = false,
 }: {
   videoId: number;
   isSaved: boolean;
+  showLabel?: boolean;
 }) {
   const [isSavedState, setIsSavedState] = useState(isSaved);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,7 +55,7 @@ export default function SaveButton({
           toggleSave();
         }}
         disabled={isLoading}
-        className={`text-xl h-9 aspect-square flex items-center justify-center border bg-transparent p-1.5 rounded-full active:scale-95 ${
+        className={`text-xl ${showLabel ? "min-h-11 gap-2 px-4" : "h-11 w-11 p-2.5"} flex items-center justify-center border bg-transparent rounded-full active:scale-95 ${
           isSavedState
             ? "text-primary-blue border-primary-blue hover:bg-blue-50"
             : "text-gray-700 border-gray-300 hover:border-gray-400 hover:bg-gray-50"
@@ -91,6 +93,7 @@ export default function SaveButton({
             )}
           </span>
         )}
+        {showLabel && <span className="text-sm font-medium">{isLoading ? "Saving…" : isSavedState ? "Saved" : "Save for later"}</span>}
       </button>{" "}
     </div>
   );

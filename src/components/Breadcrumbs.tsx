@@ -1,74 +1,26 @@
 "use client";
 
-import { ChevronRightIcon, HomeIcon } from "@heroicons/react/20/solid";
-
+import { ArrowLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function Breadcrumbs({
-    segments
-}: {
-    segments: {
-        href: string,
-        label: string,
-    }[]
-}) {
+export default function Breadcrumbs({ segments }: { segments: { href: string; label: string }[] }) {
   const pathname = usePathname();
-  
-  // Skip breadcrumbs for home page
-  if (pathname === "/") return null;
-
-  
-  const breadcrumbs = segments.map((segment, index) => {
-    const href = `/${segment.href}`;
-    const label = segment.label
-      .split("-")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-    
-    return {
-      href,
-      label,
-      current: index === segments.length - 1
-    };
-  }).filter(breadcrumb => breadcrumb.label !== "Videos");
-
+  if (pathname === "/" || !segments.length) return null;
+  const breadcrumbs = segments.map(segment => ({ ...segment, href: `/${segment.href.replace(/^\/+/, "")}` }));
+  const parent = breadcrumbs.length > 1 ? breadcrumbs[breadcrumbs.length - 2] : { href: "/", label: "Home" };
   return (
-    <nav className="flex px-4 py-3 bg-white shadow-sm" aria-label="Breadcrumb">
-      <ol className="flex items-center space-x-2">
-        <li>
-          <Link
-            href="/"
-            className="text-gray-500 hover:text-gray-700 flex items-center"
-          >
-            <HomeIcon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
-            <span className="sr-only">Home</span>
-          </Link>
-        </li>
-        {breadcrumbs.map((breadcrumb) => (
-          <li key={breadcrumb.href} className="flex items-center">
-            <ChevronRightIcon
-              className="h-5 w-5 flex-shrink-0 text-gray-400"
-              aria-hidden="true"
-            />
-            {breadcrumb.current ? (
-              <span
-                className="ml-2 text-sm font-medium text-gray-500"
-                aria-current="page"
-              >
-                {breadcrumb.label}
-              </span>
-            ) : (
-              <Link
-                href={breadcrumb.href}
-                className="ml-2 text-sm font-medium text-gray-500 hover:text-gray-700"
-              >
-                {breadcrumb.label}
-              </Link>
-            )}
+    <nav aria-label="Breadcrumb" className="mx-auto w-full max-w-7xl px-5 pt-5 text-sm sm:px-8 sm:pt-6 lg:px-12">
+      <Link href={parent.href} className="inline-flex min-h-11 items-center gap-2 rounded text-stone-600 transition-colors hover:text-primary-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue sm:hidden"><ArrowLeftIcon className="h-4 w-4" aria-hidden="true" />{parent.label}</Link>
+      <ol className="hidden min-h-8 flex-wrap items-center gap-x-2 gap-y-1 text-stone-500 sm:flex">
+        <li><Link href="/" className="inline-flex min-h-8 items-center rounded underline-offset-4 hover:text-primary-blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue">Home</Link></li>
+        {breadcrumbs.map((breadcrumb, index) => (
+          <li key={breadcrumb.href} className="flex min-w-0 items-center gap-2">
+            <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-stone-400" aria-hidden="true" />
+            {index === breadcrumbs.length - 1 ? <span aria-current="page" className="font-medium text-stone-700">{breadcrumb.label}</span> : <Link href={breadcrumb.href} className="inline-flex min-h-8 items-center rounded underline-offset-4 hover:text-primary-blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue">{breadcrumb.label}</Link>}
           </li>
         ))}
       </ol>
     </nav>
   );
-} 
+}

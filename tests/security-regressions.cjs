@@ -22,7 +22,9 @@ function loadSource(relativePath, mocks = {}) {
 }
 
 test("server-rendered Sefaria text never includes untrusted HTML before sanitization", () => {
-  const SefariaText = loadSource("src/components/SefariaText.tsx").default;
+  const SefariaText = loadSource("src/components/SefariaText.tsx", {
+    "@/utils/sourceSearch": loadSource("src/utils/sourceSearch.ts"),
+  }).default;
   const html = renderToStaticMarkup(React.createElement(SefariaText, {
     title: "Torah text",
     text: ['<img src=x onerror="alert(1)"><script>alert(1)</script>', '<svg onload="alert(2)"></svg>'],

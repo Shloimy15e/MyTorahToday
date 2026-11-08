@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { sanitizeInput } from "@/utils/sanitizeInput";
+import { fetchDiscoveryCalendarRefs } from "@/data/discoveryCalendar";
+import { sortTopicsForDiscovery } from "@/utils/discoveryOrder";
 
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
@@ -21,6 +23,11 @@ export async function GET(request: Request): Promise<Response> {
   const data = await response.json();
   if (!response.ok) {
     return NextResponse.json({ error: data }, { status: response.status });
+  }
+  if (Array.isArray(data.results)) {
+    const now = new Date();
+    const calendarRefs = await fetchDiscoveryCalendarRefs(now);
+    data.results = sortTopicsForDiscovery(data.results, { now, calendarRefs });
   }
   return NextResponse.json(data, { status: response.status });
 }

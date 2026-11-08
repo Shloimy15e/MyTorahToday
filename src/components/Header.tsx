@@ -1,147 +1,86 @@
 "use client";
 
 import {
-  ArrowLeftStartOnRectangleIcon,
-  ArrowRightEndOnRectangleIcon,
-  Bars3Icon,
-  HomeIcon,
-  PencilSquareIcon,
-  RectangleGroupIcon,
-  RectangleStackIcon,
-  UserCircleIcon,
-  XMarkIcon,
+  ArrowLeftStartOnRectangleIcon, ArrowRightEndOnRectangleIcon, Bars3Icon,
+  BookmarkIcon, ChevronDownIcon, EyeIcon, HandThumbUpIcon, HomeIcon,
+  MagnifyingGlassIcon, PencilSquareIcon, RectangleGroupIcon, RectangleStackIcon,
+  UserCircleIcon, XMarkIcon,
 } from "@heroicons/react/24/outline";
 import {
-  Dialog,
-  DialogPanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  Transition,
-  TransitionChild,
+  Dialog, DialogPanel, DialogTitle,
+  Menu, MenuButton, MenuItem, MenuItems,
+  Transition, TransitionChild,
 } from "@headlessui/react";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import {
-  IoBookmarksOutline,
-  IoEye,
-  IoEyeOutline,
-  IoSearchOutline,
-  IoSettingsOutline,
-} from "react-icons/io5";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
-import { BiLike } from "react-icons/bi";
+import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import LoginDialog from "./LoginDialog";
 import LogoutDialog from "./LogoutDialog";
-import { MdManageAccounts } from "react-icons/md";
 import SignupDialog from "./SignupDialog";
+import SearchDialog from "./SearchDialog";
 import Topic from "@/types/Topic";
-import { useMediaQuery } from "react-responsive";
 import { useSessionContext } from "@/context/SessionContext";
+import styles from "./ui/ScrollArea.module.css";
+
+const libraryLinks = [
+  { name: "Saved videos", href: "/videos/saved", icon: BookmarkIcon },
+  { name: "Liked videos", href: "/videos/liked", icon: HandThumbUpIcon },
+  { name: "Watched videos", href: "/videos/watched", icon: EyeIcon },
+];
+const controlClass = "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors duration-150 hover:bg-stone-100 active:bg-stone-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-blue motion-reduce:transition-none";
+const menuItemClass = "flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-stone-700 transition-colors hover:bg-stone-100 data-[focus]:bg-stone-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue motion-reduce:transition-none";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
   const [isSignupDialogOpen, setIsSignupDialogOpen] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const searchParams = useSearchParams();
-  const { queryParams, topicParams, subtopicParams } = useMemo(() => {
-    return {
-      queryParams: searchParams.get("query") || "",
-      topicParams: searchParams.get("topic") || "all",
-      subtopicParams: searchParams.get("subtopic") || "all",
-    };
-  }, [searchParams]);
-  const [query, setQuery] = useState(queryParams);
-  const [selectedTopic, setSelectedTopic] = useState(topicParams);
-  const [selectedSubtopic, setSelectedSubtopic] = useState(subtopicParams);
+  const queryParams = searchParams.get("query") || "";
+  const topicParams = searchParams.get("topic") || "all";
+  const subtopicParams = searchParams.get("subtopic") || "all";
   const [topics, setTopics] = useState<Topic[]>([]);
-  const router = useRouter();
-  const { session } = useSessionContext();
-  const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
-  const [showSearchbar, setShowSearchbar] = useState(!isMobile);
-  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const navigation = useMemo(() => {
-    const defaultNavigation = [
-      { name: "All Topics", href: "/topics", icon: RectangleStackIcon },
-    ];
-    const homeNavigation = [
-      { name: "Home", href: "/", icon: HomeIcon },
-      ...(pathname === "/topics" ? [] : defaultNavigation),
-    ];
-    return pathname === "/" ? defaultNavigation : homeNavigation;
-  }, [pathname]);
+  const { session } = useSessionContext();
 
   useEffect(() => {
-    setMounted(true);
+    const onSearchShortcut = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === "k" && (event.ctrlKey || event.metaKey) && !event.altKey) {
+        event.preventDefault();
+        if (!event.repeat) setSearchOpen((open) => !open);
+      }
+    };
+    window.addEventListener("keydown", onSearchShortcut);
+    return () => window.removeEventListener("keydown", onSearchShortcut);
   }, []);
 
   useEffect(() => {
-    const fetchTopics = async () => {
-      try {
-        const res = await fetch(`/api/topics/`);
-        if (!res.ok) {
-          throw new Error("Failed to fetch topics");
-        }
-        const data = await res.json();
-        setTopics(data.results);
-      } catch (error) {
-        console.error("Error fetching topics:", error);
-      }
-    };
-    if (topics.length === 0) {
-      fetchTopics();
-    }
-  }, [topics]);
+    const controller = new AbortController();
+    fetch("/api/topics/", { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch topics");
+        return response.json();
+      })
+      .then((data) => setTopics(data.results || []))
+      .catch((error) => {
+        if (error.name !== "AbortError") console.error("Error fetching topics:", error);
+      });
+    return () => controller.abort();
+  }, [pathname]);
 
-  useEffect(() => {
-    const addNavObjects = () => {
-      const navObjects = topics
-        .filter(
-          (topic) => !pathname.includes(`/topics/${topic.name.toLowerCase()}`)
-        )
-        .sort((a, b) => b.subtopics.length - a.subtopics.length)
-        .slice(0, 4)
-        .map((topic) => ({
-          name: topic.name,
-          href: `/topics/${topic.name.toLowerCase()}`,
-          icon: RectangleGroupIcon,
-        }));
-      if (pathname === "/topics") {
-        navigation.push(
-          ...navObjects.filter(
-            (item) => !navigation.some((navItem) => navItem.name === item.name)
-          )
-        );
-      } else {
-        navigation.splice(
-          -1,
-          0,
-          ...navObjects.filter(
-            (item) => !navigation.some((navItem) => navItem.name === item.name)
-          )
-        );
-      }
-    };
-    if (topics.length > 0) {
-      addNavObjects();
-    }
-  }, [topics, pathname, navigation]);
+  const navigation = useMemo(() => [
+    { name: "Home", href: "/", icon: HomeIcon },
+    { name: "All topics", href: "/topics", icon: RectangleStackIcon },
+    ...topics.filter((topic) => topic.subtopics.length > 0)
+      .map((topic) => ({ name: topic.name, href: `/topics/${topic.id}`, icon: RectangleGroupIcon })),
+  ], [topics]);
 
-  const handleSearch = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (query.trim() === "") return;
-    const url = new URL("/videos/search", window.location.origin);
-    url.searchParams.set("query", query.trim());
-    if (selectedTopic !== "all") url.searchParams.set("topic", selectedTopic);
-    if (selectedSubtopic !== "all") url.searchParams.set("subtopic", selectedSubtopic);
-    router.push(url.pathname + url.search);
-    if (isMobile) setShowSearchbar(false);
-  };
+  const isCurrent = (href: string) => pathname === href || (
+    href !== "/" && href !== "/topics" && pathname.startsWith(`${href}/`)
+  ) || topics.some((topic) => href === `/topics/${topic.id}` &&
+    topic.subtopics.some((subtopic) => pathname === `/subtopics/${subtopic.id}`));
 
   const closeDialog = () => {
     setIsLoginDialogOpen(false);
@@ -150,387 +89,83 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-40">
-      <nav
-        aria-label="Global"
-        className="flex flex-wrap items-center gap-2 sm:gap-3 w-full px-3 py-2 md:px-4 md:py-3 lg:px-10"
-      >
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-gray-800 flex-shrink-0"
-        >
-          <span className="sr-only">My Torah Today</span>
-          <picture>
-            <source srcSet="/images/rosh-yeshiva.webp" type="image/webp" />
-            <Image
-              alt="The Rosh Yeshiva Reb Shimon Semp"
-              src="/images/rosh-yeshiva.jpg"
-              className="h-10 sm:h-12 md:h-16 w-auto aspect-square rounded-full"
-              width={563}
-              height={551}
-              loading="eager"
-            />
-          </picture>
-          <span className="hidden md:inline font-medium">MyTorahToday</span>
+    <header className="sticky top-0 z-40 border-b border-stone-200 bg-[#fffefa] text-stone-800">
+      <nav aria-label="Global" className="mx-auto flex max-w-screen-2xl flex-wrap items-center gap-x-3 px-4 py-2.5 sm:px-6 lg:gap-x-6 lg:px-8 lg:py-3">
+        <Link href="/" className="group flex min-h-[44px] shrink-0 items-center gap-2.5 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue">
+          <Image alt="MyTorahToday.com" src="/images/mytorah-today-logo.webp" className="h-auto w-[72px] shrink-0 object-contain" width={177} height={130} priority />
+          <span className="text-[15px] font-semibold tracking-tight text-primary-blue transition-colors group-hover:text-blue-950 sm:text-base motion-reduce:transition-none">My Torah Today</span>
         </Link>
 
-        <div className="flex-1 min-w-0" />
+        <button
+          type="button"
+          aria-label="Open search"
+          aria-haspopup="dialog"
+          onClick={() => setSearchOpen(true)}
+          className="ml-auto hidden min-h-[44px] min-w-0 max-w-sm flex-1 items-center gap-3 rounded-xl border border-stone-300 bg-white px-3.5 text-sm text-stone-500 transition-colors hover:border-primary-blue hover:bg-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-blue lg:flex motion-reduce:transition-none"
+        >
+          <MagnifyingGlassIcon aria-hidden="true" className="h-5 w-5 shrink-0" />
+          <span className="truncate">Find a teaching…</span>
+          <kbd className="ml-auto shrink-0 rounded border border-stone-200 bg-stone-50 px-1.5 py-0.5 font-sans text-xs text-stone-500">Ctrl K</kbd>
+        </button>
 
-        {mounted && !showSearchbar && (
-          <button
-            onClick={() => setShowSearchbar(true)}
-            aria-label="Open search bar"
-            title="Open search bar"
-            className="flex items-center justify-center p-2.5 min-h-[44px] min-w-[44px] rounded-full border border-gray-300 text-gray-600 hover:border-primary-blue hover:text-primary-blue active:bg-gray-100 transition-colors duration-200"
-          >
-            <IoSearchOutline className="h-5 w-5" />
+        <div className="ml-auto flex shrink-0 items-center gap-0.5 sm:gap-1 lg:ml-0">
+          <button type="button" aria-label="Open search" aria-haspopup="dialog" onClick={() => setSearchOpen(true)} className={`${controlClass} min-w-[44px] px-2 lg:hidden`}>
+            <MagnifyingGlassIcon aria-hidden="true" className="h-5 w-5" />
+            <span className="hidden min-[380px]:inline">Search</span>
           </button>
-        )}
-
-        <Transition as={Fragment} show={showSearchbar}>
-          <form
-            onSubmit={handleSearch}
-            className="flex flex-col sm:flex-row items-stretch sm:items-center sm:h-11 border border-gray-300 rounded-2xl sm:rounded-full shadow-sm w-full sm:w-auto sm:flex-1 order-last sm:order-none min-w-0 transition duration-200 ease-out data-[closed]:opacity-0 focus-within:border-primary-blue focus-within:shadow-md"
-          >
-            {/* Search input */}
-            <div className="flex-1 flex items-center min-w-0">
-              <IoSearchOutline className="h-4 w-4 ml-3.5 text-gray-400 flex-shrink-0" />
-              <input
-                type="text"
-                name="search"
-                id="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search for a video..."
-                className="w-full py-2.5 sm:py-0 px-2.5 text-sm text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none"
-              />
-              {query && (
-                <button
-                  type="button"
-                  onClick={() => setQuery("")}
-                  className="mr-1 p-1 text-gray-400 hover:text-gray-600 transition-colors"
-                  aria-label="Clear search"
-                >
-                  <XMarkIcon className="h-4 w-4" />
-                </button>
-              )}
-            </div>
-
-            {/* Divider */}
-            <div className="hidden sm:block w-px h-6 bg-gray-200" />
-
-            {/* Topic filter */}
-            <div className="flex items-center border-t sm:border-t-0">
-              <label htmlFor="topicSelect" className="sr-only">Select a topic</label>
-              <select
-                id="topicSelect"
-                value={selectedTopic}
-                onChange={(e) => {
-                  setSelectedTopic(e.target.value);
-                  setSelectedSubtopic("all");
-                }}
-                className="py-2 sm:py-0 px-3 text-sm text-gray-600 bg-transparent cursor-pointer focus:outline-none hover:text-gray-800 transition-colors appearance-none"
-                style={{ backgroundImage: "none" }}
-              >
-                <option value="all">All topics</option>
-                {topics
-                  .filter((topic) => topic.subtopics.length > 0)
-                  .map((topic) => (
-                    <option key={topic.id} value={topic.name}>
-                      {topic.name}
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-            {/* Subtopic filter — only shows when a topic is selected */}
-            {selectedTopic !== "all" && (
-              <>
-                <div className="hidden sm:block w-px h-6 bg-gray-200" />
-                <div className="flex items-center border-t sm:border-t-0">
-                  <label htmlFor="subtopicSelect" className="sr-only">Select a subtopic</label>
-                  <select
-                    id="subtopicSelect"
-                    value={selectedSubtopic}
-                    onChange={(e) => setSelectedSubtopic(e.target.value)}
-                    className="py-2 sm:py-0 px-3 text-sm text-gray-600 bg-transparent cursor-pointer focus:outline-none hover:text-gray-800 transition-colors appearance-none"
-                    style={{ backgroundImage: "none" }}
-                  >
-                    <option value="all">All subtopics</option>
-                    {topics
-                      .find((topic) => topic.name === selectedTopic)
-                      ?.subtopics?.map((subtopic) => (
-                        <option key={subtopic.id} value={subtopic.name}>
-                          {subtopic.name}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-              </>
-            )}
-
-            {/* Search button */}
-            <button
-              type="submit"
-              aria-label="Search"
-              title="Search"
-              className="flex items-center justify-center gap-2 px-5 py-2.5 sm:py-0 sm:h-full text-sm font-medium text-white bg-primary-blue hover:bg-blue-800 active:bg-blue-900 rounded-b-2xl sm:rounded-none sm:rounded-r-full transition-colors duration-200 min-h-[44px]"
-            >
-              <IoSearchOutline className="h-4 w-4 flex-shrink-0" />
-              <span className="sm:sr-only lg:not-sr-only">Search</span>
-            </button>
-          </form>
-        </Transition>
-        <div className="flex items-center justify-center flex-shrink-0">
-          <Menu as="div" className="relative inline-block text-left">
-            <div className="flex items-center justify-center">
-              <MenuButton
-                title="Open profile menu"
-                className="flex items-center justify-start rounded-full w-fit xl:mr-10"
-              >
-                <span className="sr-only">Open profile menu</span>
-                {session && session.user.username ? (
-                  <span className="capitalize w-10 flex items-center justify-center text-xl font-semibold bg-primary-blue md:bg-inherit text-white md:text-primary-blue rounded-full aspect-square border border-gray-700 md:border-primary-blue">
-                    {session.user.username.slice(0, 1)}
-                  </span>
-                ) : (
-                  <span className="flex flex-col items-center justify-center w-max md:text-lg lg:text-xl xl:font-semibold text-gray-800 hover:text-primary-blue transition-colors duration-300 cursor-pointer">
-                    <UserCircleIcon
-                      aria-hidden="true"
-                      className="h-10 w-10 stroke-1"
-                    />
-                    <span className="ml-2 text-sm hidden md:inline">
-                      Log in / Sign up
-                    </span>
-                  </span>
-                )}
-              </MenuButton>
-            </div>
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-100"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
-              leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95"
-            >
-              <MenuItems className="absolute right-0 mt-2 w-72 origin-top-right divide-y divide-gray-100 rounded-xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                <div className="p-4 flex flex-col gap-2 items-center justify-center text-2xl">
-                  {/* User Avatar */}
-                  <div className="flex items-center justify-center">
-                    <UserCircleIcon
-                      aria-hidden="true"
-                      className="h-10 w-10 stroke-1"
-                    />
-                  </div>
-                  {session ? (
-                    <div className="w-full h-full">
-                      <h2 className="text-lg capitalize font-medium text-gray-900 text-center">
-                        {session.user.username}
-                      </h2>
-                      <MenuItem>
-                        <Link
-                          href="/videos/saved"
-                          className="active:bg-gray-100 active:text-primary-blue text-gray-800 group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
-                        >
-                          <IoBookmarksOutline
-                            className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500"
-                            aria-hidden="true"
-                          />
-                          <span>Saved videos</span>
-                        </Link>
-                      </MenuItem>
-                      <MenuItem>
-                        <Link
-                          href={"/videos/liked"}
-                          className="active:bg-gray-100 active:text-primary-blue text-gray-800 group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
-                        >
-                          <BiLike
-                            className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500"
-                            aria-hidden="true"
-                          />
-                          <span>Liked videos</span>
-                        </Link>
-                      </MenuItem>
-                      <MenuItem>
-                        <Link
-                          href="/videos/watched"
-                          className="active:bg-gray-100 active:text-primary-blue text-gray-800 group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
-                        >
-                          <IoEyeOutline
-                            className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500"
-                            aria-hidden="true"
-                          />
-                          <span>Watched videos</span>
-                        </Link>
-                      </MenuItem>
-                      <MenuItem>
-                        <button
-                          onClick={() => setIsLogoutDialogOpen(true)}
-                          className="active:bg-gray-100 active:text-red-600 text-gray-800  group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-red-50 border-t border-gray-200"
-                        >
-                          <ArrowLeftStartOnRectangleIcon
-                            title="Logout"
-                            titleId="Logout"
-                            className="mr-3 h-6 w-6 text-red-500 group-hover:text-red-600 group-hover:font-semibold"
-                            aria-hidden="true"
-                          />
-                          <span>Logout</span>
-                        </button>
-                      </MenuItem>
-                    </div>
-                  ) : (
-                    <>
-                      <MenuItem>
-                        <button
-                          onClick={() => setIsLoginDialogOpen(true)}
-                          className="active:bg-gray-100 active:text-primary-blue text-gray-800 group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
-                        >
-                          <ArrowRightEndOnRectangleIcon
-                            title="Login"
-                            titleId="Login"
-                            className="mr-3 h-6 w-6 text-blue-500"
-                            aria-hidden="true"
-                          />
-                          Log in
-                        </button>
-                      </MenuItem>
-                      <MenuItem>
-                        <button
-                          onClick={() => setIsSignupDialogOpen(true)}
-                          className="active:bg-gray-100 active:text-primary-blue text-gray-800 group flex w-full items-center justify-start rounded-md px-4 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
-                        >
-                          <PencilSquareIcon
-                            title="Signup"
-                            titleId="Signup"
-                            className="mr-3 h-6 w-6 text-green-500"
-                            aria-hidden="true"
-                          />
-                          Sign up
-                        </button>
-                      </MenuItem>
-                    </>
-                  )}{" "}
-                </div>
+          <Menu as="div" className="relative hidden lg:block">
+            <MenuButton className={`${controlClass} text-stone-600`}>
+              <UserCircleIcon aria-hidden="true" className="h-5 w-5" />
+              <span className="max-w-24 truncate">{session?.user.username || "Account"}</span>
+              <ChevronDownIcon aria-hidden="true" className="h-3.5 w-3.5" />
+            </MenuButton>
+            <Transition as={Fragment} enter="transition duration-150 ease-out motion-reduce:transition-none" enterFrom="translate-y-1 opacity-0 motion-reduce:translate-y-0" enterTo="translate-y-0 opacity-100" leave="transition duration-100 ease-in motion-reduce:transition-none" leaveFrom="opacity-100" leaveTo="opacity-0">
+              <MenuItems className="absolute right-0 z-50 mt-3 w-60 rounded-xl border border-stone-200 bg-[#fffefa] p-2 shadow-lg shadow-stone-900/10 focus:outline-none">
+                {session ? <>
+                  {libraryLinks.map((item) => <MenuItem key={item.href}><Link href={item.href} className={menuItemClass}><item.icon aria-hidden="true" className="h-5 w-5" />{item.name}</Link></MenuItem>)}
+                  <div className="h-2" />
+                  <MenuItem><button onClick={() => setIsLogoutDialogOpen(true)} className={menuItemClass}><ArrowLeftStartOnRectangleIcon aria-hidden="true" className="h-5 w-5" />Log out</button></MenuItem>
+                </> : <>
+                  <MenuItem><button onClick={() => setIsLoginDialogOpen(true)} className={menuItemClass}><ArrowRightEndOnRectangleIcon aria-hidden="true" className="h-5 w-5" />Log in</button></MenuItem>
+                  <MenuItem><button onClick={() => setIsSignupDialogOpen(true)} className={menuItemClass}><PencilSquareIcon aria-hidden="true" className="h-5 w-5" />Sign up</button></MenuItem>
+                </>}
               </MenuItems>
             </Transition>
           </Menu>
-        </div>
-        <div className="flex items-center justify-center flex-shrink-0">
-          <button
-            aria-label="Open main menu"
-            title="Open main menu"
-            type="button"
-            onClick={() => setMobileMenuOpen(true)}
-            className="inline-flex items-center justify-center rounded-md p-2 min-h-[44px] min-w-[44px] text-gray-600 hover:bg-gray-100 active:bg-gray-200 transition-colors"
-          >
-            <span className="sr-only">Open main menu</span>
-            <Bars3Icon aria-hidden="true" className="h-7 w-7" />
+          <button type="button" aria-label="Browse topics and account" aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen(true)} className={`${controlClass} min-w-[44px] px-2 text-primary-blue`}>
+            <Bars3Icon aria-hidden="true" className="h-5 w-5" />
           </button>
         </div>
       </nav>
+
       <Transition show={mobileMenuOpen} as={Fragment}>
-        <Dialog onClose={setMobileMenuOpen}>
-          <div className="fixed inset-0 z-10 bg-gray-800 bg-opacity-50" />
-          <TransitionChild
-            as={Fragment}
-            enter="ease-out duration-200"
-            enterFrom="translate-x-full"
-            enterTo="translate-x-0"
-            leave="ease-in duration-150"
-            leaveFrom="translate-x-0"
-            leaveTo="translate-x-full"
-          >
-            <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-white/10 duration-200">
-              <div className="flex items-center justify-between">
-                <Link href="/" className="-m-1.5 p-1.5">
-                  <span className="sr-only">My Torah Today</span>
-                  <picture>
-                    <source srcSet="/images/icon.webp" type="image/webp" />
-                    <Image
-                      alt="Torah Today icon"
-                      src="/images/icon.jpg"
-                      className="h-16 w-auto rounded-xl"
-                      width={160}
-                      height={160}
-                    />
-                  </picture>
-                </Link>
-                <button
-                  type="button"
-                  title="Close menu"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="rounded-full p-2.5 min-h-[44px] min-w-[44px] text-gray-800 font-bold flex items-center justify-center hover:bg-gray-100 active:bg-gray-200 transition-colors"
-                >
-                  <span className="sr-only">Close menu</span>
-                  <XMarkIcon aria-hidden="true" className="h-7 w-7" />
-                </button>
+        <Dialog onClose={setMobileMenuOpen} className="relative z-50">
+          <TransitionChild as={Fragment} enter="transition-opacity duration-200 motion-reduce:transition-none" enterFrom="opacity-0" enterTo="opacity-100" leave="transition-opacity duration-150 motion-reduce:transition-none" leaveFrom="opacity-100" leaveTo="opacity-0"><div className="fixed inset-0 bg-stone-950/35" aria-hidden="true" /></TransitionChild>
+          <TransitionChild as={Fragment} enter="transition duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none" enterFrom="translate-x-full motion-reduce:translate-x-0" enterTo="translate-x-0" leave="transition duration-200 ease-in motion-reduce:transition-none" leaveFrom="translate-x-0" leaveTo="translate-x-full motion-reduce:translate-x-0">
+            <DialogPanel className="fixed inset-y-0 right-0 flex h-dvh w-full max-w-sm flex-col overflow-hidden bg-[#fffefa] px-6 pt-6 text-stone-800 shadow-xl shadow-stone-950/15" style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}>
+              <div className="flex shrink-0 items-center justify-between gap-4 pb-3">
+                <DialogTitle className="text-xl font-semibold tracking-tight">Browse teachings</DialogTitle>
+                <button type="button" data-autofocus onClick={() => setMobileMenuOpen(false)} aria-label="Close navigation" className={`${controlClass} -mr-2 min-w-[44px] px-2`}><XMarkIcon aria-hidden="true" className="h-5 w-5" /></button>
               </div>
-              <div className="mt-6 flow-root">
-                <div className="-my-6 divide-y divide-gray-500/25">
-                  <div className="space-y-2 py-6">
-                    {navigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-3 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100 active:bg-gray-200 min-h-[44px] transition-colors"
-                      >
-                        <item.icon className="h-6 w-6" />
-                        {item.name}
-                      </Link>
-                    ))}
-                    {session ? (
-                      <>
-                        <Link
-                          href={`/videos/saved`}
-                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-3 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100 active:bg-gray-200 min-h-[44px] transition-colors"
-                        >
-                          <IoBookmarksOutline className="h-6 w-6" />
-                          Saved videos
-                        </Link>
-                        <Link
-                          href={`/videos/liked`}
-                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-3 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100 active:bg-gray-200 min-h-[44px] transition-colors"
-                        >
-                          <BiLike className="h-6 w-6" />
-                          Liked videos
-                        </Link>
-                        <Link
-                          href={`/videos/watched`}
-                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-3 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100 active:bg-gray-200 min-h-[44px] transition-colors"
-                        >
-                          <IoEyeOutline className="h-6 w-6" />
-                          Watched videos
-                        </Link>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => setIsLoginDialogOpen(true)}
-                          title="Log in"
-                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-3 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100 active:bg-gray-200 min-h-[44px] transition-colors"
-                        >
-                          <ArrowRightEndOnRectangleIcon className="h-6 w-6" />
-                          Log in
-                        </button>
-                        <button
-                          onClick={() => setIsSignupDialogOpen(true)}
-                          title="Sign up"
-                          className="-mx-3 flex w-full gap-3 items-center rounded-lg px-3 py-3 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-100 active:bg-gray-200 min-h-[44px] transition-colors"
-                        >
-                          <PencilSquareIcon className="h-6 w-6" />
-                          Sign up
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
+              <nav aria-label="Topics" className={`${styles.scrollbar} min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain py-3 pr-1`}>
+                {navigation.map((item) => <Link key={item.href} href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined} onClick={() => setMobileMenuOpen(false)} className={`${menuItemClass} text-base ${isCurrent(item.href) ? "bg-blue-50 font-semibold text-primary-blue" : ""}`}><item.icon aria-hidden="true" className="h-5 w-5 shrink-0" />{item.name}</Link>)}
+              </nav>
+              <div className="shrink-0 bg-[#fffefa] pt-4">
+                {session ? <>
+                  <h3 className="mb-2 px-3 text-sm font-semibold text-stone-800">Your library</h3>
+                  {libraryLinks.map((item) => <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)} aria-current={isCurrent(item.href) ? "page" : undefined} className={`${menuItemClass} ${isCurrent(item.href) ? "bg-blue-50 text-primary-blue" : ""}`}><item.icon aria-hidden="true" className="h-5 w-5" />{item.name}</Link>)}
+                  <button onClick={() => { setMobileMenuOpen(false); setIsLogoutDialogOpen(true); }} className={`${menuItemClass} mt-3`}><ArrowLeftStartOnRectangleIcon aria-hidden="true" className="h-5 w-5" />Log out</button>
+                </> : <>
+                  <button onClick={() => { setMobileMenuOpen(false); setIsLoginDialogOpen(true); }} className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg bg-primary-blue px-4 text-sm font-medium text-white transition-colors hover:bg-blue-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-blue motion-reduce:transition-none"><ArrowRightEndOnRectangleIcon aria-hidden="true" className="h-5 w-5" />Log in</button>
+                  <button onClick={() => { setMobileMenuOpen(false); setIsSignupDialogOpen(true); }} className={`${menuItemClass} mt-2 justify-center`}>Sign up</button>
+                </>}
               </div>
             </DialogPanel>
           </TransitionChild>
         </Dialog>
       </Transition>
+      <SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} topics={topics}
+        initialQuery={queryParams} initialTopic={topicParams} initialSubtopic={subtopicParams} />
       <SignupDialog isOpen={isSignupDialogOpen} onClose={closeDialog} />
       <LoginDialog isOpen={isLoginDialogOpen} onClose={closeDialog} />
       <LogoutDialog isOpen={isLogoutDialogOpen} onClose={closeDialog} />

@@ -1,21 +1,8 @@
-import Image from "next/image";
-
-export default function HeroWithTitle(props: { title: string }) {
+export default function HeroWithTitle({ title, description }: { title: string; description?: string | null }) {
   return (
-    <div className="relative w-full bg-gray-950 flex justify-center items-center">
-      <picture className="w-full">
-        <source srcSet="/images/banner.webp" type="image/webp" />
-        <Image
-          src="/images/banner.jpg" // Fallback image
-          alt="banner"
-          width={1707}
-          height={282}
-          className="object-cover w-full opacity-60"
-        />
-      </picture>
-      <h1 className="absolute capitalize text-white text-3xl md:text-5xl lg:text-6xl font-bold">
-        {props.title}
-      </h1>
-    </div>
+    <header className="mx-auto w-full max-w-7xl px-5 pb-6 pt-12 sm:px-8 sm:pt-16 lg:px-12">
+      <h1 className="learning-display max-w-4xl text-5xl leading-[1.08] tracking-tight text-stone-900 sm:text-6xl lg:text-7xl">{title}</h1>
+      {description && <p className="mt-6 max-w-2xl text-base leading-relaxed text-stone-600 sm:text-lg">{description}</p>}
+    </header>
   );
 }

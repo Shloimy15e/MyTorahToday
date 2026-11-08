@@ -8,11 +8,8 @@ export default function formatDuration(duration: string): string {
   const minutes = parseInt(match[2] || "0") || 0;
   const seconds = parseInt(match[3] || "0") || 0;
 
-  const parts = [];
-
-  parts.push(hours.toString().padStart(1, "0"));
-  parts.push(minutes.toString().padStart(2, "0"));
-  parts.push(seconds.toString().padStart(2, "0"));
-
-  return parts.join(":");
+  const clockSeconds = seconds.toString().padStart(2, "0");
+  return hours > 0
+    ? `${hours}:${minutes.toString().padStart(2, "0")}:${clockSeconds}`
+    : `${minutes}:${clockSeconds}`;
 }

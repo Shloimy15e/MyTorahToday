@@ -1,139 +1,117 @@
-import {
-  fetchSubtopicServer,
-  getVideosBySubtopicsServer,
-} from "@/data/videoData";
-
-import Breadcrumbs from "@/components/Breadcrumbs";
-import { Error401 } from "@/components/Error401";
-import HeroWithTitle from "@/components/ui/HeroWithTitle";
-import JournalSection from "@/components/JournalSection";
+import { cache, Suspense } from "react";
+import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Metadata } from "next";
+import { displayFont, sourceFont } from "@/styles/fonts";
+import { BookOpenIcon, PlayIcon, DocumentTextIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { fetchSubtopicServer, getSubtopicLibraryServer } from "@/data/videoData";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { Error401 } from "@/components/Error401";
+import JournalSection from "@/components/JournalSection";
 import SefariaText from "@/components/SefariaText";
-import VideoGrid from "@/components/VideoGrid";
-import { cookies } from "next/headers";
+import SubtopicVideoLibrary from "@/components/SubtopicVideoLibrary";
+import { fetchSourceText } from "@/data/sourceText";
 
-type Props = {
-  params: Promise<{ subtopicId: string }>;
-};
+type Props = { params: Promise<{ subtopicId: string }> };
 
-export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
-  const { subtopicId } = await params;
-  return {
-    title: `${subtopicId} - My Torah Today`,
-  };
-};
-
-async function getSubtopicText(subtopicId: string | number) {
+const getSubtopic = cache(async (id: string, authToken: string | null = null) => {
   try {
-    const subtopic = await fetchSubtopicServer(subtopicId);
-    // Use sefaria_text if set, otherwise fall back to the subtopic name
-    const sefariaRef = subtopic.sefaria_text || subtopic.name;
+    return await fetchSubtopicServer(id, authToken);
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith("HTTP error 404")) notFound();
+    throw error;
+  }
+});
 
-    const url = new URL(
-      `/api/v3/texts/${encodeURIComponent(sefariaRef)}`,
-      "https://www.sefaria.org"
-    );
-    url.searchParams.set("return_format", "strip_only_footnotes");
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const subtopic = await getSubtopic((await params).subtopicId);
+  return {
+    title: `${subtopic.name} - My Torah Today`,
+    description: subtopic.description || `Explore teachings and reading on ${subtopic.name} from My Torah Today.`,
+  };
+}
 
-    const response = await fetch(url.toString(), {
-      headers: { accept: "application/json" },
-    });
-    if (!response.ok) return null;
+type SourcePromise = ReturnType<typeof fetchSourceText>;
 
-    const data = await response.json();
-    const subtopicTextArray: string[] = [];
-    data.versions?.[0]?.text?.forEach((textSegment: string | string[]) => {
-      if (Array.isArray(textSegment)) {
-        subtopicTextArray.push(textSegment.join(" "));
-      } else {
-        subtopicTextArray.push(textSegment);
-      }
-    });
+async function ReadingLink({ source }: { source: SourcePromise }) {
+  if (!await source) return null;
+  return <a href="#read" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-stone-300 px-5 py-2.5 text-sm font-medium hover:border-primary-blue hover:text-primary-blue"><BookOpenIcon className="h-4 w-4" aria-hidden="true" />Read</a>;
+}
 
-    if (subtopicTextArray.length === 0) return null;
-    return { subtopicTextArray, title: data.heRef };
-  } catch {
-    return null;
+async function ReadingSection({ source, name }: { source: SourcePromise; name: string }) {
+  const reading = await source;
+  if (!reading) return null;
+  return <section id="read" aria-labelledby="reading-heading" className="scroll-mt-28 pt-4">
+    <div className="mb-6 max-w-2xl">
+      <h2 id="reading-heading" className="learning-display text-3xl tracking-tight sm:text-4xl">Read & explore</h2>
+      <p className="mt-3 leading-relaxed text-stone-600">Source reading for {name}, provided by Sefaria.</p>
+    </div>
+    <SefariaText text={reading.text} title={reading.title} sourceUrl={reading.sourceUrl} sections={reading.sections} direction={reading.direction} language={reading.language} readerClassName={`${displayFont.variable} ${sourceFont.variable}`} />
+  </section>;
+}
+
+async function EmptyMaterials({ source }: { source: SourcePromise }) {
+  if (await source) return null;
+  return <p className="py-12 text-center text-stone-600">There are no teachings or reading materials for this subject yet. Explore another subject below.</p>;
+}
+
+export default async function SubtopicPage(props: Props) {
+  try {
+    return await SubtopicLearningPage(props);
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith("HTTP error 401")) return <Error401 />;
+    throw error;
   }
 }
 
-//Get the topic name from the params and pass it to the getVideosByTopic function
-export default async function SubtopicPage({ params }: Props) {
-  try {
-    const authToken = (await cookies()).get("auth_token")?.value || null;
-    const { subtopicId } = await params;
-    const subtopic = await fetchSubtopicServer(subtopicId);
-    const displaySubtopic = subtopic.name;
-    const videos = await getVideosBySubtopicsServer(
-      [subtopicId],
-      authToken,
-      100
-    );
-    const subtopicText = await getSubtopicText(subtopicId);
-
-    if (!videos) {
-      throw new Error("400 - Bad Request – The request returned undefined");
-    }
-
-    return (
-      <>
-        <main className="bg-neutral-100 grid grid-cols-1">
-          <HeroWithTitle title={displaySubtopic} />
-          <Breadcrumbs
-            segments={[
-              { href: "topics", label: "Topics" },
-              { href: `topics/${subtopic.topic}`, label: subtopic.topic_name },
-              { href: `subtopics/${subtopic.id}`, label: displaySubtopic },
-            ]}
-          />
-          {videos && videos.length > 0 && (
-            <VideoGrid
-              videos={videos}
-              title={`${displaySubtopic}`}
-              topic={subtopic.topic}
-              topic_name={subtopic.topic_name}
-              showAll={true}
-              topicVideos={false}
-              isThereText={subtopicText ? true : false}
-            />
-          )}
-          {subtopic.journals && subtopic.journals.length > 0 && (
-            <JournalSection journals={subtopic.journals} />
-          )}
-          {subtopicText && (
-            <SefariaText
-              text={subtopicText.subtopicTextArray}
-              title={subtopicText.title}
-            />
-          )}
-          {videos && videos.length === 0 && !subtopicText && subtopic.journals?.length === 0 && (
-            <div className="flex justify-center items-center">
-              <p className="text-lg text-gray-700">
-                There are no videos or text for this subtopic yet.
-              </p>
-            </div>
-          )}
-          <div className="flex justify-center items-center mb-6">
-            <Link
-              href={`/topics/${subtopic.topic}`}
-              className="text-lg capitalize bg-primary-blue text-gray-100 font-semibold px-6 py-2 rounded-md shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 hover:bg-blue-950"
-            >
-              Return to {subtopic.topic_name}
-            </Link>
+async function SubtopicLearningPage({ params }: Props) {
+  const { subtopicId } = await params;
+  const authToken = (await cookies()).get("auth_token")?.value || null;
+  const subtopic = await getSubtopic(subtopicId, authToken);
+  const source = fetchSourceText(subtopic);
+  const videos = await getSubtopicLibraryServer(subtopicId, authToken);
+  const featured = videos.find((video) => video.id === subtopic.featured_video) || subtopic.featured_video_data || null;
+  const hasVideos = videos.length > 0 || !!featured;
+  const journals = subtopic.journals || [];
+  return (
+    <main className={`${displayFont.variable} ${sourceFont.variable} subtopic-learning min-h-screen bg-stone-50 text-stone-900 selection:bg-blue-100 selection:text-blue-950`}>
+      <Breadcrumbs segments={[
+        { href: "topics", label: "Topics" },
+        { href: `topics/${subtopic.topic}`, label: subtopic.topic_name },
+        { href: `subtopics/${subtopic.id}`, label: subtopic.name },
+      ]} />
+      <header className="bg-stone-50">
+        <div className="mx-auto max-w-7xl px-5 pb-2 pt-8 sm:px-8 sm:pt-10 lg:px-12">
+          <div className="max-w-3xl pb-7 sm:pb-8">
+            <h1 className="learning-display text-balance text-5xl leading-[1.05] tracking-tight text-primary-blue sm:text-7xl">{subtopic.name}</h1>
+            {subtopic.description?.trim() && <p className="mt-5 max-w-2xl whitespace-pre-line text-base leading-relaxed text-stone-600 sm:text-lg">{subtopic.description}</p>}
           </div>
-        </main>
-      </>
-    );
-  } catch (error: any) {
-    if (error.message.includes("401")) {
-      return (
-        <>
-          <Error401 />
-        </>
-      );
-    } else {
-      throw error;
-    }
-  }
+          <Suspense fallback={null}>
+          <LearningNavigation hasVideos={hasVideos} source={source} hasJournals={journals.length > 0} />
+          </Suspense>
+        </div>
+      </header>
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-16 px-5 py-9 sm:px-8 sm:py-12 lg:px-12">
+        {hasVideos && <SubtopicVideoLibrary key={subtopic.id} videos={videos} featured={featured} />}
+        <Suspense fallback={<p role="status" className="text-sm text-stone-600">Loading source reading…</p>}>
+          <ReadingSection source={source} name={subtopic.name} />
+        </Suspense>
+        {journals.length > 0 && <JournalSection journals={journals} />}
+        {!hasVideos && journals.length === 0 && <Suspense fallback={null}><EmptyMaterials source={source} /></Suspense>}
+        <Link href={`/topics/${subtopic.topic}`} className="inline-flex min-h-11 w-fit items-center gap-2 font-medium text-primary-blue underline-offset-4 hover:underline"><ArrowLeftIcon className="h-4 w-4" aria-hidden="true" />Explore {subtopic.topic_name}</Link>
+      </div>
+    </main>
+  );
+}
+
+async function LearningNavigation({ hasVideos, hasJournals, source }: { hasVideos: boolean; hasJournals: boolean; source: SourcePromise }) {
+  if (!hasVideos && !hasJournals && !await source) return null;
+  return (
+            <nav aria-label="Learning sections" className="flex flex-wrap gap-2 pb-5 sm:gap-4">
+              {hasVideos && <a href="#watch" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary-blue px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-950"><PlayIcon className="h-4 w-4" aria-hidden="true" />Watch</a>}
+              <Suspense fallback={null}><ReadingLink source={source} /></Suspense>
+              {hasJournals && <a href="#journal" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-stone-300 px-5 py-2.5 text-sm font-medium hover:border-primary-blue hover:text-primary-blue"><DocumentTextIcon className="h-4 w-4" aria-hidden="true" />Journal</a>}
+            </nav>
+  );
 }

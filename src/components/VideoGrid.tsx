@@ -1,11 +1,7 @@
-"use client";
-
 import Link from "next/link";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Video from "@/types/Video";
 import VideoCard from "./VideoCard";
-import VideoDialog from "./VideoDialog";
-import { useMediaQuery } from "react-responsive";
-import { useState } from "react";
 
 export default function VideoGrid(props: {
   videos: Video[];
@@ -16,97 +12,32 @@ export default function VideoGrid(props: {
   topicVideos: boolean;
   showLinkAlways?: boolean;
   isThereText?: boolean;
+  hideTitle?: boolean;
 }) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState<Video>({} as Video);
-
-  const openDialog = (video: Video) => {
-    setSelectedVideo(video);
-    setIsDialogOpen(true);
-  };
-
-  const closeDialog = () => {
-    setIsDialogOpen(false);
-    setTimeout(() => {
-      setSelectedVideo({} as Video);
-    }, 500);
-  };
-
-  const isMobile = useMediaQuery({ maxWidth: 639 });
-  const isTablet = useMediaQuery({ minWidth: 640, maxWidth: 1023 });
-  const isLaptop = useMediaQuery({ minWidth: 1024, maxWidth: 1279 });
-  const isDesktop = useMediaQuery({ minWidth: 1280, maxWidth: 1535 });
-  const isLargeDesktop = useMediaQuery({ minWidth: 1536 });
+  const destination = props.topicVideos ? `/topics/${props.topic}` : `/subtopics/${props.topic}`;
 
   return (
-    <>
-      <div>
-        <div>
-          <h1 className={`capitalize leading-relaxed pb-4 relative text-2xl sm:text-3xl md:text-4xl font-bold mx-4 sm:mx-6 md:mx-10 my-4 md:my-6 ${props.isThereText ? 'mb-0' : ''} text-gray-900 before:content-[''] before:absolute before:left-1 before:bottom-0 before:h-[5px] before:w-[55px] before:bg-gray-900 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[1px] after:w-[95%] after:max-w-[255px] after:bg-gray-900`}>
-            {props.title}
-          </h1>
-          {props.isThereText && (
-            <button
-              onClick={() => {
-                const component = document.getElementById(
-                  "sefaria-text-component"
-                );
-                if (component) {
-                  component.scrollIntoView({ behavior: "smooth" });
-                }
-              }}
-              className="text-base md:text-2xl my-4 md:my-7 font-semibold text-gray-800 mx-4 sm:mx-6 md:mx-10 rounded-lg bg-white w-fit p-2 px-3 shadow-lg"
-            >
-              See the full script for {props.title.charAt(0).toUpperCase() + props.title.slice(1)}
-            </button>
+    <section aria-label={props.title} className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:px-12">
+      {(!props.hideTitle || !props.showAll || props.showLinkAlways) && (
+        <div className="mb-7 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+          {!props.hideTitle && <h2 className="learning-display text-3xl tracking-tight text-stone-900 sm:text-4xl">{props.title}</h2>}
+          {(!props.showAll || props.showLinkAlways) && props.videos.length > 0 && (
+            <Link href={destination} aria-label={`View all ${props.topic_name} teachings`} className="group inline-flex min-h-11 items-center gap-2 rounded text-sm font-medium text-primary-blue underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue">
+              View all <ArrowRightIcon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transform-none" aria-hidden="true" />
+            </Link>
           )}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-4 sm:gap-6 md:gap-8 lg:gap-10 justify-items-center place-items-center align-middle w-full pt-0 auto-rows-max px-4 sm:px-6 md:px-10 pb-4 sm:pb-6 md:pb-10">
-          {props.showAll
-            ? props.videos.map((video) => (
-                <VideoCard
-                  key={video.video_id}
-                  video={video}
-                  onClick={() => openDialog(video)}
-                  showDescription={true}
-                />
-              ))
-            : props.videos.slice(
-                  0,
-                  isMobile ? 4 : isTablet || isLaptop || isDesktop ? 6 : 8
-                )
-                .map((video) => (
-                  <VideoCard
-                    video={video}
-                    key={video.id}
-                    onClick={() => openDialog(video)}
-                    showDescription={true}
-                  />
-                ))}
+      )}
+      {props.isThereText && <a href="#sefaria-text-component" className="mb-6 inline-flex min-h-11 items-center rounded text-sm font-medium text-primary-blue underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue">Read the source</a>}
+      {props.videos.length > 0 ? (
+        <div className="grid grid-cols-1 gap-x-7 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {(props.showAll ? props.videos : props.videos.slice(0, 8)).map((video, index) => (
+            <div key={video.id} className={!props.showAll ? index >= 6 ? "hidden xl:block" : index >= 4 ? "hidden sm:block" : undefined : undefined}>
+              <VideoCard video={video} />
+            </div>
+          ))}
         </div>
-      </div>
-      {(!props.showAll &&
-        props.videos.length >
-          (isMobile ? 4 : isTablet || isLaptop || isDesktop ? 6 : 8)) ||
-      props.showLinkAlways ? (
-        <div className="flex justify-center items-center">
-          <Link
-            href={
-              props.topicVideos
-                ? `/topics/${props.topic}`
-                : `/subtopics/${props.topic}`
-            }
-            className="text-base md:text-lg bg-primary-blue text-gray-100 text-center font-semibold px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:bg-blue-950 mx-4 sm:mx-14 md:mx-24 my-6 w-full sm:w-auto transition-card"
-          >
-            See more from {props.topic_name}
-          </Link>
-        </div>
-      ) : null}
-      <VideoDialog
-        isOpen={isDialogOpen}
-        video={selectedVideo}
-        onClose={closeDialog}
-      />
-    </>
+      ) : <p className="rounded-xl bg-white px-6 py-8 text-stone-600">No teachings here yet. Explore another topic to keep learning.</p>}
+    </section>
   );
 }
