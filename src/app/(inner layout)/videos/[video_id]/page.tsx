@@ -38,14 +38,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!video) return { title: "Teaching unavailable | My Torah Today" };
   const title = `${video.title} | My Torah Today`;
   const description = video.description?.trim().slice(0, 160) || `Watch ${video.title} with Rabbi Shimon Semp.`;
-  const url = new URL(`/videos/${video.id}`, process.env.NEXT_PUBLIC_BASE_URL || "https://mytorahtoday.com").href;
+  const url = `https://mytorahtoday.com/videos/${video.id}`;
   return {
     title, description, alternates: { canonical: url },
     openGraph: {
-      title, description, url, type: "video.other",
-      images: [{ url: `https://i.ytimg.com/vi/${video.video_id}/hqdefault.jpg`, alt: video.title }],
+      title, description, url, type: "video.other", siteName: "My Torah Today",
+      images: [{ url: `https://i.ytimg.com/vi/${video.video_id}/hqdefault.jpg`, width: 480, height: 360, alt: video.title }],
     },
-    twitter: { card: "summary_large_image", title, description, images: [`https://i.ytimg.com/vi/${video.video_id}/hqdefault.jpg`] },
+    twitter: { card: "summary_large_image", title, description, images: [{ url: `https://i.ytimg.com/vi/${video.video_id}/hqdefault.jpg`, alt: video.title }] },
   };
 }
 

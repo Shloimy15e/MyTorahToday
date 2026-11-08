@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   fetchSubtopicServerByName,
   fetchTopicsServer,
@@ -17,6 +18,8 @@ import TopicGrid from "@/components/TopicGrid";
 import { cookies } from "next/headers";
 import formatDuration from "@/utils/formatDuration";
 import { discoveryCivilDate, DISCOVERY_TIME_ZONE } from "@/utils/discoveryOrder";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 async function getParshahThisWeek(): Promise<Subtopic[] | null> {
   try {

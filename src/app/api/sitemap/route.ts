@@ -1,90 +1,66 @@
-// src/app/api/sitemap/route.ts
-
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { SitemapStream, streamToPromise } from "sitemap";
-import {
-  fetchTopicsServer,
-  getVideosBySubtopicNameServer,
-  getVideosBySubtopicsServer,
-} from "@/data/videoData";
 
-import { Readable } from "stream";
-import Subtopic from "@/types/Subtopic";
-import Topic from "@/types/Topic";
-import Video from "@/types/Video";
+type SitemapItem = { id: number; subtopics?: { id: number }[] };
 
-export async function GET(req: NextRequest) {
-  // Fetch dynamic routes data
-  const topics = await fetchTopicsServer();
+async function fetchAllItems(path: string): Promise<SitemapItem[]> {
+  const items = new Map<number, SitemapItem>();
+  let offset = 0;
+  while (true) {
+    const url = new URL(path, process.env.BACKEND_URL);
+    url.searchParams.set("limit", "100");
+    url.searchParams.set("offset", String(offset));
+    const response = await fetch(url, { cache: "no-store" });
+    if (!response.ok) throw new Error(`Sitemap upstream returned ${response.status}`);
+    const data = await response.json();
+    if (!Array.isArray(data.results)) throw new Error("Invalid sitemap results");
+    const previousSize = items.size;
+    for (const item of data.results) {
+      if (!Number.isSafeInteger(item.id) || item.id <= 0) throw new Error("Invalid sitemap ID");
+      items.set(item.id, item);
+    }
+    offset += data.results.length;
+    if (!data.next) {
+      if (typeof data.count === "number" && offset < data.count) throw new Error("Incomplete sitemap results");
+      return [...items.values()];
+    }
+    if (items.size === previousSize) throw new Error("Sitemap pagination made no progress");
+    // Reconstruct the next request against our configured backend, never its next URL.
+  }
+}
 
-  const videosBySubtopics = await Promise.all(
-    topics?.map(async (topic: Topic) => {
-      return Promise.all(
-        topic.subtopics?.map(async (subtopic: Subtopic) => {
-          const videos = await getVideosBySubtopicsServer(
-            [subtopic.id],
-            null,
-            100
-          );
-          console.log("videos for "+ subtopic.name + " " + videos.length);
-          return { subtopicName: subtopic.name, videos: videos };
-        })
-      );
-    })
-  );
-  // Create a stream to write to
-  const smStream = new SitemapStream({
-    hostname: `${process.env.NEXT_PUBLIC_BASE_URL}`,
-  });
+export async function GET() {
+  try {
+    const [topics, videos] = await Promise.all([
+      fetchAllItems("/api/topics/"),
+      fetchAllItems("/api/videos/"),
+    ]);
+    const paths = new Set(["/", "/topics"]);
+    for (const topic of topics) {
+      if (!Array.isArray(topic.subtopics)) throw new Error("Invalid sitemap subtopics");
+      if (topic.subtopics.length === 0) continue;
+      paths.add(`/topics/${topic.id}`);
+      for (const subtopic of topic.subtopics) {
+        if (!Number.isSafeInteger(subtopic.id) || subtopic.id <= 0) throw new Error("Invalid sitemap subtopic ID");
+        paths.add(`/subtopics/${subtopic.id}`);
+      }
+    }
+    for (const video of videos) paths.add(`/videos/${video.id}`);
 
-  // Add static routes
-  smStream.write({ url: "/", changefreq: "daily", priority: 1.0 });
-  smStream.write({ url: "/topics", changefreq: "weekly", priority: 0.7 });
-  //smStream.write({ url: "/about", changefreq: "monthly", priority: 0.7 });
-
-  // Add dynamic routes
-  topics
-    .filter((topic: Topic) => topic.subtopics.length > 0)
-    .forEach((topic: Topic) => {
-      smStream.write({
-        url: `/topics/${topic.id}`,
-        changefreq: "weekly",
-        priority: 0.9,
-      });
-      topic.subtopics.forEach((subtopic: Subtopic) => {
-        smStream.write({
-          url: `/subtopics/${subtopic.id}`,
-          changefreq: "weekly",
-          priority: 0.8,
-        });
-        videosBySubtopics.forEach((inner) => inner.forEach((video: {subtopicName: string; videos: Video[]}) => {
-          if (video.subtopicName === subtopic.name) {
-            console.log("videos added " + video.videos.length);
-            video.videos.forEach((video: Video) => {
-                smStream.write({
-                url: `/videos/${video.video_id}`,
-                changefreq: "daily",
-                priority: 0.8,
-                });
-            });
-          }
-        }));
-      });
+    const stream = new SitemapStream({ hostname: "https://mytorahtoday.com" });
+    const sitemap = streamToPromise(stream);
+    for (const url of paths) stream.write({ url });
+    stream.end();
+    return new NextResponse((await sitemap).toString(), {
+      headers: {
+        "Content-Type": "application/xml",
+        "Cache-Control": "s-maxage=600, stale-while-revalidate",
+      },
     });
-
-  // End the stream
-  smStream.end();
-
-  // Convert the stream to a promise
-  const sitemap = await streamToPromise(Readable.from(smStream)).then((data) =>
-    data.toString()
-  );
-
-  // Set the response headers
-  const headers = new Headers();
-  headers.set("Content-Type", "application/xml");
-  headers.set("Cache-Control", "s-maxage=600, stale-while-revalidate");
-
-  // Return the sitemap
-  return new NextResponse(sitemap, { headers });
+  } catch {
+    return new NextResponse("Unable to generate sitemap", {
+      status: 502,
+      headers: { "Cache-Control": "no-store" },
+    });
+  }
 }

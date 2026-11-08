@@ -1,18 +1,15 @@
 {
-    "name": "My Torah Today",
-    "short_name": "My Torah Today",
-    "icons": [
-        {
-            "src": "/android-chrome-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/android-chrome-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ],
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff"
+  "id": "/",
+  "name": "My Torah Today",
+  "short_name": "My Torah Today",
+  "description": "Torah teachings with Rabbi Shimon Semp.",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "en",
+  "icons": [
+    { "src": "/android-chrome-192x192.png?v=book-v2", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/android-chrome-512x512.png?v=book-v2", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ],
+  "theme_color": "#264397",
+  "background_color": "#fafaf9"
 }

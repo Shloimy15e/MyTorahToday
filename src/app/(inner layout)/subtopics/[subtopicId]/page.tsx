@@ -26,9 +26,16 @@ const getSubtopic = cache(async (id: string, authToken: string | null = null) =>
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const subtopic = await getSubtopic((await params).subtopicId);
+  const title = `${subtopic.name} - My Torah Today`;
+  const description = subtopic.description?.trim() || `Explore ${subtopic.name} on My Torah Today.`;
+  const url = `https://mytorahtoday.com/subtopics/${subtopic.id}`;
+  const images = [{ url: "https://mytorahtoday.com/images/social-preview-v1.png", width: 1200, height: 630, alt: "My Torah Today — Torah teachings with Rabbi Shimon Semp" }];
   return {
-    title: `${subtopic.name} - My Torah Today`,
-    description: subtopic.description || `Explore teachings and reading on ${subtopic.name} from My Torah Today.`,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title, description, url, type: "website", siteName: "My Torah Today", images },
+    twitter: { card: "summary_large_image", title, description, images },
   };
 }
 

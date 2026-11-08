@@ -1,13 +1,8 @@
-# *
 User-agent: *
 Allow: /
-
-# *
-User-agent: *
 Disallow: /admin/
+Disallow: /videos/saved
+Disallow: /videos/liked
+Disallow: /videos/watched
 
-# Host
-Host: https://www.mytorahtoday.com
-
-# Sitemaps
-Sitemap: https://www.mytorahtoday.com/api/sitemap
+Sitemap: https://mytorahtoday.com/api/sitemap
