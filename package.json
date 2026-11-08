@@ -53,6 +53,10 @@
       "sharp": "$sharp"
     },
     "brace-expansion@^1.0.0": "1.1.21",
-    "postcss-selector-parser": "^7.1.6"
+    "postcss-selector-parser": "^7.1.6",
+    "minimatch@>=7 <11.0.1": "11.0.1",
+    "sucrase": {
+      "glob": "14.0.2"
+    }
   }
 }

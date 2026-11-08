@@ -21,7 +21,7 @@ isort==6.1.0; python_full_version >= '3.9.0'
 mccabe==0.7.0; python_version >= '3.6'
 mysql==0.0.3
 mysqlclient==2.2.4; python_version >= '3.8'
-oauthlib==4.0.0; python_version >= '3.9'
+oauthlib==4.0.1; python_version >= '3.9'
 packaging==26.3; python_version >= '3.9'
 platformdirs==4.13.5; python_version >= '3.11'
 psycopg2-binary==2.9.9; python_version >= '3.7'
