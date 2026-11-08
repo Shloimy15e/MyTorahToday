@@ -7,7 +7,11 @@ Run the dependency commands from `backend/` with `PIPENV_VENV_IN_PROJECT=1` to u
 the local `backend/.venv` (in PowerShell: `$env:PIPENV_VENV_IN_PROJECT = "1"`).
 After changing dependencies, run `python -m pipenv lock`, then regenerate the
 deployment requirements with `python -m pipenv requirements --exclude-index > requirements.txt`.
-Install the locked environment with `python -m pipenv sync`.
+Install production dependencies with `python -m pipenv sync`, or the full local
+development environment with `python -m pipenv sync --dev`. The production
+`requirements.txt` export contains runtime dependencies; Pylint and its Django
+plugin are locked under development dependencies. Run the configured linter with
+`python -m pipenv run pylint <files>` from `backend/` after syncing with `--dev`.
 
 Debug pages are disabled by default. Set `DJANGO_DEBUG=true` in the local
 `backend/.env` to enable them when using `manage.py` for local development.

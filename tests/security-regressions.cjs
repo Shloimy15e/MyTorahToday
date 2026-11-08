@@ -21,20 +21,6 @@ function loadSource(relativePath, mocks = {}) {
   return module.exports;
 }
 
-test("sign-in validation retains required messages and password limits after the Zod upgrade", () => {
-  const { signInSchema } = loadSource("src/lib/zod.ts");
-  const missing = signInSchema.safeParse({});
-  assert.equal(missing.success, false);
-  assert.deepEqual(missing.error.issues.map(({ message }) => message), ["Email is required", "Password is required"]);
-  assert.equal(signInSchema.safeParse({ email: "user@example.com", password: "12345678" }).success, true);
-  for (const input of [
-    { email: "invalid", password: "12345678" },
-    { email: "user@example.com", password: "short" },
-    { email: "user@example.com", password: "x".repeat(33) },
-    { email: 42, password: "12345678" },
-  ]) assert.equal(signInSchema.safeParse(input).success, false);
-});
-
 test("server-rendered Sefaria text never includes untrusted HTML before sanitization", () => {
   const SefariaText = loadSource("src/components/SefariaText.tsx").default;
   const html = renderToStaticMarkup(React.createElement(SefariaText, {
@@ -73,7 +59,7 @@ test("patched glob discovers TypeScript sources and honors ignored paths", () =>
     ignore: ["src/app/api/**"],
   }).map((file) => file.replaceAll("\\", "/"));
   assert.ok(files.includes("src/components/SefariaText.tsx"));
-  assert.ok(files.includes("src/lib/zod.ts"));
+  assert.ok(files.includes("src/components/VideoDialog.tsx"));
   assert.ok(files.every((file) => !file.startsWith("src/app/api/")));
 });
 

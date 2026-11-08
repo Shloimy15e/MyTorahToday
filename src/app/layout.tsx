@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "../styles/globals.css";
 import { ToastProvider } from "@/context/ToastProvider";
-import ClientWrapper from "./ClientWrapper";
 import { SessionProvider as NextAuthSessionProvider } from "next-auth/react";
 import { SessionProvider } from "@/context/SessionContext";
 
@@ -163,9 +162,7 @@ export default function RootLayout({
       <body>
         <NextAuthSessionProvider>
           <SessionProvider>
-            <ClientWrapper>
-              <ToastProvider>{children}</ToastProvider>
-            </ClientWrapper>
+            <ToastProvider>{children}</ToastProvider>
           </SessionProvider>
         </NextAuthSessionProvider>
         <Script src="https://www.youtube.com/iframe_api" />
