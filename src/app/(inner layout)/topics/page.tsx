@@ -14,13 +14,13 @@ export const metadata: Metadata = {
     url: "https://mytorahtoday.com/topics",
     type: "website",
     siteName: "My Torah Today",
-    images: [{ url: "https://mytorahtoday.com/images/social-preview-v3.png", width: 1200, height: 630, alt: "My Torah Today — Torah teachings with Rabbi Shimon Semp" }],
+    images: [{ url: "https://mytorahtoday.com/images/social-preview-v4.png", width: 1200, height: 630, alt: "My Torah Today — Torah teachings with Rabbi Shimon Semp" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Topics | My Torah Today",
     description: "Explore Torah topics and teachings from Rabbi Shimon Semp on My Torah Today.",
-    images: [{ url: "https://mytorahtoday.com/images/social-preview-v3.png", alt: "My Torah Today — Torah teachings with Rabbi Shimon Semp" }],
+    images: [{ url: "https://mytorahtoday.com/images/social-preview-v4.png", alt: "My Torah Today — Torah teachings with Rabbi Shimon Semp" }],
   },
 };
 
