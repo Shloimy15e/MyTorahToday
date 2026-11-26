@@ -11,6 +11,7 @@ import Subtopic from "@/types/Subtopic";
 import { Error401 } from "@/components/Error401";
 import Image from "next/image";
 import Link from "next/link";
+import VideoLink from "@/components/VideoLink";
 import { ArrowRightIcon, PlayIcon } from "@heroicons/react/24/outline";
 import Topic from "@/types/Topic";
 import VideoGrid from "@/components/VideoGrid";
@@ -101,7 +102,7 @@ export default async function Home() {
               <Link href="#topics" className="group mt-7 inline-flex min-h-12 items-center gap-3 rounded-full bg-primary-blue px-6 py-3 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue">Explore topics <ArrowRightIcon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transform-none" aria-hidden="true" /></Link>
             </div>
             {openingVideo && (
-              <Link href={`/videos/${openingVideo.id}`} className="group block rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue">
+              <VideoLink href={`/videos/${openingVideo.id}`} className="group block rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue">
                 <div className="relative aspect-video overflow-hidden rounded-2xl bg-stone-200 shadow-sm transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-stone-900/10">
                   <Image src={`https://i.ytimg.com/vi/${openingVideo.video_id}/hqdefault.jpg`} alt="" fill priority sizes="(min-width: 1280px) 580px, (min-width: 1024px) 50vw, (min-width: 640px) 90vw, 100vw" className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025] group-focus-visible:scale-[1.025] motion-reduce:transform-none" />
                   <span className="absolute inset-0 flex items-center justify-center bg-black/10 transition-colors duration-300 group-hover:bg-black/20 group-focus-visible:bg-black/20"><span className="flex min-h-14 items-center justify-center gap-3 rounded-full bg-white px-5 text-sm font-medium text-primary-blue shadow-md transition-[transform,box-shadow] duration-300 ease-out group-hover:scale-105 group-hover:shadow-xl group-focus-visible:scale-105 motion-reduce:transform-none"><PlayIcon className="h-5 w-5 fill-current" aria-hidden="true" />Watch teaching</span></span>
@@ -110,7 +111,7 @@ export default async function Home() {
                   <h2 className="text-lg font-semibold leading-snug text-stone-900 transition-colors duration-200 group-hover:text-primary-blue sm:text-xl">{openingVideo.title}</h2>
                   <span className="shrink-0 pt-1 text-sm tabular-nums text-stone-600">{formatDuration(openingVideo.duration)}</span>
                 </div>
-              </Link>
+              </VideoLink>
             )}
           </header>
           {/* Parshah of the week */}

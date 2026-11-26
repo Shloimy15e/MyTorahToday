@@ -1,6 +1,6 @@
 import { PlayIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import Link from "next/link";
+import VideoLink from "@/components/VideoLink";
 import formatDuration from "@/utils/formatDuration";
 import Video from "@/types/Video";
 import SaveButton from "./ui/SaveButton";
@@ -12,7 +12,7 @@ export default function VideoCard({ video }: {
 }) {
   return (
     <article className="relative min-w-0 w-full">
-      <Link href={`/videos/${video.id}`} className="group block rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue">
+      <VideoLink href={`/videos/${video.id}`} className="group block rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-blue">
         <div className="relative aspect-video overflow-hidden rounded-xl bg-stone-200">
           <Image
             fill
@@ -32,7 +32,7 @@ export default function VideoCard({ video }: {
           <h3 className="text-base font-semibold leading-snug text-stone-900 transition-colors duration-200 group-hover:text-primary-blue">{video.title}</h3>
           <span className="mt-2 inline-block text-sm text-stone-500">{video.is_viewed_by_user ? "Watch again" : "Watch teaching"}</span>
         </div>
-      </Link>
+      </VideoLink>
       <div className="absolute bottom-0 right-0 rounded-full bg-stone-50">
         <SaveButton key={video.id} videoId={video.id} isSaved={video.is_saved_by_user} />
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import VideoLink from "@/components/VideoLink";
 import { useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRightIcon, CheckIcon, PlayIcon } from "@heroicons/react/24/outline";
@@ -54,7 +54,7 @@ export default function SubtopicVideoLibrary({ videos, featured }: { videos: Vid
                 <p className="mt-5 text-sm text-blue-100">Rabbi Shimon Semp<span aria-hidden="true"> · </span><span className="tabular-nums">{formatDuration(selected.duration)}</span></p>
               </div>
               <div className="flex flex-wrap items-center gap-5 border-t border-white/25 pt-5">
-                <Link href={`/videos/${selected.id}`} className="learning-detail-link inline-flex min-h-11 items-center gap-2 text-sm font-medium text-white underline-offset-4 hover:underline">Teaching details <ArrowUpRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" /></Link>
+                <VideoLink href={`/videos/${selected.id}`} className="learning-detail-link inline-flex min-h-11 items-center gap-2 text-sm font-medium text-white underline-offset-4 hover:underline">Teaching details <ArrowUpRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" /></VideoLink>
                 <div className="rounded-full bg-white text-stone-900"><SaveButton key={selected.id} videoId={selected.id} isSaved={selected.is_saved_by_user} showLabel /></div>
               </div>
             </div>

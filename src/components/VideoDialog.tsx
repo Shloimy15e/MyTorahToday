@@ -3,7 +3,7 @@
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
 import { ArrowRightIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Fragment } from "react";
-import Link from "next/link";
+import VideoLink from "@/components/VideoLink";
 import LikeButtonAndCount from "./ui/LikeButtonAndCount";
 import SaveButton from "./ui/SaveButton";
 import Video from "@/types/Video";
@@ -27,7 +27,7 @@ export default function VideoDialog({ isOpen, video, onClose }: {
             <div className="aspect-video overflow-hidden rounded-xl bg-stone-900"><VideoEmbed src={video.video_id} className="h-full w-full" autoplay={false} /></div>
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-stone-600">Rabbi Shimon Semp</p>{isOpen && <span className="inline-flex items-center gap-1.5 text-sm text-stone-600"><ViewCount key={video.id} views={video.views + video.userViews} isViewed={video.is_viewed_by_user} videoId={video.id} /></span>}</div>
             <div className="mt-5 flex flex-wrap items-center gap-2"><LikeButtonAndCount videoId={video.id} likes={video.likes + video.userLikes} isLiked={video.is_liked_by_user} /><SaveButton videoId={video.id} isSaved={video.is_saved_by_user} showLabel /><ShareButtons video={video} /></div>
-            <div className="mt-6 flex flex-wrap items-center justify-between gap-3"><button type="button" onClick={onClose} className="inline-flex min-h-11 items-center px-2 text-sm text-stone-600 hover:text-primary-blue">Back to teachings</button><Link href={`/videos/${video.id}`} onClick={onClose} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary-blue px-5 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-950 motion-reduce:transition-none">Open teaching<ArrowRightIcon aria-hidden="true" className="h-4 w-4" /></Link></div>
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3"><button type="button" onClick={onClose} className="inline-flex min-h-11 items-center px-2 text-sm text-stone-600 hover:text-primary-blue">Back to teachings</button><VideoLink href={`/videos/${video.id}`} onClick={onClose} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary-blue px-5 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-950 motion-reduce:transition-none">Open teaching<ArrowRightIcon aria-hidden="true" className="h-4 w-4" /></VideoLink></div>
           </DialogPanel>
         </TransitionChild>
       </div></div>
