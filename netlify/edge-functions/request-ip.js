@@ -1,6 +1,6 @@
 export const config = {
-  path: ["/api/auth/callback/credentials", "/api/auth/token/login", "/api/auth/users"],
-  method: "POST",
+  path: "/*",
+  excludedPath: ["/_next/*", "/images/*", "/fonts/*"],
   onError: "bypass",
 };
 
@@ -9,7 +9,7 @@ export default function logRequestIp(_request, context) {
   if (Netlify.env.get("REQUEST_IP_LOGGING") === "false" || !context.ip) return;
 
   console.info(JSON.stringify({
-    event: "account_request",
+    event: "site_request",
     requestId: context.requestId,
     ip: context.ip,
   }));
