@@ -87,7 +87,10 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} MyTorahToday. All rights reserved
             to Hashem.
           </p>
-          <DynamiqCredit />
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <a href="/privacy" className="underline-offset-4 hover:underline">Privacy</a>
+            <DynamiqCredit />
+          </div>
         </div>
       </div>
     </footer>
